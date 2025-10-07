@@ -1,0 +1,1011 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الرئيسية - Dalal Alsaudia{% endblock %}
+
+{% block body_class %}home-page no-navbar{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hide navbar when .no-navbar on body */
+    body.no-navbar #navbar {
+        display: none !important;
+    }
+
+    body.home-page .navbar-brand,
+    body.home-page .navbar-nav .nav-link {
+        color: #1b1b1b !important;
+        text-shadow: none;
+    }
+
+    body.home-page .navbar-nav .nav-link:hover {
+        background: rgba(0, 0, 0, 0.04);
+    }
+
+    .hero-section {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        border-radius: 0 0 28px 28px;
+        overflow: hidden;
+    }
+
+    .hero-slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    .hero-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+    .hero-slide.active {
+        opacity: 1;
+    }
+
+    .hero-slide {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    @media (max-width: 1200px) {
+        .hero-section {
+            min-height: 95vh;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-section {
+            min-height: 95vh;
+            padding: 15px 0;
+        }
+    }
+
+    .hero-section::before {
+        /* warm fade similar to the screenshot */
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(18, 18, 18, 0.66) 0%, rgba(18, 18, 18, 0.45) 35%, rgba(18, 18, 18, 0.20) 60%, rgba(18, 18, 18, 0.10) 100%);
+    }
+
+    /* make hero text start from the left only in this section */
+    .hero-ltr {
+        direction: ltr;
+    }
+
+    .hero-ltr .hero-content {
+        text-align: left;
+    }
+
+    /* Floating clean header to match screenshot */
+    .cleanic-header-wrapper {
+        position: fixed;
+        top: 18px;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    /* Hide header when scrolling down */
+    .cleanic-header-wrapper.hidden {
+        transform: translateY(-100%);
+    }
+
+    .cleanic-header {
+        background: #fbf8eb;
+        border-radius: 14px;
+        padding: 16px 22px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    @media (max-width: 1200px) {
+        .cleanic-header {
+            padding: 12px 18px;
+            gap: 12px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .cleanic-header {
+            padding: 10px 15px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .cleanic-header {
+            padding: 8px 12px;
+            gap: 8px;
+        }
+    }
+
+    .cleanic-header .cleanic-brand {
+        flex-shrink: 0;
+    }
+
+    .cleanic-header .cleanic-actions {
+        flex-shrink: 0;
+    }
+
+    .cleanic-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #0d2622;
+        font-weight: 700;
+        font-size: 22px;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+    }
+
+    .cleanic-nav {
+        display: flex;
+        align-items: center;
+        gap: 36px;
+        margin: 0 auto;
+        color: #0d2622;
+        font-weight: 600;
+    }
+
+    .cleanic-nav a {
+        color: #0d2622;
+        text-decoration: none;
+        position: relative;
+        padding: 0 12px;
+    }
+
+    .cleanic-nav a:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 16px;
+        background-color: #ccc;
+    }
+
+    .cleanic-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .cleanic-login {
+        color: #0d2622;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .btn-cleanic {
+        background: #0d2622;
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 10px 22px;
+        font-weight: 700;
+    }
+
+    /* remove global main offset on home */
+    body.home-page main {
+        margin-top: 0 !important;
+    }
+
+    @media (max-width: 992px) {
+        .cleanic-nav {
+            display: none;
+        }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        color: #fff;
+    }
+
+    .floating-card {
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    /* Quote Form Styles */
+    .quote-form-container {
+        position: absolute;
+        bottom: 15px;
+        right: 60px;
+        z-index: 10;
+        max-width: 550px;
+        width: 100%;
+        direction: ltr;
+        text-align: left;
+    }
+
+    @media (max-width: 1400px) {
+        .quote-form-container {
+            max-width: 520px;
+            right: 100px;
+            bottom: 20px;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .quote-form-container {
+            position: relative;
+            bottom: auto;
+            right: auto;
+            margin: 40px auto 0;
+            max-width: 700px;
+        }
+    }
+
+    .quote-form {
+        background: #fbf8eb;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(13, 38, 34, 0.1);
+        direction: ltr;
+        text-align: left;
+    }
+
+    @media (max-width: 768px) {
+        .quote-form {
+            padding: 16px;
+            margin: 0 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .quote-form {
+            padding: 14px;
+            margin: 0 5px;
+        }
+    }
+
+    .quote-form h2 {
+        color: #0d2622;
+        font-weight: 700;
+        font-size: 24px;
+        text-align: left;
+        margin-bottom: 5px;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .quote-form .subtitle {
+        color: #0d2622;
+        font-weight: 500;
+        font-size: 14px;
+        text-align: left;
+        margin-bottom: 20px;
+        font-family: 'Arial', sans-serif;
+    }
+
+    @media (max-width: 768px) {
+        .quote-form h2 {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .quote-form h2 {
+            font-size: 15px;
+            margin-bottom: 14px;
+        }
+    }
+
+    .form-group {
+        margin-bottom: 6px;
+        text-align: left;
+    }
+
+    /* Form row layout for side-by-side inputs */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 6px;
+    }
+
+    .form-row .form-group {
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 768px) {
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .form-group {
+            margin-bottom: 6px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+    }
+
+    .form-group label {
+        color: #0d2622;
+        font-weight: 700;
+        font-size: 12px;
+        margin-bottom: 3px;
+        display: block;
+        text-align: left;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid rgba(13, 38, 34, 0.2);
+        border-radius: 6px;
+        background: #fff;
+        color: #0d2622;
+        font-size: 13px;
+        transition: border-color 0.3s ease;
+        box-sizing: border-box;
+        text-align: left;
+        direction: ltr;
+        height: 36px;
+    }
+
+    .form-group select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 10px center;
+        background-repeat: no-repeat;
+        background-size: 12px;
+        padding-right: 30px;
+    }
+
+    @media (max-width: 768px) {
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 7px 9px;
+            font-size: 12px;
+            height: 34px;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 6px 8px;
+            font-size: 12px;
+            height: 32px;
+        }
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #0d2622;
+        box-shadow: 0 0 0 2px rgba(13, 38, 34, 0.1);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+        color: rgba(13, 38, 34, 0.5);
+        text-align: left;
+    }
+
+    .form-group textarea {
+        min-height: 60px;
+        resize: vertical;
+        text-align: left;
+        height: auto;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: flex-start;
+        gap: 4px;
+        margin-top: 1px;
+        text-align: left;
+        direction: ltr;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    .checkbox-group label {
+        color: rgba(13, 38, 34, 0.7);
+        font-weight: 400;
+        font-size: 10px;
+        margin: 0;
+        text-align: left;
+        flex: 1;
+    }
+
+    .quote-btn {
+        width: 100%;
+        background: #0d2622;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 14px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 6px;
+        text-align: center;
+        height: 40px;
+    }
+
+    @media (max-width: 768px) {
+        .quote-btn {
+            padding: 8px 12px;
+            font-size: 12px;
+            height: 36px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .quote-btn {
+            padding: 7px 10px;
+            font-size: 12px;
+            height: 34px;
+        }
+    }
+
+    .quote-btn:hover {
+        background: rgba(13, 38, 34, 0.9);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 1200px) {
+        .quote-form-container {
+            position: relative;
+            bottom: auto;
+            right: auto;
+            margin: 40px auto 0;
+            max-width: 650px;
+        }
+    }
+
+    @media (max-width: 768px) {
+
+        .form-row,
+        .form-row-3 {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .quote-form {
+            padding: 18px;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem !important;
+        }
+
+        .hero-content .lead {
+            font-size: 1.1rem !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-content h1 {
+            font-size: 2rem !important;
+        }
+
+        .hero-content .lead {
+            font-size: 1rem !important;
+        }
+
+        .hero-content .btn {
+            padding: 8px 20px !important;
+            font-size: 0.9rem !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% block navbar %}{% endblock %}
+<!-- Hero Section (top of home) -->
+<section class="hero-section py-5">
+    <!-- Auto-animated slider background -->
+    <div class="hero-slider" data-slides='[
+        "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=2069&auto=format&fit=crop",
+        "/static/css/homebanner2.jpg",
+        "/static/css/homebanner3.jpg",
+        "/static/css/homebanner4.jpg"
+    ]'>
+        <div class="hero-slide active"></div>
+        <div class="hero-slide"></div>
+        <div class="hero-slide"></div>
+        <div class="hero-slide"></div>
+    </div>
+
+    <div class="cleanic-header-wrapper">
+        <div class="container">
+            <div class="cleanic-header">
+                <nav class="cleanic-nav">
+                    <a href="#contact">Contact</a>
+                    <a href="#about">About</a>
+                    <a href="#recent">Recent Work</a>
+                    <a href="#high-end">High End Doors</a>
+                    <a href="#doors">Doors</a>
+                    <a href="#openers">Openers</a>
+                    <a href="#services">Service & Repair</a>
+                    <a href="#home">Home</a>
+                </nav>
+                <div class="cleanic-actions">
+                    <img src="/static/css/logo.png" alt="Logo" style="height: 50px; width: auto; display: block;"
+                        onerror="console.log('Image failed to load: ' + this.src);">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row align-items-center hero-ltr">
+            <div class="col-lg-7 col-xl-6">
+                <div class="hero-content">
+                    <h1 class="display-2 fw-bold mb-4" style="letter-spacing:-.5px; line-height:1.1;">
+                        Protech Garage Doors LLC
+                    </h1>
+                    <p class="lead mb-5" style="color: rgba(255,255,255,.85); max-width: 620px;">
+                        Overhead Garage Door Repair & Installation
+                    </p>
+
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <a href="{% url 'products:list' %}" class="btn btn-light btn-lg px-5 py-3"
+                            style="border-radius: 999px; font-weight:700;">
+                            Book Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quote Form -->
+    <div class="quote-form-container">
+        <form class="quote-form" method="post" action="#">
+            <h2>Get Your Free Estimate!</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Full Name:</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="service_type">Service Type:</label>
+                    <select id="service_type" name="service_type">
+                        <option value="">Select service type</option>
+                        <option value="repair">Door Repair</option>
+                        <option value="installation">New Installation</option>
+                        <option value="replacement">Door Replacement</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="opener">Opener Installation</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Service Address:</label>
+                <input type="text" id="address" name="address" placeholder="Enter your service address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="help">How Can We Help?</label>
+                <textarea id="help" name="help" placeholder="Describe your needs or requirements" required></textarea>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="emailUpdates" name="emailUpdates">
+                <label for="emailUpdates">I would like to receive email updates about promotions and services</label>
+            </div>
+
+            <button type="submit" class="quote-btn">Submit</button>
+        </form>
+    </div>
+</section>
+
+
+
+<!-- Section Divider -->
+<div class="section-divider"></div>
+
+<!-- Featured Products -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-primary mb-3">المنتجات المميزة</h2>
+            <p class="lead text-muted">اكتشف أحدث وأفضل المنتجات المتاحة</p>
+        </div>
+
+        {% if featured_products %}
+        <div class="row g-4">
+            {% for product in featured_products %}
+            <div class="col-lg-3 col-md-6">
+                <div class="card product-card h-100 shadow-sm">
+                    <div class="position-relative">
+                        {% if product.images.first %}
+                        <img src="{{ product.images.first.image.url }}" class="card-img-top" alt="{{ product.title }}"
+                            style="height: 220px; object-fit: cover;">
+                        {% else %}
+                        <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center"
+                            style="height: 220px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="fas fa-image fa-4x text-white opacity-50"></i>
+                        </div>
+                        {% endif %}
+
+                        <div class="product-badge">مميز</div>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold mb-2">{{ product.title|truncatechars:45 }}</h5>
+                        <p class="card-text text-muted small mb-3">{{ product.description|truncatechars:80 }}</p>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="price-display">{{ product.price|floatformat:0 }} ريال</span>
+                            <div class="text-end">
+                                <small class="text-muted d-block">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ product.seller.address|default:"غير محدد"|truncatechars:15 }}
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-eye"></i> {{ product.views_count }} مشاهدة
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                        <a href="{% url 'products:detail' product.id %}" class="btn btn-primary w-100 rounded-pill">
+                            <i class="fas fa-eye me-2"></i>عرض التفاصيل
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'products:list' %}" class="btn btn-outline-primary btn-lg rounded-pill px-5">
+                <i class="fas fa-arrow-left me-2"></i>عرض جميع المنتجات
+            </a>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-box-open fa-5x text-muted opacity-50"></i>
+            </div>
+            <h4 class="text-muted">لا توجد منتجات مميزة حالياً</h4>
+            <p class="text-muted">تابعونا لمشاهدة أحدث المنتجات قريباً</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-primary mb-3">تصفح حسب الفئة</h2>
+            <p class="lead text-muted">اختر الفئة التي تناسب احتياجاتك</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card text-center h-100 border-0 shadow-lg">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <div class="bg-primary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center"
+                                style="width: 80px; height: 80px;">
+                                <i class="fas fa-car fa-2x text-white"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold text-primary mb-3">السيارات</h4>
+                        <p class="text-muted mb-4">سيارات جديدة ومستعملة من جميع الماركات العالمية والمحلية</p>
+                        <div class="mb-4">
+                            <span class="badge bg-primary rounded-pill me-2">{{ total_cars }} متوفر</span>
+                        </div>
+                        <a href="{% url 'products:cars' %}" class="btn btn-primary rounded-pill px-4">
+                            <i class="fas fa-arrow-left me-2"></i>تصفح السيارات
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="card text-center h-100 border-0 shadow-lg">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <div class="bg-success bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center"
+                                style="width: 80px; height: 80px;">
+                                <i class="fas fa-home fa-2x text-white"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold text-success mb-3">العقارات</h4>
+                        <p class="text-muted mb-4">شقق، فلل، أراضي ومحلات تجارية للبيع والإيجار</p>
+                        <div class="mb-4">
+                            <span class="badge bg-success rounded-pill me-2">{{ total_properties }} متوفر</span>
+                        </div>
+                        <a href="{% url 'products:real_estate' %}" class="btn btn-success rounded-pill px-4">
+                            <i class="fas fa-arrow-left me-2"></i>تصفح العقارات
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="card text-center h-100 border-0 shadow-lg">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <div class="bg-info bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center"
+                                style="width: 80px; height: 80px;">
+                                <i class="fas fa-hotel fa-2x text-white"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold text-info mb-3">الفنادق</h4>
+                        <p class="text-muted mb-4">احجز غرفتك في أفضل الفنادق والشقق المفروشة</p>
+                        <div class="mb-4">
+                            <span class="badge bg-info rounded-pill me-2">متاح الآن</span>
+                        </div>
+                        <a href="{% url 'products:hotels' %}" class="btn btn-info rounded-pill px-4">
+                            <i class="fas fa-arrow-left me-2"></i>تصفح الفنادق
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-3">هل تريد بيع منتجك؟</h3>
+                <p class="lead mb-0">انضم إلى آلاف البائعين الناجحين وابدأ في بيع منتجاتك اليوم</p>
+            </div>
+            <div class="col-lg-4 text-end">
+                {% if user.is_authenticated %}
+                <a href="{% url 'products:add' %}" class="btn btn-warning btn-lg rounded-pill px-5">
+                    <i class="fas fa-plus me-2"></i>أضف منتجك الآن
+                </a>
+                {% else %}
+                <a href="{% url 'users:register' %}" class="btn btn-warning btn-lg rounded-pill px-5">
+                    <i class="fas fa-user-plus me-2"></i>انضم إلينا الآن
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Counter Animation
+    document.addEventListener('DOMContentLoaded', function () {
+        const counters = document.querySelectorAll('.counter');
+
+        const animateCounter = (counter) => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const duration = 2000; // 2 seconds
+            const increment = target / (duration / 16); // 60fps
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = Math.floor(current).toLocaleString('ar-SA');
+            }, 16);
+        };
+
+        // Intersection Observer for counter animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        counters.forEach(counter => {
+            observer.observe(counter);
+        });
+
+        // Header scroll behavior
+        let lastScrollTop = 0;
+        const header = document.querySelector('.cleanic-header-wrapper');
+        const scrollThreshold = 100; // Minimum scroll distance to trigger hide/show
+
+        window.addEventListener('scroll', function () {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Only trigger if scrolled more than threshold
+            if (Math.abs(scrollTop - lastScrollTop) > scrollThreshold) {
+                if (scrollTop > lastScrollTop && scrollTop > 200) {
+                    // Scrolling down - hide header
+                    header.classList.add('hidden');
+                } else {
+                    // Scrolling up - show header
+                    header.classList.remove('hidden');
+                }
+                lastScrollTop = scrollTop;
+            }
+        });
+
+        // Auto-animated slider functionality
+        const slider = document.querySelector('.hero-slider');
+        const slides = document.querySelectorAll('.hero-slide');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        // Get slide URLs from data attribute
+        let slideUrls = [];
+        try {
+            slideUrls = JSON.parse(slider.getAttribute('data-slides'));
+            console.log('Slide URLs loaded:', slideUrls);
+        } catch (e) {
+            console.error('Error parsing slide URLs:', e);
+            slideUrls = [
+                "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=2069&auto=format&fit=crop"
+            ];
+        }
+
+        // Set background images for each slide
+        slides.forEach((slide, index) => {
+            if (slideUrls[index]) {
+                console.log(`Setting slide ${index} background:`, slideUrls[index]);
+                slide.style.backgroundImage = `url('${slideUrls[index]}')`;
+
+                // Test image loading
+                const img = new Image();
+                img.onload = function () {
+                    console.log(`Image ${index} loaded successfully:`, slideUrls[index]);
+                };
+                img.onerror = function () {
+                    console.error(`Image ${index} failed to load:`, slideUrls[index]);
+                };
+                img.src = slideUrls[index];
+            }
+        });
+
+        function showSlide(index) {
+            // Remove active class from all slides
+            slides.forEach(slide => slide.classList.remove('active'));
+
+            // Add active class to current slide
+            slides[index].classList.add('active');
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        // Start auto-sliding every 4 seconds
+        let slideInterval = setInterval(nextSlide, 4000);
+
+        // Pause auto-sliding when user hovers over the slider
+        if (slider) {
+            slider.addEventListener('mouseenter', () => {
+                clearInterval(slideInterval);
+            });
+
+            slider.addEventListener('mouseleave', () => {
+                slideInterval = setInterval(nextSlide, 4000);
+            });
+        }
+
+        // Optional: Add click navigation for manual control
+        slides.forEach((slide, index) => {
+            slide.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+                // Reset auto-slide timer
+                clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, 4000);
+            });
+        });
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}موقع {{ product.title }} - دلال السعودية{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<style>
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.location-info {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.nearby-product {
+    transition: transform 0.2s ease;
+}
+
+.nearby-product:hover {
+    transform: translateY(-2px);
+}
+
+.map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Product Info -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-map-marker-alt"></i> موقع المنتج
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            {% if product.images.first %}
+                                <img src="{{ product.images.first.image.url }}" 
+                                     alt="{{ product.title }}" 
+                                     class="img-fluid rounded">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <h5>{{ product.title }}</h5>
+                            <p class="text-muted">{{ product.description|truncatechars:150 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h4 text-success">{{ product.price }} ريال</span>
+                                <a href="{% url 'products:detail' product.id %}" 
+                                   class="btn btn-outline-primary">
+                                    عرض التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Map -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-map"></i> الموقع على الخريطة
+                    </h5>
+                </div>
+                <div class="card-body p-0 position-relative">
+                    <div class="map-controls">
+                        <button class="btn btn-sm btn-outline-primary" onclick="centerMap()">
+                            <i class="fas fa-crosshairs"></i> توسيط
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" onclick="getDirections()">
+                            <i class="fas fa-route"></i> الاتجاهات
+                        </button>
+                    </div>
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <!-- Location Details -->
+            <div class="location-info">
+                <h6 class="text-primary mb-3">
+                    <i class="fas fa-info-circle"></i> تفاصيل الموقع
+                </h6>
+                
+                {% if location_details %}
+                    <div class="mb-2">
+                        <strong>المنطقة:</strong> {{ location_details.location.get_full_path }}
+                    </div>
+                    {% if location_details.address %}
+                        <div class="mb-2">
+                            <strong>العنوان:</strong> {{ location_details.address }}
+                        </div>
+                    {% endif %}
+                    {% if location_details.landmark %}
+                        <div class="mb-2">
+                            <strong>معلم مميز:</strong> {{ location_details.landmark }}
+                        </div>
+                    {% endif %}
+                    {% if location_details.postal_code %}
+                        <div class="mb-2">
+                            <strong>الرمز البريدي:</strong> {{ location_details.postal_code }}
+                        </div>
+                    {% endif %}
+                {% endif %}
+                
+                <div class="mb-2">
+                    <strong>الإحداثيات:</strong>
+                    <br>
+                    <small class="text-muted">
+                        {{ product.location_latitude|floatformat:6 }}, {{ product.location_longitude|floatformat:6 }}
+                    </small>
+                </div>
+                
+                <div class="mt-3">
+                    <button class="btn btn-success btn-sm w-100" onclick="shareLocation()">
+                        <i class="fas fa-share"></i> مشاركة الموقع
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Contact Seller -->
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <h6>تواصل مع البائع</h6>
+                    <p class="text-muted">{{ product.seller.username }}</p>
+                    <a href="{% url 'messaging:start_conversation' product.id %}" 
+                       class="btn btn-primary w-100">
+                        <i class="fas fa-comments"></i> بدء محادثة
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Nearby Products -->
+            {% if nearby_products %}
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-map-pin"></i> منتجات قريبة
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% for nearby in nearby_products %}
+                    <div class="nearby-product mb-3 p-2 border rounded">
+                        <div class="row align-items-center">
+                            <div class="col-4">
+                                {% if nearby.images.first %}
+                                    <img src="{{ nearby.images.first.image.url }}" 
+                                         alt="{{ nearby.title }}" 
+                                         class="img-fluid rounded"
+                                         style="height: 60px; object-fit: cover;">
+                                {% endif %}
+                            </div>
+                            <div class="col-8">
+                                <h6 class="mb-1">{{ nearby.title|truncatechars:30 }}</h6>
+                                <p class="text-success mb-1">{{ nearby.price }} ريال</p>
+                                <a href="{% url 'products:detail' nearby.id %}" 
+                                   class="btn btn-outline-primary btn-sm">
+                                    عرض
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+let map;
+let productMarker;
+
+// Initialize map
+function initMap() {
+    const lat = {{ product.location_latitude }};
+    const lng = {{ product.location_longitude }};
+    
+    map = L.map('map').setView([lat, lng], 15);
+    
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Add product marker
+    productMarker = L.marker([lat, lng])
+        .addTo(map)
+        .bindPopup(`
+            <div class="text-center">
+                <strong>{{ product.title }}</strong><br>
+                <span class="text-success">{{ product.price }} ريال</span><br>
+                <a href="{% url 'products:detail' product.id %}" class="btn btn-sm btn-primary mt-1">
+                    عرض التفاصيل
+                </a>
+            </div>
+        `)
+        .openPopup();
+    
+    // Add nearby products markers
+    {% for nearby in nearby_products %}
+    L.marker([{{ nearby.location_latitude }}, {{ nearby.location_longitude }}])
+        .addTo(map)
+        .bindPopup(`
+            <div class="text-center">
+                <strong>{{ nearby.title|truncatechars:30 }}</strong><br>
+                <span class="text-success">{{ nearby.price }} ريال</span><br>
+                <a href="{% url 'products:detail' nearby.id %}" class="btn btn-sm btn-outline-primary mt-1">
+                    عرض
+                </a>
+            </div>
+        `);
+    {% endfor %}
+}
+
+// Center map on product
+function centerMap() {
+    const lat = {{ product.location_latitude }};
+    const lng = {{ product.location_longitude }};
+    map.setView([lat, lng], 15);
+    productMarker.openPopup();
+}
+
+// Get directions
+function getDirections() {
+    const lat = {{ product.location_latitude }};
+    const lng = {{ product.location_longitude }};
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            
+            // Open Google Maps with directions
+            const url = `https://www.google.com/maps/dir/${userLat},${userLng}/${lat},${lng}`;
+            window.open(url, '_blank');
+        }, function() {
+            // Fallback: open Google Maps without user location
+            const url = `https://www.google.com/maps/place/${lat},${lng}`;
+            window.open(url, '_blank');
+        });
+    } else {
+        // Fallback: open Google Maps without user location
+        const url = `https://www.google.com/maps/place/${lat},${lng}`;
+        window.open(url, '_blank');
+    }
+}
+
+// Share location
+function shareLocation() {
+    const lat = {{ product.location_latitude }};
+    const lng = {{ product.location_longitude }};
+    const url = `https://www.google.com/maps/place/${lat},${lng}`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ product.title }}',
+            text: 'موقع المنتج على الخريطة',
+            url: url
+        });
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(url).then(function() {
+            alert('تم نسخ رابط الموقع');
+        });
+    }
+}
+
+// Initialize map when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initMap();
+});
+</script>
+{% endblock %}
+

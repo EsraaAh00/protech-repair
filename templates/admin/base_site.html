@@ -1,0 +1,176 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/admin_custom.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* تخصيصات إضافية للموقع */
+        .admin-header {
+            background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 0 0 15px 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .admin-header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .breadcrumbs {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .breadcrumbs a {
+            color: #2C5F7B;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+        
+        /* تحسين أيقونة الموقع */
+        .site-logo {
+            display: inline-block;
+            font-size: 24px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        /* تحسين التنقل */
+        .user-tools {
+            float: left;
+            margin-top: 10px;
+        }
+        
+        .user-tools a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        .user-tools a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* إضافة رسالة ترحيب */
+        .welcome-message {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2C5F7B;
+        }
+        
+        .welcome-message h3 {
+            margin: 0 0 5px 0;
+            color: #2C5F7B;
+            font-size: 18px;
+        }
+        
+        .welcome-message p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* تحسين footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+            margin-top: 40px;
+            color: #666;
+        }
+        
+        .footer a {
+            color: #2C5F7B;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block branding %}
+<div class="admin-header">
+    <h1 id="site-name">
+        <span class="site-logo">🏛️</span>
+        <a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a>
+    </h1>
+    <div class="subtitle">نظام إدارة متكامل لموقع التجارة الإلكترونية</div>
+</div>
+{% endblock %}
+
+{% block nav-global %}
+    <div class="user-tools">
+        {% if has_permission %}
+            <a href="{% url 'admin:index' %}">🏠 الرئيسية</a>
+            {% if user.is_superuser %}
+                <a href="/admin/statistics/">📊 الإحصائيات</a>
+            {% endif %}
+            <a href="{% url 'admin:password_change' %}">🔑 تغيير كلمة المرور</a>
+            <a href="{% url 'admin:logout' %}">🚪 تسجيل الخروج</a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if messages %}
+        <div class="messagelist">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    {% if user.is_authenticated and user.is_staff %}
+        <div class="welcome-message">
+            <h3>مرحباً {{ user.get_full_name|default:user.username }}! 👋</h3>
+            <p>أهلاً وسهلاً بك في لوحة التحكم الخاصة بموقع Dalal Alsaudia</p>
+        </div>
+    {% endif %}
+    
+    {{ block.super }}
+{% endblock %}
+
+{% block footer %}
+    <div class="footer">
+        <p>
+            © 2024 Dalal Alsaudia - جميع الحقوق محفوظة | 
+            <a href="/">زيارة الموقع الرئيسي</a> | 
+            <a href="mailto:admin@dalalsaudi.com">تواصل معنا</a>
+        </p>
+        <p style="font-size: 12px; margin-top: 10px;">
+            آخر تحديث: {% now "Y/m/d H:i" %} | 
+            إصدار النظام: 1.0.0
+        </p>
+    </div>
+{% endblock %} 

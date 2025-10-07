@@ -1,0 +1,737 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}السيارات - دلال السعودية{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #2563eb;
+        --secondary-color: #1e40af;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --light-bg: #f8fafc;
+        --border-color: #e2e8f0;
+        --text-color: #334155;
+        --text-muted: #64748b;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+        font-family: 'Cairo', sans-serif;
+        background: var(--light-bg);
+        color: var(--text-color);
+    }
+
+    .cars-hero {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 4rem 0 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cars-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><path d="M0,400 Q300,200 600,300 T1200,250 L1200,600 L0,600 Z" fill="rgba(255,255,255,0.1)"/></svg>') no-repeat center bottom;
+        background-size: cover;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .stats-counter {
+        background: rgba(255,255,255,0.15);
+        border-radius: 20px;
+        padding: 1.5rem;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .counter-number {
+        font-size: 2.5rem;
+        font-weight: 900;
+        line-height: 1;
+        background: linear-gradient(45deg, #ffd700, #ffed4e);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .counter-label {
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        opacity: 0.9;
+    }
+
+    .filter-panel {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 100px;
+        margin-bottom: 2rem;
+    }
+
+    .filter-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+
+    .car-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        background: white;
+        box-shadow: var(--shadow);
+        height: 100%;
+    }
+
+    .car-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .car-image {
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .car-card:hover .car-image {
+        transform: scale(1.05);
+    }
+
+    .price-tag {
+        background: linear-gradient(45deg, var(--success-color), #059669);
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .car-specs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+
+    .spec-badge {
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .car-features {
+        background: var(--light-bg);
+        padding: 1rem;
+        border-radius: 15px;
+        margin: 1rem 0;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    .feature-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .feature-item i {
+        color: var(--primary-color);
+        margin-left: 0.5rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    .view-controls {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+    }
+
+    .btn-view-toggle {
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-view-toggle.active {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    .sort-select {
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        background: white;
+        min-width: 200px;
+    }
+
+    .no-cars {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+    }
+
+    .no-cars i {
+        font-size: 4rem;
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        opacity: 0.5;
+    }
+
+    .popular-brands {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .brand-logo {
+        background: white;
+        border: 2px solid var(--border-color);
+        border-radius: 15px;
+        padding: 1rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 80px;
+    }
+
+    .brand-logo:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow);
+    }
+
+    .brand-logo span {
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+    }
+
+    .pagination .page-link {
+        border-radius: 10px;
+        margin: 0 0.2rem;
+        border: 2px solid var(--border-color);
+        color: var(--primary-color);
+        font-weight: 600;
+        padding: 0.6rem 1rem;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+        .cars-hero {
+            padding: 2rem 0 1rem;
+        }
+
+        .stats-counter {
+            padding: 1rem;
+        }
+
+        .counter-number {
+            font-size: 2rem;
+        }
+
+        .filter-panel {
+            position: relative;
+            top: 0;
+        }
+
+        .view-controls {
+            padding: 1rem;
+        }
+
+        .car-specs {
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Cars Hero Section -->
+<section class="cars-hero">
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-car me-3"></i>السيارات
+                </h1>
+                <p class="lead mb-4">اكتشف أفضل السيارات المستعملة والجديدة في المملكة العربية السعودية</p>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="stats-counter">
+                            <div class="counter-number">{{ cars_count|default:"0" }}</div>
+                            <div class="counter-label">سيارة متاحة</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-counter">
+                            <div class="counter-number">{{ brands_count|default:"0" }}</div>
+                            <div class="counter-label">ماركة مختلفة</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-counter">
+                            <div class="counter-number">{{ total_cars|default:"0" }}</div>
+                            <div class="counter-label">إجمالي السيارات</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <i class="fas fa-car fa-8x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Car Filters -->
+        <div class="col-lg-3">
+            <div class="filter-panel">
+                <h5 class="filter-title">
+                    <i class="fas fa-filter"></i>فلترة السيارات
+                </h5>
+
+                <form method="GET" id="carsFilterForm">
+                    <!-- Search -->
+                    <div class="mb-3">
+                        <label class="form-label">البحث</label>
+                        <input type="text" name="search" class="form-control" 
+                               placeholder="اسم السيارة أو الموديل..." 
+                               value="{{ current_filters.search }}">
+                    </div>
+
+                    <!-- Brand -->
+                    <div class="mb-3">
+                        <label class="form-label">الماركة</label>
+                        <select name="brand" class="form-select">
+                            <option value="">جميع الماركات</option>
+                            <option value="toyota" {% if current_filters.brand == 'toyota' %}selected{% endif %}>تويوتا</option>
+                            <option value="honda" {% if current_filters.brand == 'honda' %}selected{% endif %}>هوندا</option>
+                            <option value="hyundai" {% if current_filters.brand == 'hyundai' %}selected{% endif %}>هيونداي</option>
+                            <option value="nissan" {% if current_filters.brand == 'nissan' %}selected{% endif %}>نيسان</option>
+                            <option value="kia" {% if current_filters.brand == 'kia' %}selected{% endif %}>كيا</option>
+                            <option value="chevrolet" {% if current_filters.brand == 'chevrolet' %}selected{% endif %}>شيفروليه</option>
+                            <option value="ford" {% if current_filters.brand == 'ford' %}selected{% endif %}>فورد</option>
+                            <option value="bmw" {% if current_filters.brand == 'bmw' %}selected{% endif %}>بي ام دبليو</option>
+                            <option value="mercedes" {% if current_filters.brand == 'mercedes' %}selected{% endif %}>مرسيدس</option>
+                            <option value="lexus" {% if current_filters.brand == 'lexus' %}selected{% endif %}>لكزس</option>
+                        </select>
+                    </div>
+
+                    <!-- Year Range -->
+                    <div class="mb-3">
+                        <label class="form-label">سنة الصنع</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <select name="year_from" class="form-select">
+                                    <option value="">من سنة</option>
+                                    {% for year in years_range %}
+                                        <option value="{{ year }}" {% if current_filters.year_from == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <select name="year_to" class="form-select">
+                                    <option value="">إلى سنة</option>
+                                    {% for year in years_range %}
+                                        <option value="{{ year }}" {% if current_filters.year_to == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="mb-3">
+                        <label class="form-label">نطاق السعر (ر.س)</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" name="price_from" class="form-control" 
+                                       placeholder="من" value="{{ current_filters.price_from }}">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" name="price_to" class="form-control" 
+                                       placeholder="إلى" value="{{ current_filters.price_to }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fuel Type -->
+                    <div class="mb-3">
+                        <label class="form-label">نوع الوقود</label>
+                        <select name="fuel_type" class="form-select">
+                            <option value="">جميع الأنواع</option>
+                            <option value="petrol" {% if current_filters.fuel_type == 'petrol' %}selected{% endif %}>بنزين</option>
+                            <option value="diesel" {% if current_filters.fuel_type == 'diesel' %}selected{% endif %}>ديزل</option>
+                            <option value="hybrid" {% if current_filters.fuel_type == 'hybrid' %}selected{% endif %}>هايبرد</option>
+                            <option value="electric" {% if current_filters.fuel_type == 'electric' %}selected{% endif %}>كهربائي</option>
+                        </select>
+                    </div>
+
+                    <!-- Transmission -->
+                    <div class="mb-3">
+                        <label class="form-label">ناقل الحركة</label>
+                        <select name="transmission" class="form-select">
+                            <option value="">جميع الأنواع</option>
+                            <option value="automatic" {% if current_filters.transmission == 'automatic' %}selected{% endif %}>أوتوماتيك</option>
+                            <option value="manual" {% if current_filters.transmission == 'manual' %}selected{% endif %}>يدوي</option>
+                        </select>
+                    </div>
+
+                    <!-- Mileage -->
+                    <div class="mb-4">
+                        <label class="form-label">المسافة المقطوعة</label>
+                        <select name="mileage" class="form-select">
+                            <option value="">جميع المسافات</option>
+                            <option value="0-50000" {% if current_filters.mileage == '0-50000' %}selected{% endif %}>أقل من 50,000 كم</option>
+                            <option value="50000-100000" {% if current_filters.mileage == '50000-100000' %}selected{% endif %}>50,000 - 100,000 كم</option>
+                            <option value="100000-150000" {% if current_filters.mileage == '100000-150000' %}selected{% endif %}>100,000 - 150,000 كم</option>
+                            <option value="150000+" {% if current_filters.mileage == '150000+' %}selected{% endif %}>أكثر من 150,000 كم</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>بحث
+                        </button>
+                        <a href="{% url 'products:cars' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>مسح الفلاتر
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Popular Brands -->
+            {% if popular_brands %}
+            <div class="filter-panel">
+                <h6 class="filter-title">الماركات الشائعة</h6>
+                <div class="popular-brands">
+                    {% for brand in popular_brands %}
+                        <div class="brand-logo" onclick="filterByBrand('{{ brand.car_details__make }}')" title="{{ brand.car_details__make }}">
+                            <span>{{ brand.car_details__make|first|upper }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Cars Grid -->
+        <div class="col-lg-9">
+            <!-- View Controls -->
+            <div class="view-controls">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <h4 class="fw-bold mb-0">{{ cars.count }} سيارة متاحة</h4>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-view-toggle active" id="gridViewBtn" onclick="switchView('grid')">
+                                <i class="fas fa-th me-1"></i>شبكة
+                            </button>
+                            <a href="{% url 'products:map' %}" class="btn btn-view-toggle">
+                                <i class="fas fa-map me-1"></i>خريطة
+                            </a>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0">ترتيب:</label>
+                        <select class="sort-select" onchange="sortCars(this.value)">
+                            <option value="newest" {% if current_filters.sort == 'newest' %}selected{% endif %}>الأحدث</option>
+                            <option value="oldest" {% if current_filters.sort == 'oldest' %}selected{% endif %}>الأقدم</option>
+                            <option value="price_low" {% if current_filters.sort == 'price_low' %}selected{% endif %}>السعر: الأقل أولاً</option>
+                            <option value="price_high" {% if current_filters.sort == 'price_high' %}selected{% endif %}>السعر: الأعلى أولاً</option>
+                            <option value="popular" {% if current_filters.sort == 'popular' %}selected{% endif %}>الأكثر مشاهدة</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {% if cars %}
+                <!-- Cars Grid -->
+                <div class="row g-4" id="carsGrid">
+                    {% for car in cars %}
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card car-card">
+                                <div class="position-relative overflow-hidden">
+                                    {% if car.images.first %}
+                                        <img src="{{ car.images.first.image.url }}" 
+                                             class="card-img-top car-image" 
+                                             alt="{{ car.title }}">
+                                    {% else %}
+                                        <div class="car-image bg-light d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-car fa-4x text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="price-tag">
+                                        {{ car.price|floatformat:0 }} ر.س
+                                    </div>
+                                </div>
+                                
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold mb-3">{{ car.title|truncatechars:50 }}</h5>
+                                    
+                                    <div class="car-specs">
+                                        {% if car.car_details %}
+                                            <span class="spec-badge">{{ car.car_details.make|default:"غير محدد" }}</span>
+                                            <span class="spec-badge">{{ car.car_details.year|default:"غير محدد" }}</span>
+                                            <span class="spec-badge">{{ car.car_details.mileage|default:"0"|floatformat:0 }} كم</span>
+                                        {% else %}
+                                            <span class="spec-badge">تفاصيل غير متوفرة</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if car.car_details %}
+                                    <div class="car-features">
+                                        <div class="feature-item">
+                                            <i class="fas fa-gas-pump"></i>
+                                            <span>
+                                                {% if car.car_details.fuel_type == 'gasoline' %}بنزين
+                                                {% elif car.car_details.fuel_type == 'diesel' %}ديزل
+                                                {% elif car.car_details.fuel_type == 'hybrid' %}هايبرد
+                                                {% elif car.car_details.fuel_type == 'electric' %}كهربائي
+                                                {% else %}غير محدد{% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i class="fas fa-cogs"></i>
+                                            <span>
+                                                {% if car.car_details.transmission_type == 'automatic' %}أوتوماتيك
+                                                {% elif car.car_details.transmission_type == 'manual' %}يدوي
+                                                {% else %}غير محدد{% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i class="fas fa-palette"></i>
+                                            <span>{{ car.car_details.color|default:"غير محدد" }}</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i class="fas fa-car-side"></i>
+                                            <span>{{ car.car_details.model|default:"غير محدد" }}</span>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-user me-1"></i>
+                                            {{ car.seller.get_full_name|default:car.seller.username }}
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="fas fa-eye me-1"></i>
+                                            {{ car.views_count }} مشاهدة
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-footer bg-transparent border-0 p-3">
+                                    <div class="d-grid gap-2">
+                                        <a href="{% url 'products:detail' car.id %}" 
+                                           class="btn btn-primary">
+                                            <i class="fas fa-eye me-2"></i>عرض التفاصيل
+                                        </a>
+                                        {% if user.is_authenticated and user != car.seller %}
+                                            <a href="{% url 'orders:create' car.id %}" 
+                                               class="btn btn-outline-success btn-sm">
+                                                <i class="fas fa-shopping-cart me-2"></i>طلب شراء
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if cars.has_other_pages %}
+                    <nav aria-label="تصفح الصفحات" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if cars.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ cars.previous_page_number }}{% for key, value in current_filters.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for page_num in cars.paginator.page_range %}
+                                {% if page_num == cars.number %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_num }}{% for key, value in current_filters.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ page_num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if cars.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ cars.next_page_number }}{% for key, value in current_filters.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+                
+            {% else %}
+                <div class="no-cars">
+                    <i class="fas fa-car"></i>
+                    <h3 class="text-muted mb-3">لا توجد سيارات متاحة</h3>
+                    <p class="text-muted mb-4">جرب تغيير معايير البحث أو تصفح جميع المنتجات</p>
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a href="{% url 'products:list' %}" class="btn btn-primary">
+                            <i class="fas fa-arrow-right me-2"></i>جميع المنتجات
+                        </a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'products:add' %}" class="btn btn-success">
+                                <i class="fas fa-plus me-2"></i>أضف سيارتك
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Sort cars function
+function sortCars(sortBy) {
+    const url = new URL(window.location);
+    url.searchParams.set('sort', sortBy);
+    window.location.href = url.toString();
+}
+
+// Filter by brand function
+function filterByBrand(brand) {
+    const url = new URL(window.location);
+    url.searchParams.set('brand', brand.toLowerCase());
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
+}
+
+// Auto-submit form on filter change
+document.addEventListener('DOMContentLoaded', function() {
+    const filterForm = document.getElementById('carsFilterForm');
+    const filterInputs = filterForm.querySelectorAll('select, input');
+    
+    // Add change event listeners to all filter inputs
+    filterInputs.forEach(input => {
+        if (input.type !== 'submit') {
+            input.addEventListener('change', function() {
+                // Small delay to allow user to make multiple selections
+                setTimeout(() => {
+                    filterForm.submit();
+                }, 300);
+            });
+        }
+    });
+    
+    // Prevent auto-submit on text input, only on enter or blur
+    const textInputs = filterForm.querySelectorAll('input[type="text"], input[type="number"]');
+    textInputs.forEach(input => {
+        input.removeEventListener('change', filterForm.submit);
+        
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                filterForm.submit();
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.value !== this.defaultValue) {
+                filterForm.submit();
+            }
+        });
+    });
+});
+
+// Loading animation for filter form
+function showLoading(button) {
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري البحث...';
+    button.disabled = true;
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+    }, 2000);
+}
+</script>
+{% endblock %} 

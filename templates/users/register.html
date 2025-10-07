@@ -1,0 +1,469 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}إنشاء حساب جديد - Dalal Alsaudia{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        min-height: calc(100vh - 160px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: -80px -15px -5rem;
+        padding: 80px 15px 5rem;
+    }
+
+    .register-card {
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        max-width: 1000px;
+        width: 100%;
+    }
+
+    .register-hero {
+        background: var(--gradient-secondary);
+        color: white;
+        padding: 3rem;
+        text-align: center;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .register-form {
+        padding: 3rem;
+    }
+
+    .form-floating {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        padding: 1rem 0.75rem;
+        height: auto;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .btn-register {
+        background: var(--gradient-secondary);
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .password-strength {
+        margin-top: 0.5rem;
+    }
+
+    .strength-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: #e9ecef;
+        overflow: hidden;
+    }
+
+    .strength-fill {
+        height: 100%;
+        transition: width 0.3s ease, background-color 0.3s ease;
+        width: 0%;
+        background: #dc3545;
+    }
+
+    .strength-text {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+
+    .terms-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin: 1.5rem 0;
+    }
+
+    .benefits-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .benefits-list li {
+        padding: 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .benefits-list li i {
+        color: var(--success-color);
+        width: 20px;
+    }
+
+    .input-group-text {
+        border-radius: 15px 0 0 15px;
+        border: 2px solid #e9ecef;
+        border-right: none;
+    }
+
+    .input-group .form-control {
+        border-right: none;
+        border-radius: 0 15px 15px 0;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #dee2e6;
+    }
+
+    @media (max-width: 768px) {
+        .register-container {
+            margin: -80px 0 -5rem;
+            padding: 80px 1rem 5rem;
+        }
+        
+        .register-card {
+            margin: 0;
+        }
+        
+        .register-hero,
+        .register-form {
+            padding: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card">
+        <div class="row g-0">
+            <div class="col-lg-5">
+                <div class="register-hero">
+                    <h2 class="fw-bold mb-3">انضم إلينا اليوم!</h2>
+                    <p class="lead mb-4">أنشئ حسابك المجاني واستمتع بتجربة تسوق مميزة</p>
+                    
+                    <ul class="benefits-list text-start">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>نشر منتجاتك مجاناً</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>تواصل مباشر مع البائعين</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>حفظ المنتجات المفضلة</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>متابعة طلباتك بسهولة</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>عروض وخصومات حصرية</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="register-form">
+                    <h3 class="fw-bold text-center mb-4 text-primary">إنشاء حساب جديد</h3>
+                    
+                    <form method="POST" id="registerForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="first_name" name="first_name" 
+                                           placeholder="الاسم الأول" required>
+                                    <label for="first_name">الاسم الأول</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="last_name" name="last_name" 
+                                           placeholder="الاسم الأخير" required>
+                                    <label for="last_name">الاسم الأخير</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   placeholder="اسم المستخدم" required>
+                            <label for="username">اسم المستخدم</label>
+                            <div class="form-text">سيكون هذا اسمك المعروض للآخرين</div>
+                        </div>
+                        
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   placeholder="البريد الإلكتروني" required>
+                            <label for="email">البريد الإلكتروني</label>
+                        </div>
+                        
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" id="phone" name="phone" 
+                                   placeholder="رقم الهاتف">
+                            <label for="phone">رقم الهاتف (اختياري)</label>
+                        </div>
+                        
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="password1" name="password1" 
+                                   placeholder="كلمة المرور" required>
+                            <label for="password1">كلمة المرور</label>
+                            <div class="password-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strengthFill"></div>
+                                </div>
+                                <div class="strength-text" id="strengthText">ضعيفة</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="password2" name="password2" 
+                                   placeholder="تأكيد كلمة المرور" required>
+                            <label for="password2">تأكيد كلمة المرور</label>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="city" name="city">
+                                        <option value="">اختر المدينة</option>
+                                        <option value="riyadh">الرياض</option>
+                                        <option value="jeddah">جدة</option>
+                                        <option value="dammam">الدمام</option>
+                                        <option value="mecca">مكة المكرمة</option>
+                                        <option value="medina">المدينة المنورة</option>
+                                        <option value="khobar">الخبر</option>
+                                        <option value="taif">الطائف</option>
+                                        <option value="other">أخرى</option>
+                                    </select>
+                                    <label for="city">المدينة</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="user_type" name="user_type">
+                                        <option value="buyer">مشتري</option>
+                                        <option value="seller">بائع</option>
+                                        <option value="both">مشتري وبائع</option>
+                                    </select>
+                                    <label for="user_type">نوع الحساب</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="terms-section">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="agree_terms" required>
+                                <label class="form-check-label" for="agree_terms">
+                                    أوافق على <a href="#" class="text-primary">الشروط والأحكام</a> 
+                                    و<a href="#" class="text-primary">سياسة الخصوصية</a>
+                                </label>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="newsletter">
+                                <label class="form-check-label" for="newsletter">
+                                    أرغب في تلقي العروض والأخبار عبر البريد الإلكتروني
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="marketing_consent">
+                                <label class="form-check-label" for="marketing_consent">
+                                    أوافق على تلقي رسائل التسويق عبر الواتساب والرسائل النصية
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-register btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>إنشاء الحساب
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="login-link">
+                        <p class="text-muted">
+                            لديك حساب بالفعل؟ 
+                            <a href="{% url 'users:login' %}" class="text-primary fw-bold text-decoration-none">
+                                سجل الدخول
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const password1 = document.getElementById('password1');
+    const password2 = document.getElementById('password2');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+    const form = document.getElementById('registerForm');
+    
+    // Password strength checker
+    password1.addEventListener('input', function() {
+        const password = this.value;
+        let strength = 0;
+        let strengthMessage = 'ضعيفة';
+        let strengthColor = '#dc3545';
+        
+        // Check password strength
+        if (password.length >= 8) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        
+        // Update strength display
+        switch (strength) {
+            case 0:
+            case 1:
+                strengthMessage = 'ضعيفة جداً';
+                strengthColor = '#dc3545';
+                break;
+            case 2:
+                strengthMessage = 'ضعيفة';
+                strengthColor = '#fd7e14';
+                break;
+            case 3:
+                strengthMessage = 'متوسطة';
+                strengthColor = '#ffc107';
+                break;
+            case 4:
+                strengthMessage = 'قوية';
+                strengthColor = '#20c997';
+                break;
+            case 5:
+                strengthMessage = 'قوية جداً';
+                strengthColor = '#198754';
+                break;
+        }
+        
+        strengthFill.style.width = (strength * 20) + '%';
+        strengthFill.style.backgroundColor = strengthColor;
+        strengthText.textContent = strengthMessage;
+        strengthText.style.color = strengthColor;
+    });
+    
+    // Password confirmation checker
+    password2.addEventListener('input', function() {
+        if (this.value !== password1.value) {
+            this.setCustomValidity('كلمات المرور غير متطابقة');
+            this.classList.add('is-invalid');
+        } else {
+            this.setCustomValidity('');
+            this.classList.remove('is-invalid');
+        }
+    });
+    
+    // Username availability checker
+    let usernameTimeout;
+    document.getElementById('username').addEventListener('input', function() {
+        const username = this.value;
+        clearTimeout(usernameTimeout);
+        
+        if (username.length >= 3) {
+            usernameTimeout = setTimeout(() => {
+                // Check username availability (placeholder)
+                fetch(`/users/check-username/?username=${username}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.available) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    }
+                })
+                .catch(() => {
+                    // Handle error silently
+                });
+            }, 500);
+        }
+    });
+    
+    // Form validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Check required fields
+        const requiredFields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2'];
+        requiredFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            }
+        });
+        
+        // Check password match
+        if (password1.value !== password2.value) {
+            password2.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        // Check terms agreement
+        if (!document.getElementById('agree_terms').checked) {
+            alert('يجب الموافقة على الشروط والأحكام');
+            isValid = false;
+        }
+        
+        // Check email format
+        const email = document.getElementById('email');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.value)) {
+            email.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('يرجى التأكد من ملء جميع الحقول المطلوبة بشكل صحيح');
+        }
+    });
+    
+    // Add interactive effects
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
+    });
+});
+</script>
+{% endblock %} 

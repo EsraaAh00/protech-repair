@@ -1,0 +1,564 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}تفاصيل الطلب #{{ order.id }} - Dalal Alsaudia{% endblock %}
+
+{% block extra_css %}
+<style>
+    .order-detail-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .order-detail-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .order-status-badge {
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+        color: #856404;
+    }
+
+    .status-confirmed {
+        background: linear-gradient(135deg, #74b9ff, #0984e3);
+        color: white;
+    }
+
+    .status-completed {
+        background: linear-gradient(135deg, #55a3ff, #2d3436);
+        color: white;
+    }
+
+    .status-cancelled {
+        background: linear-gradient(135deg, #fd79a8, #e84393);
+        color: white;
+    }
+
+    .order-info-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid #e9ecef;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-value {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .product-section {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .product-image {
+        width: 200px;
+        height: 200px;
+        border-radius: 15px;
+        object-fit: cover;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .product-details {
+        flex: 1;
+    }
+
+    .product-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .product-price {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .product-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .meta-item {
+        background: #e9ecef;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        color: #495057;
+    }
+
+    .participants-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .participant-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .participant-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 1rem;
+        border: 3px solid var(--primary-color);
+    }
+
+    .participant-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), #2a5298);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 2rem;
+    }
+
+    .participant-name {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .participant-role {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .timeline-section {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 1rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #dee2e6;
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -1.5rem;
+        top: 0.5rem;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        border: 3px solid white;
+        box-shadow: 0 0 0 3px #dee2e6;
+    }
+
+    .timeline-item.active::before {
+        background: var(--success-color);
+        box-shadow: 0 0 0 3px var(--success-color);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        border: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        min-width: 150px;
+        text-align: center;
+    }
+
+    .btn-primary-action {
+        background: linear-gradient(135deg, var(--primary-color), #2a5298);
+        color: white;
+    }
+
+    .btn-primary-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        color: white;
+    }
+
+    .btn-success-action {
+        background: linear-gradient(135deg, var(--success-color), #1e7e34);
+        color: white;
+    }
+
+    .btn-success-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        color: white;
+    }
+
+    .btn-danger-action {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+    }
+
+    .btn-danger-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        color: white;
+    }
+
+    .btn-secondary-action {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary-action:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .participants-section {
+            grid-template-columns: 1fr;
+        }
+        
+        .product-section .d-flex {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Order Detail Hero -->
+<section class="order-detail-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-receipt me-3"></i>تفاصيل الطلب #{{ order.id }}
+                </h1>
+                <div class="order-status-badge status-{{ order.status }}">
+                    {% if order.status == 'pending' %}في انتظار الموافقة
+                    {% elif order.status == 'confirmed' %}تم تأكيد الطلب
+                    {% elif order.status == 'completed' %}طلب مكتمل
+                    {% elif order.status == 'cancelled' %}طلب ملغي
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Order Information -->
+    <div class="order-detail-container">
+        <h4 class="mb-3">
+            <i class="fas fa-info-circle me-2"></i>معلومات الطلب
+        </h4>
+        
+        <div class="order-info-card">
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="fas fa-hashtag"></i>رقم الطلب
+                </span>
+                <span class="info-value">#{{ order.id }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="fas fa-calendar"></i>تاريخ الطلب
+                </span>
+                <span class="info-value">{{ order.order_date|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="fas fa-money-bill"></i>المبلغ الإجمالي
+                </span>
+                <span class="info-value">{{ order.total_amount|floatformat:0 }} ر.س</span>
+            </div>
+            {% if order.notes %}
+                <div class="info-item">
+                    <span class="info-label">
+                        <i class="fas fa-sticky-note"></i>ملاحظات
+                    </span>
+                    <span class="info-value">{{ order.notes }}</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Product Information -->
+    <div class="product-section">
+        <h4 class="mb-3">
+            <i class="fas fa-box me-2"></i>تفاصيل المنتج
+        </h4>
+        
+        <div class="d-flex gap-3 align-items-start">
+            <div class="flex-shrink-0">
+                {% if order.product.images.first %}
+                    <img src="{{ order.product.images.first.image.url }}" 
+                         class="product-image" alt="{{ order.product.title }}">
+                {% else %}
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="fas fa-image fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="product-details">
+                <h3 class="product-title">{{ order.product.title }}</h3>
+                <div class="product-price">{{ order.product.price|floatformat:0 }} ر.س</div>
+                
+                <div class="product-meta">
+                    <span class="meta-item">
+                        <i class="fas fa-tag me-1"></i>{{ order.product.category.name }}
+                    </span>
+                    <span class="meta-item">
+                        <i class="fas fa-eye me-1"></i>{{ order.product.views_count }} مشاهدة
+                    </span>
+                    <span class="meta-item">
+                        <i class="fas fa-calendar me-1"></i>{{ order.product.created_at|date:"d/m/Y" }}
+                    </span>
+                </div>
+                
+                <p class="text-muted">{{ order.product.description|truncatewords:30 }}</p>
+                
+                <a href="{% url 'products:detail' order.product.id %}" class="btn btn-outline-primary">
+                    <i class="fas fa-external-link-alt me-2"></i>عرض المنتج
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participants -->
+    <div class="participants-section">
+        <!-- Buyer -->
+        <div class="participant-card">
+            <h5 class="mb-3">
+                <i class="fas fa-user me-2"></i>المشتري
+            </h5>
+            
+            {% if order.buyer.profile_picture %}
+                <img src="{{ order.buyer.profile_picture.url }}" 
+                     class="participant-avatar" alt="{{ order.buyer.get_full_name }}">
+            {% else %}
+                <div class="participant-placeholder">
+                    <i class="fas fa-user"></i>
+                </div>
+            {% endif %}
+            
+            <div class="participant-name">{{ order.buyer.get_full_name|default:order.buyer.username }}</div>
+            <div class="participant-role">{{ order.buyer.email }}</div>
+            
+            {% if order.buyer.phone_number %}
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <i class="fas fa-phone me-1"></i>{{ order.buyer.phone_number }}
+                    </small>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Seller -->
+        <div class="participant-card">
+            <h5 class="mb-3">
+                <i class="fas fa-store me-2"></i>البائع
+            </h5>
+            
+            {% if order.seller.profile_picture %}
+                <img src="{{ order.seller.profile_picture.url }}" 
+                     class="participant-avatar" alt="{{ order.seller.get_full_name }}">
+            {% else %}
+                <div class="participant-placeholder">
+                    <i class="fas fa-user"></i>
+                </div>
+            {% endif %}
+            
+            <div class="participant-name">{{ order.seller.get_full_name|default:order.seller.username }}</div>
+            <div class="participant-role">{{ order.seller.email }}</div>
+            
+            {% if order.seller.phone_number %}
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <i class="fas fa-phone me-1"></i>{{ order.seller.phone_number }}
+                    </small>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Order Timeline -->
+    <div class="timeline-section">
+        <h4 class="mb-3">
+            <i class="fas fa-history me-2"></i>مراحل الطلب
+        </h4>
+        
+        <div class="timeline">
+            <div class="timeline-item active">
+                <h6>تم إنشاء الطلب</h6>
+                <small class="text-muted">{{ order.order_date|date:"d/m/Y H:i" }}</small>
+            </div>
+            
+            {% if order.status != 'pending' %}
+                <div class="timeline-item {% if order.status == 'confirmed' or order.status == 'completed' %}active{% endif %}">
+                    <h6>
+                        {% if order.status == 'confirmed' or order.status == 'completed' %}
+                            تم تأكيد الطلب
+                        {% elif order.status == 'cancelled' %}
+                            تم إلغاء الطلب
+                        {% endif %}
+                    </h6>
+                    <small class="text-muted">{{ order.updated_at|date:"d/m/Y H:i"|default:"--" }}</small>
+                </div>
+            {% endif %}
+            
+            {% if order.status == 'completed' %}
+                <div class="timeline-item active">
+                    <h6>تم إكمال الطلب</h6>
+                    <small class="text-muted">{{ order.updated_at|date:"d/m/Y H:i"|default:"--" }}</small>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        {% if order.buyer == request.user %}
+            <!-- Buyer Actions -->
+            {% if order.status == 'pending' or order.status == 'confirmed' %}
+                <a href="{% url 'orders:cancel' order.id %}" class="btn-action btn-danger-action">
+                    <i class="fas fa-times me-2"></i>إلغاء الطلب
+                </a>
+            {% endif %}
+        {% elif order.seller == request.user %}
+            <!-- Seller Actions -->
+            {% if order.status == 'pending' %}
+                <button class="btn-action btn-success-action" onclick="updateOrderStatus({{ order.id }}, 'confirmed')">
+                    <i class="fas fa-check me-2"></i>قبول الطلب
+                </button>
+                <button class="btn-action btn-danger-action" onclick="updateOrderStatus({{ order.id }}, 'cancelled')">
+                    <i class="fas fa-times me-2"></i>رفض الطلب
+                </button>
+            {% elif order.status == 'confirmed' %}
+                <button class="btn-action btn-success-action" onclick="updateOrderStatus({{ order.id }}, 'completed')">
+                    <i class="fas fa-check-double me-2"></i>تأكيد الإكمال
+                </button>
+            {% endif %}
+        {% endif %}
+        
+        <a href="{% url 'orders:my_orders' %}" class="btn-action btn-secondary-action">
+            <i class="fas fa-arrow-right me-2"></i>العودة للطلبات
+        </a>
+    </div>
+</div>
+
+<script>
+function updateOrderStatus(orderId, newStatus) {
+    const statusNames = {
+        'confirmed': 'تأكيد',
+        'cancelled': 'إلغاء',
+        'completed': 'إكمال'
+    };
+    
+    if (confirm(`هل أنت متأكد من ${statusNames[newStatus]} الطلب؟`)) {
+        fetch(`/orders/${orderId}/update-status/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `status=${newStatus}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('حدث خطأ: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('حدث خطأ في الاتصال');
+        });
+    }
+}
+</script>
+{% endblock %} 

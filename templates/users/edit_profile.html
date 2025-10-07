@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}تعديل الملف الشخصي - Dalal Alsaudia{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-profile-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .profile-form-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border: 1px solid #e9ecef;
+        border-radius: 15px;
+        background: #f8f9fa;
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-floating {
+        margin-bottom: 1rem;
+    }
+
+    .form-floating > .form-control,
+    .form-floating > .form-select {
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+    .form-floating > .form-control:focus,
+    .form-floating > .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
+
+    .profile-picture-section {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .current-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid #fff;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+    }
+
+    .picture-placeholder {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .file-upload-btn {
+        background: linear-gradient(135deg, var(--primary-color), #2a5298);
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 20px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .file-upload-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .btn-update {
+        background: linear-gradient(135deg, var(--primary-color), #2a5298);
+        border: none;
+        padding: 1rem 3rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        color: white;
+    }
+
+    .btn-cancel {
+        background: #6c757d;
+        border: none;
+        padding: 1rem 3rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cancel:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        color: white;
+        text-decoration: none;
+    }
+
+    .form-check {
+        margin: 1rem 0;
+        padding: 1rem;
+        background: white;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .alert {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Edit Profile Hero -->
+<section class="edit-profile-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-user-edit me-3"></i>تعديل الملف الشخصي
+                </h1>
+                <p class="lead">قم بتحديث معلوماتك الشخصية</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Display Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>{{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="profile-form-container">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Profile Picture Section -->
+                    <div class="profile-picture-section">
+                        <h4 class="section-title justify-content-center">
+                            <i class="fas fa-camera"></i>الصورة الشخصية
+                        </h4>
+                        
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" class="current-picture" alt="الصورة الحالية">
+                        {% else %}
+                            <div class="picture-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mt-3">
+                            <input type="file" id="profilePicture" name="profile_picture" accept="image/*" style="display: none;">
+                            <button type="button" class="file-upload-btn" onclick="document.getElementById('profilePicture').click()">
+                                <i class="fas fa-upload me-2"></i>اختيار صورة جديدة
+                            </button>
+                        </div>
+                        <small class="text-muted d-block mt-2">يُفضل صورة مربعة بحجم 300x300 بكسل</small>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-user"></i>المعلومات الشخصية
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.first_name }}
+                                    <label for="{{ form.first_name.id_for_label }}">الاسم الأول *</label>
+                                </div>
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.last_name }}
+                                    <label for="{{ form.last_name.id_for_label }}">الاسم الأخير *</label>
+                                </div>
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-floating">
+                            {{ form.email }}
+                            <label for="{{ form.email.id_for_label }}">البريد الإلكتروني *</label>
+                        </div>
+                        {% if form.email.errors %}
+                            <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-phone"></i>معلومات الاتصال
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.phone_number }}
+                                    <label for="{{ form.phone_number.id_for_label }}">رقم الهاتف</label>
+                                </div>
+                                {% if form.phone_number.errors %}
+                                    <div class="text-danger small">{{ form.phone_number.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.address }}
+                                    <label for="{{ form.address.id_for_label }}">العنوان</label>
+                                </div>
+                                {% if form.address.errors %}
+                                    <div class="text-danger small">{{ form.address.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business Information -->
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-briefcase"></i>معلومات العمل
+                        </h4>
+
+                        <div class="form-check">
+                            {{ form.is_seller }}
+                            <label class="form-check-label fw-bold" for="{{ form.is_seller.id_for_label }}">
+                                أريد أن أكون بائعاً على المنصة
+                            </label>
+                            <small class="text-muted d-block mt-1">
+                                سيتيح لك هذا إضافة منتجات للبيع والتفاعل مع المشترين
+                            </small>
+                        </div>
+                        {% if form.is_seller.errors %}
+                            <div class="text-danger small">{{ form.is_seller.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-update me-3">
+                            <i class="fas fa-save me-2"></i>حفظ التعديلات
+                        </button>
+                        <a href="{% url 'users:profile' %}" class="btn-cancel">
+                            <i class="fas fa-times me-2"></i>إلغاء
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Preview profile picture
+    document.getElementById('profilePicture').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const currentPicture = document.querySelector('.current-picture');
+                const placeholder = document.querySelector('.picture-placeholder');
+                
+                if (currentPicture) {
+                    currentPicture.src = e.target.result;
+                } else if (placeholder) {
+                    // Replace placeholder with image
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'current-picture';
+                    img.alt = 'الصورة الجديدة';
+                    placeholder.parentNode.replaceChild(img, placeholder);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const firstName = document.getElementById('{{ form.first_name.id_for_label }}').value.trim();
+        const lastName = document.getElementById('{{ form.last_name.id_for_label }}').value.trim();
+        const email = document.getElementById('{{ form.email.id_for_label }}').value.trim();
+        
+        if (!firstName || !lastName || !email) {
+            e.preventDefault();
+            alert('يرجى ملء جميع الحقول المطلوبة (*)');
+            return false;
+        }
+        
+        // Show loading state
+        const submitBtn = document.querySelector('.btn-update');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الحفظ...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
+{% endblock %} 

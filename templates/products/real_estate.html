@@ -1,0 +1,678 @@
+{% extends 'base.html' %}
+
+{% block title %}العقارات - دلال السعودية{% endblock %}
+
+{% block extra_css %}
+<style>
+    .real-estate-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5rem 0 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .real-estate-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><path d="M0,300 Q200,100 400,200 T800,150 T1200,200 L1200,600 L0,600 Z" fill="rgba(255,255,255,0.1)"/></svg>') no-repeat center bottom;
+        background-size: cover;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .property-card {
+        border: none;
+        border-radius: 25px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        background: white;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    .property-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .property-image {
+        height: 300px;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .property-card:hover .property-image {
+        transform: scale(1.05);
+    }
+
+    .property-type-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: linear-gradient(45deg, #42a5f5, #478ed1);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .price-display {
+        background: linear-gradient(45deg, #4caf50, #45a049);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 25px;
+        font-size: 1.3rem;
+        font-weight: 800;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+
+    .property-details {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 20px;
+        margin: 1rem 0;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    .detail-item i {
+        color: var(--primary-color);
+        margin-left: 0.8rem;
+        width: 25px;
+        font-size: 1.1rem;
+    }
+
+    .amenities {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+
+    .amenity-tag {
+        background: linear-gradient(45deg, #ff9a9e, #fecfef);
+        color: #333;
+        padding: 0.4rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .filter-section {
+        background: white;
+        border-radius: 25px;
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 100px;
+    }
+
+    .property-stats {
+        background: rgba(255,255,255,0.15);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 900;
+        line-height: 1;
+        background: linear-gradient(45deg, #ffd700, #ffed4e);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .featured-badge {
+        position: absolute;
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: translateX(-50%) scale(1); }
+        50% { transform: translateX(-50%) scale(1.05); }
+        100% { transform: translateX(-50%) scale(1); }
+    }
+
+    .property-location {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Real Estate Hero Section -->
+<section class="real-estate-hero">
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-3 fw-bold mb-4">
+                    <i class="fas fa-home me-3"></i>العقارات
+                </h1>
+                <p class="lead mb-4">اكتشف أفضل العقارات للبيع والإيجار في جميع أنحاء المملكة العربية السعودية</p>
+                <div class="d-flex gap-3 mb-4 flex-wrap">
+                    <div class="property-stats">
+                        <div class="stat-number">{{ properties_count|default:"500" }}+</div>
+                        <div>عقار متاح</div>
+                    </div>
+                    <div class="property-stats">
+                        <div class="stat-number">{{ cities_count|default:"15" }}+</div>
+                        <div>مدينة</div>
+                    </div>
+                    <div class="property-stats">
+                        <div class="stat-number">{{ types_count|default:"8" }}+</div>
+                        <div>نوع عقار</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <i class="fas fa-building fa-10x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Property Filters -->
+        <div class="col-lg-3">
+            <div class="filter-section">
+                <h5 class="fw-bold mb-4">
+                    <i class="fas fa-filter me-2"></i>فلترة العقارات
+                </h5>
+
+                <form method="GET">
+                    <!-- Search -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">البحث</label>
+                        <input type="text" name="search" class="form-control" 
+                               placeholder="اسم المنطقة أو نوع العقار..." value="{{ request.GET.search }}">
+                    </div>
+
+                    <!-- Property Type -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">نوع العقار</label>
+                        <select name="property_type" class="form-select">
+                            <option value="">جميع الأنواع</option>
+                            <option value="apartment">شقة</option>
+                            <option value="villa">فيلا</option>
+                            <option value="house">بيت</option>
+                            <option value="duplex">دوبلكس</option>
+                            <option value="penthouse">بنتهاوس</option>
+                            <option value="studio">استوديو</option>
+                            <option value="office">مكتب</option>
+                            <option value="shop">محل تجاري</option>
+                            <option value="warehouse">مستودع</option>
+                            <option value="land">أرض</option>
+                        </select>
+                    </div>
+
+                    <!-- Transaction Type -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">نوع العملية</label>
+                        <select name="transaction_type" class="form-select">
+                            <option value="">الكل</option>
+                            <option value="sale">للبيع</option>
+                            <option value="rent">للإيجار</option>
+                        </select>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">نطاق السعر</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" name="price_from" class="form-control" 
+                                       placeholder="من" value="{{ request.GET.price_from }}">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" name="price_to" class="form-control" 
+                                       placeholder="إلى" value="{{ request.GET.price_to }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bedrooms -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">عدد غرف النوم</label>
+                        <select name="bedrooms" class="form-select">
+                            <option value="">أي عدد</option>
+                            <option value="1">1 غرفة</option>
+                            <option value="2">2 غرفة</option>
+                            <option value="3">3 غرف</option>
+                            <option value="4">4 غرف</option>
+                            <option value="5+">5+ غرف</option>
+                        </select>
+                    </div>
+
+                    <!-- Bathrooms -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">عدد دورات المياه</label>
+                        <select name="bathrooms" class="form-select">
+                            <option value="">أي عدد</option>
+                            <option value="1">1 دورة مياه</option>
+                            <option value="2">2 دورة مياه</option>
+                            <option value="3">3 دورات مياه</option>
+                            <option value="4+">4+ دورات مياه</option>
+                        </select>
+                    </div>
+
+                    <!-- Area -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">المساحة (متر مربع)</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" name="area_from" class="form-control" 
+                                       placeholder="من" value="{{ request.GET.area_from }}">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" name="area_to" class="form-control" 
+                                       placeholder="إلى" value="{{ request.GET.area_to }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- City -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">المدينة</label>
+                        <select name="city" class="form-select">
+                            <option value="">جميع المدن</option>
+                            <option value="riyadh">الرياض</option>
+                            <option value="jeddah">جدة</option>
+                            <option value="dammam">الدمام</option>
+                            <option value="mecca">مكة المكرمة</option>
+                            <option value="medina">المدينة المنورة</option>
+                            <option value="khobar">الخبر</option>
+                            <option value="taif">الطائف</option>
+                            <option value="buraidah">بريدة</option>
+                            <option value="tabuk">تبوك</option>
+                            <option value="hail">حائل</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-search me-2"></i>بحث
+                    </button>
+                    
+                    <a href="{% url 'products:real_estate' %}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-times me-2"></i>مسح الفلاتر
+                    </a>
+                </form>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="filter-section mt-4">
+                <h6 class="fw-bold mb-3">بحث سريع</h6>
+                <div class="d-grid gap-2">
+                    <a href="?transaction_type=sale" class="btn btn-outline-success btn-sm">
+                        <i class="fas fa-tag me-2"></i>عقارات للبيع
+                    </a>
+                    <a href="?transaction_type=rent" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-key me-2"></i>عقارات للإيجار
+                    </a>
+                    <a href="?property_type=villa" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-house-user me-2"></i>فلل</a>
+                    <a href="?property_type=apartment" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-building me-2"></i>شقق
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties Grid -->
+        <div class="col-lg-9">
+            {% if properties %}
+                <!-- View Toggle and Sort Controls -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <h4 class="fw-bold mb-0">{{ properties|length }} عقار متاح</h4>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary active" id="gridViewBtn" onclick="switchView('grid')">
+                                <i class="fas fa-th"></i> شبكة
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" id="mapViewBtn" onclick="switchView('map')">
+                                <i class="fas fa-map"></i> خريطة
+                            </button>
+                        </div>
+                    </div>
+                    <select class="form-select" style="width: auto;">
+                        <option>الأحدث</option>
+                        <option>الأقدم</option>
+                        <option>السعر: الأقل أولاً</option>
+                        <option>السعر: الأعلى أولاً</option>
+                        <option>المساحة: الأكبر أولاً</option>
+                        <option>الأكثر مشاهدة</option>
+                    </select>
+                </div>
+
+                <!-- Map View -->
+                <div id="mapView" style="display: none;">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div id="propertiesMap" style="height: 600px; width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid View -->
+                <div id="gridView" class="row g-4">
+                    {% for property in properties %}
+                        <div class="col-lg-6 col-md-12">
+                            <div class="card property-card h-100">
+                                <div class="position-relative overflow-hidden">
+                                    {% if property.images.first %}
+                                        <img src="{{ property.images.first.image.url }}" 
+                                             class="card-img-top property-image" 
+                                             alt="{{ property.title }}">
+                                    {% else %}
+                                        <div class="property-image bg-light d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-home fa-4x text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="property-type-badge">
+                                        {{ property.property_type|default:"شقة" }}
+                                    </div>
+                                    
+                                    <div class="price-display">
+                                        {{ property.price|floatformat:0 }} ر.س
+                                        {% if property.transaction_type == 'rent' %}
+                                            <small>/شهر</small>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if property.is_featured %}
+                                        <div class="featured-badge">
+                                            <i class="fas fa-star me-1"></i>مميز
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="card-body">
+                                    <div class="property-location">
+                                        <i class="fas fa-map-marker-alt me-1"></i>
+                                        {{ property.location|default:"الرياض" }}
+                                    </div>
+                                    
+                                    <h5 class="card-title fw-bold mb-3">{{ property.title }}</h5>
+                                    
+                                    <div class="property-details">
+                                        <div class="detail-item">
+                                            <i class="fas fa-bed"></i>
+                                            <span>{{ property.bedrooms|default:"3" }} غرف نوم</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="fas fa-bath"></i>
+                                            <span>{{ property.bathrooms|default:"2" }} دورات مياه</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="fas fa-expand-arrows-alt"></i>
+                                            <span>{{ property.area|default:"150" }} متر مربع</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <span>{{ property.year_built|default:"2018" }}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="amenities">
+                                        <span class="amenity-tag">مصعد</span>
+                                        <span class="amenity-tag">موقف سيارات</span>
+                                        <span class="amenity-tag">حديقة</span>
+                                        <span class="amenity-tag">مسبح</span>
+                                        <span class="amenity-tag">جيم</span>
+                                    </div>
+                                    
+                                    <p class="card-text text-muted">
+                                        {{ property.description|truncatechars:100 }}
+                                    </p>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="fas fa-user me-1"></i>
+                                            {{ property.seller.first_name|default:property.seller.username }}
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="fas fa-eye me-1"></i>
+                                            {{ property.views_count|default:0 }} مشاهدة
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-footer bg-transparent border-0">
+                                    <div class="d-grid gap-2">
+                                        <a href="{% url 'products:detail' property.id %}" 
+                                           class="btn btn-primary">
+                                            <i class="fas fa-eye me-2"></i>عرض التفاصيل
+                                        </a>
+                                        {% if user.is_authenticated and user != property.seller %}
+                                            <a href="{% url 'messaging:start_conversation' property.id %}" 
+                                               class="btn btn-outline-success btn-sm">
+                                                <i class="fas fa-phone me-2"></i>اتصل بالمالك
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-home fa-5x text-muted mb-4"></i>
+                    <h3 class="text-muted mb-3">لا توجد عقارات متاحة</h3>
+                    <p class="text-muted mb-4">جرب تغيير معايير البحث أو تصفح جميع المنتجات</p>
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a href="{% url 'products:list' %}" class="btn btn-primary">
+                            <i class="fas fa-arrow-right me-2"></i>جميع المنتجات
+                        </a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'products:add' %}" class="btn btn-success">
+                                <i class="fas fa-plus me-2"></i>أضف عقارك
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let propertiesMap;
+let propertiesMarkers = [];
+
+// Properties data for map
+const propertiesData = [
+    {% for property in properties %}
+    {
+        id: {{ property.id }},
+        title: "{{ property.title|escapejs }}",
+        price: "{{ property.price|floatformat:0 }}",
+        property_type: "{{ property.property_type|default:'شقة'|escapejs }}",
+        transaction_type: "{{ property.transaction_type|default:'sale'|escapejs }}",
+        bedrooms: "{{ property.bedrooms|default:'2' }}",
+        bathrooms: "{{ property.bathrooms|default:'1' }}",
+        area: "{{ property.area|default:'120' }}",
+        location: "{{ property.location|default:'الرياض'|escapejs }}",
+        lat: {{ property.latitude|default:24.7136 }},
+        lng: {{ property.longitude|default:46.6753 }},
+        image: "{% if property.images.first %}{{ property.images.first.image.url }}{% else %}#{% endif %}",
+        url: "{% url 'products:detail' property.id %}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+
+function initPropertiesMap() {
+    // Center map on Saudi Arabia
+    const center = { lat: 24.7136, lng: 46.6753 };
+    
+    propertiesMap = new google.maps.Map(document.getElementById("propertiesMap"), {
+        zoom: 6,
+        center: center,
+        mapTypeControl: true,
+        streetViewControl: false,
+        fullscreenControl: true,
+        styles: [
+            {
+                featureType: "poi",
+                elementType: "labels",
+                stylers: [{ visibility: "off" }]
+            }
+        ]
+    });
+
+    // Add markers for each property
+    propertiesData.forEach(property => {
+        const isForRent = property.transaction_type === 'rent';
+        const markerColor = isForRent ? '#28a745' : '#2C5F7B';
+        const markerIcon = property.property_type === 'villa' ? '🏡' : 
+                          property.property_type === 'apartment' ? '🏢' : 
+                          property.property_type === 'office' ? '🏢' : '🏠';
+        
+        const marker = new google.maps.Marker({
+            position: { lat: property.lat, lng: property.lng },
+            map: propertiesMap,
+            title: property.title,
+            icon: {
+                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" fill="${markerColor}" stroke="white" stroke-width="2"/>
+                        <text x="20" y="25" text-anchor="middle" fill="white" font-size="16" font-family="Arial">${markerIcon}</text>
+                    </svg>
+                `),
+                scaledSize: new google.maps.Size(40, 40),
+                anchor: new google.maps.Point(20, 20)
+            }
+        });
+
+        // Create info window
+        const infoWindow = new google.maps.InfoWindow({
+            content: `
+                <div style="max-width: 320px; font-family: 'Cairo', sans-serif;">
+                    <div style="display: flex; gap: 10px;">
+                        ${property.image !== '#' ? `<img src="${property.image}" style="width: 100px; height: 80px; object-fit: cover; border-radius: 8px;">` : ''}
+                        <div style="flex: 1;">
+                            <h6 style="margin: 0 0 5px 0; color: #2C5F7B; font-weight: bold;">${property.title}</h6>
+                            <div style="color: ${isForRent ? '#28a745' : '#dc3545'}; font-weight: bold; font-size: 16px; margin-bottom: 5px;">
+                                ${property.price} ر.س ${isForRent ? '/شهر' : ''}
+                            </div>
+                            <div style="font-size: 12px; color: #666; margin-bottom: 8px;">
+                                <div><i class="fas fa-home"></i> ${property.property_type}</div>
+                                <div><i class="fas fa-bed"></i> ${property.bedrooms} غرف | <i class="fas fa-bath"></i> ${property.bathrooms} حمام</div>
+                                <div><i class="fas fa-ruler-combined"></i> ${property.area} م²</div>
+                                <div><i class="fas fa-map-marker-alt"></i> ${property.location}</div>
+                            </div>
+                            <a href="${property.url}" class="btn btn-primary btn-sm" style="font-size: 12px;">عرض التفاصيل</a>
+                        </div>
+                    </div>
+                </div>
+            `
+        });
+
+        marker.addListener('click', () => {
+            // Close all other info windows
+            propertiesMarkers.forEach(m => {
+                if (m.infoWindow) {
+                    m.infoWindow.close();
+                }
+            });
+            
+            infoWindow.open(propertiesMap, marker);
+        });
+
+        propertiesMarkers.push({ marker, infoWindow });
+    });
+
+    // Fit map to show all markers
+    if (propertiesMarkers.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+        propertiesMarkers.forEach(({ marker }) => {
+            bounds.extend(marker.getPosition());
+        });
+        propertiesMap.fitBounds(bounds);
+        
+        // Don't zoom too much if there's only one marker
+        if (propertiesMarkers.length === 1) {
+            propertiesMap.setZoom(12);
+        }
+    }
+}
+
+function switchView(viewType) {
+    const gridView = document.getElementById('gridView');
+    const mapView = document.getElementById('mapView');
+    const gridBtn = document.getElementById('gridViewBtn');
+    const mapBtn = document.getElementById('mapViewBtn');
+
+    if (viewType === 'grid') {
+        gridView.style.display = 'flex';
+        mapView.style.display = 'none';
+        gridBtn.classList.add('active');
+        mapBtn.classList.remove('active');
+    } else if (viewType === 'map') {
+        gridView.style.display = 'none';
+        mapView.style.display = 'block';
+        gridBtn.classList.remove('active');
+        mapBtn.classList.add('active');
+        
+        // Initialize map if not already done
+        if (!propertiesMap) {
+            setTimeout(initPropertiesMap, 100);
+        } else {
+            // Trigger resize to fix map display issues
+            google.maps.event.trigger(propertiesMap, 'resize');
+        }
+    }
+}
+
+// Initialize map when Google Maps API is loaded
+if (typeof window.initMap === 'undefined') {
+    window.initMap = function() {
+        // Map will be initialized when user clicks map view
+    };
+}
+</script>
+{% endblock %} 

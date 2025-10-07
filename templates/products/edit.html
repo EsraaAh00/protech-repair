@@ -1,0 +1,649 @@
+{% extends 'base.html' %}
+
+{% block title %}تعديل المنتج - {{ object.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-product-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border: 1px solid #e9ecef;
+        border-radius: 15px;
+        background: #f8f9fa;
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-floating {
+        margin-bottom: 1rem;
+    }
+
+    .form-floating > .form-control,
+    .form-floating > .form-select {
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+    .form-floating > .form-control:focus,
+    .form-floating > .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
+
+    .product-type-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    .type-card {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .type-card:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .type-card.selected {
+        border-color: var(--primary-color);
+        background: linear-gradient(135deg, var(--primary-color), #2a5298);
+        color: white;
+    }
+
+    .type-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+    }
+
+    .type-card.selected .type-icon {
+        color: white;
+    }
+
+    .current-images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    .current-image {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .current-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .remove-current-image {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(220, 53, 69, 0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.7rem;
+    }
+
+    .image-upload-area {
+        border: 3px dashed #ddd;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: white;
+    }
+
+    .image-upload-area:hover {
+        border-color: var(--primary-color);
+        background: #f0f8ff;
+    }
+
+    .category-fields {
+        display: none;
+        margin-top: 1rem;
+        padding: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        background: white;
+    }
+
+    .category-fields.active {
+        display: block;
+    }
+
+    .btn-update {
+        background: linear-gradient(135deg, var(--primary-color), #2a5298);
+        border: none;
+        padding: 1rem 3rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        color: white;
+    }
+
+    .current-type-badge {
+        background: var(--success-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Edit Product Hero -->
+<section class="edit-product-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-edit me-3"></i>تعديل المنتج
+                </h1>
+                <p class="lead">{{ object.title }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-container">
+                <form method="POST" enctype="multipart/form-data" id="editProductForm">
+                    {% csrf_token %}
+                    
+                    <!-- Current Product Type -->
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-info-circle"></i>نوع المنتج الحالي
+                        </h4>
+                        
+                        <div class="current-type-badge">
+                            {% if current_product_type == 'car' %}
+                                <i class="fas fa-car me-2"></i>سيارة
+                            {% elif current_product_type == 'real_estate' %}
+                                <i class="fas fa-home me-2"></i>عقار
+                            {% elif current_product_type == 'hotel' %}
+                                <i class="fas fa-hotel me-2"></i>فندق
+                            {% else %}
+                                <i class="fas fa-tag me-2"></i>عام
+                            {% endif %}
+                        </div>
+                        
+                        <p class="text-muted">يمكنك تغيير نوع المنتج أدناه إذا كنت تريد إضافة تفاصيل مختلفة</p>
+                    </div>
+
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-edit"></i>المعلومات الأساسية
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.title }}
+                                    <label for="{{ form.title.id_for_label }}">عنوان المنتج *</label>
+                                </div>
+                                {% if form.title.errors %}
+                                    <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.category }}
+                                    <label for="{{ form.category.id_for_label }}">الفئة *</label>
+                                </div>
+                                {% if form.category.errors %}
+                                    <div class="text-danger small">{{ form.category.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.price }}
+                                    <label for="{{ form.price.id_for_label }}">السعر (ريال سعودي) *</label>
+                                </div>
+                                {% if form.price.errors %}
+                                    <div class="text-danger small">{{ form.price.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="location_display" name="location_display" 
+                                           placeholder="العنوان الحالي">
+                                    <label for="location_display">العنوان</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating">
+                            {{ form.description }}
+                            <label for="{{ form.description.id_for_label }}">وصف المنتج *</label>
+                        </div>
+                        {% if form.description.errors %}
+                            <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                        {% endif %}
+                        
+                        <!-- Hidden fields for coordinates -->
+                        {{ form.location_latitude }}
+                        {{ form.location_longitude }}
+                    </div>
+
+                    <!-- Product Type Selector -->
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-cogs"></i>نوع المنتج والتفاصيل
+                        </h4>
+                        
+                        <p class="text-muted mb-3">اختر نوع المنتج لإظهار الحقول المناسبة:</p>
+                        
+                        <div class="product-type-selector">
+                            <div class="type-card {% if current_product_type == 'car' %}selected{% endif %}" data-type="car">
+                                <div class="type-icon">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                                <h6 class="fw-bold">سيارة</h6>
+                            </div>
+                            <div class="type-card {% if current_product_type == 'real_estate' %}selected{% endif %}" data-type="real_estate">
+                                <div class="type-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <h6 class="fw-bold">عقار</h6>
+                            </div>
+                            <div class="type-card {% if current_product_type == 'hotel' %}selected{% endif %}" data-type="hotel">
+                                <div class="type-icon">
+                                    <i class="fas fa-hotel"></i>
+                                </div>
+                                <h6 class="fw-bold">فندق</h6>
+                            </div>
+                            <div class="type-card {% if current_product_type == 'general' %}selected{% endif %}" data-type="general">
+                                <div class="type-icon">
+                                    <i class="fas fa-tag"></i>
+                                </div>
+                                <h6 class="fw-bold">عام</h6>
+                            </div>
+                        </div>
+                        
+                        <input type="hidden" id="product_type" name="product_type" value="{{ current_product_type }}">
+
+                        <!-- Car Fields -->
+                        <div class="category-fields car-fields {% if current_product_type == 'car' %}active{% endif %}">
+                            <h6 class="text-primary mb-3"><i class="fas fa-car me-2"></i>تفاصيل السيارة</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="make" 
+                                               value="{{ car_details.make|default:'' }}" placeholder="الماركة">
+                                        <label>الماركة</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="model" 
+                                               value="{{ car_details.model|default:'' }}" placeholder="الموديل">
+                                        <label>الموديل</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" name="year" 
+                                               value="{{ car_details.year|default:2024 }}" placeholder="سنة الصنع">
+                                        <label>سنة الصنع</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" name="mileage" 
+                                               value="{{ car_details.mileage|default:0 }}" placeholder="المسافة المقطوعة">
+                                        <label>المسافة المقطوعة (كم)</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" name="transmission_type">
+                                            <option value="automatic" {% if car_details.transmission_type == 'automatic' %}selected{% endif %}>أوتوماتيك</option>
+                                            <option value="manual" {% if car_details.transmission_type == 'manual' %}selected{% endif %}>يدوي</option>
+                                        </select>
+                                        <label>ناقل الحركة</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" name="fuel_type">
+                                            <option value="gasoline" {% if car_details.fuel_type == 'gasoline' %}selected{% endif %}>بنزين</option>
+                                            <option value="diesel" {% if car_details.fuel_type == 'diesel' %}selected{% endif %}>ديزل</option>
+                                            <option value="hybrid" {% if car_details.fuel_type == 'hybrid' %}selected{% endif %}>هايبرد</option>
+                                            <option value="electric" {% if car_details.fuel_type == 'electric' %}selected{% endif %}>كهربائي</option>
+                                        </select>
+                                        <label>نوع الوقود</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="color" 
+                                               value="{{ car_details.color|default:'' }}" placeholder="اللون">
+                                        <label>اللون</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mt-3">
+                                        <input class="form-check-input" type="checkbox" name="is_new" 
+                                               {% if car_details.is_new %}checked{% endif %}>
+                                        <label class="form-check-label">سيارة جديدة</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Real Estate Fields -->
+                        <div class="category-fields real-estate-fields {% if current_product_type == 'real_estate' %}active{% endif %}">
+                            <h6 class="text-primary mb-3"><i class="fas fa-home me-2"></i>تفاصيل العقار</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" name="property_type">
+                                            <option value="apartment" {% if realestate_details.property_type == 'apartment' %}selected{% endif %}>شقة</option>
+                                            <option value="villa" {% if realestate_details.property_type == 'villa' %}selected{% endif %}>فيلا</option>
+                                            <option value="land" {% if realestate_details.property_type == 'land' %}selected{% endif %}>أرض</option>
+                                            <option value="commercial" {% if realestate_details.property_type == 'commercial' %}selected{% endif %}>تجاري</option>
+                                        </select>
+                                        <label>نوع العقار</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" name="area_sqm" 
+                                               value="{{ realestate_details.area_sqm|default:0 }}" placeholder="المساحة">
+                                        <label>المساحة (متر مربع)</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" name="num_bedrooms" 
+                                               value="{{ realestate_details.num_bedrooms|default:'' }}" placeholder="عدد غرف النوم">
+                                        <label>عدد غرف النوم</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" name="num_bathrooms" 
+                                               value="{{ realestate_details.num_bathrooms|default:'' }}" placeholder="عدد الحمامات">
+                                        <label>عدد الحمامات</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check mt-3">
+                                        <input class="form-check-input" type="checkbox" name="is_furnished" 
+                                               {% if realestate_details.is_furnished %}checked{% endif %}>
+                                        <label class="form-check-label">مفروش</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check mt-3">
+                                        <input class="form-check-input" type="checkbox" name="for_rent" 
+                                               {% if realestate_details.for_rent %}checked{% endif %}>
+                                        <label class="form-check-label">للإيجار</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hotel Fields -->
+                        <div class="category-fields hotel-fields {% if current_product_type == 'hotel' %}active{% endif %}">
+                            <h6 class="text-primary mb-3"><i class="fas fa-hotel me-2"></i>تفاصيل الفندق</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="hotel_name" 
+                                               value="{{ hotel_details.hotel_name|default:'' }}" placeholder="اسم الفندق">
+                                        <label>اسم الفندق</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" name="room_type">
+                                            <option value="single" {% if hotel_details.room_type == 'single' %}selected{% endif %}>غرفة فردية</option>
+                                            <option value="double" {% if hotel_details.room_type == 'double' %}selected{% endif %}>غرفة مزدوجة</option>
+                                            <option value="suite" {% if hotel_details.room_type == 'suite' %}selected{% endif %}>جناح</option>
+                                            <option value="family" {% if hotel_details.room_type == 'family' %}selected{% endif %}>غرفة عائلية</option>
+                                        </select>
+                                        <label>نوع الغرفة</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" name="num_guests" 
+                                               value="{{ hotel_details.num_guests|default:1 }}" placeholder="عدد الضيوف">
+                                        <label>عدد الضيوف</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" name="check_in_date" 
+                                               value="{{ hotel_details.check_in_date|date:'Y-m-d'|default:'' }}">
+                                        <label>تاريخ الوصول</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" name="check_out_date" 
+                                               value="{{ hotel_details.check_out_date|date:'Y-m-d'|default:'' }}">
+                                        <label>تاريخ المغادرة</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Images -->
+                    {% if current_images %}
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-images"></i>الصور الحالية
+                        </h4>
+                        
+                        <div class="current-images">
+                            {% for image in current_images %}
+                                <div class="current-image">
+                                    <img src="{{ image.image.url }}" alt="صورة المنتج">
+                                    <button type="button" class="remove-current-image" onclick="removeCurrentImage({{ image.id }})">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Add New Images -->
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-plus"></i>إضافة صور جديدة
+                        </h4>
+
+                        <div class="image-upload-area" onclick="document.getElementById('imageInput').click()">
+                            <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                            <h6 class="text-muted">اضغط لاختيار صور جديدة</h6>
+                            <p class="text-muted small">يمكنك إضافة المزيد من الصور</p>
+                            <input type="file" id="imageInput" name="images" multiple accept="image/*" style="display: none;">
+                        </div>
+
+                        <div id="newImagePreview" class="current-images mt-3">
+                            <!-- New images preview will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-update">
+                            <i class="fas fa-save me-2"></i>حفظ التعديلات
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Product type selector
+    document.querySelectorAll('.type-card').forEach(card => {
+        card.addEventListener('click', function() {
+            // Remove selected class from all cards
+            document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+            // Add selected class to clicked card
+            this.classList.add('selected');
+            
+            // Update hidden input
+            document.getElementById('product_type').value = this.dataset.type;
+            
+            // Show/hide appropriate fields
+            document.querySelectorAll('.category-fields').forEach(field => {
+                field.classList.remove('active');
+            });
+            
+            const selectedType = this.dataset.type;
+            if (selectedType !== 'general') {
+                const targetFields = document.querySelector(`.${selectedType.replace('_', '-')}-fields`);
+                if (targetFields) {
+                    targetFields.classList.add('active');
+                }
+            }
+        });
+    });
+
+    // New image preview
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        const preview = document.getElementById('newImagePreview');
+        preview.innerHTML = '';
+        
+        Array.from(e.target.files).forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageDiv = document.createElement('div');
+                imageDiv.className = 'current-image';
+                imageDiv.innerHTML = `
+                    <img src="${e.target.result}" alt="صورة جديدة">
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 0.25rem; font-size: 0.7rem; text-align: center;">
+                        جديدة
+                    </div>
+                `;
+                preview.appendChild(imageDiv);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+});
+
+function removeCurrentImage(imageId) {
+    if (confirm('هل أنت متأكد من حذف هذه الصورة؟')) {
+        fetch(`/products/image/${imageId}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // إخفاء الصورة من الواجهة
+                event.target.closest('.current-image').style.display = 'none';
+                
+                // إظهار رسالة نجاح
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    <i class="fas fa-check-circle me-2"></i>${data.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.form-container'));
+                
+                // إخفاء الرسالة بعد 3 ثوان
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 3000);
+            } else {
+                alert('خطأ: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('حدث خطأ أثناء حذف الصورة');
+        });
+    }
+}
+</script>
+{% endblock %} 

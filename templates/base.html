@@ -1,0 +1,733 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dalal Alsaudia - منصة البيع والشراء الأولى في المملكة{% endblock %}</title>
+
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2C5F7B;
+            --secondary-color: #F4A261;
+            --accent-color: #E76F51;
+            --success-color: #2A9D8F;
+            --warning-color: #F4A261;
+            --danger-color: #E63946;
+            --dark-color: #264653;
+            --light-color: #F8F9FA;
+            --gradient-primary: linear-gradient(135deg, #2C5F7B 0%, #2A9D8F 100%);
+            --gradient-secondary: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+            --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.15);
+            --shadow-heavy: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: #F8F9FA;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            background: var(--gradient-primary) !important;
+            box-shadow: var(--shadow-medium);
+            padding: 0.8rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            box-shadow: var(--shadow-heavy);
+            padding: 0.5rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: white !important;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .navbar-toggler {
+            border: none;
+            color: white;
+        }
+
+        /* Button Styles */
+        .btn {
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            padding: 0.6rem 2rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-secondary {
+            background: var(--gradient-secondary);
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .card-header {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+        /* Form Styles */
+        .form-control,
+        .form-select {
+            border-radius: 15px;
+            border: 2px solid #E9ECEF;
+            padding: 0.7rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(44, 95, 123, 0.25);
+        }
+
+        /* Alert Styles */
+        .alert {
+            border-radius: 15px;
+            border: none;
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Footer Styles - Matching Home Page Design */
+        .footer {
+            background: #fbf8eb;
+            color: #0d2622;
+            padding: 1.5rem 0 0.8rem;
+            margin-top: 5rem;
+            font-family: 'Arial', sans-serif;
+            border-radius: 28px 28px 0 0;
+            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .footer h5 {
+            color: #fbf8eb;
+            background: #0d2622;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .footer a {
+            color: rgba(13, 38, 34, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .footer a:hover {
+            color: #0d2622;
+        }
+
+        .footer p {
+            color: rgba(13, 38, 34, 0.9);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .footer ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-logo img {
+            filter: brightness(1.2);
+            transition: transform 0.3s ease;
+        }
+
+        .footer-logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(13, 38, 34, 0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .social-links a:hover {
+            background: #0d2622;
+            color: #fbf8eb;
+            transform: translateY(-2px);
+        }
+
+        /* New Footer Design Styles */
+        .footer-brand-title {
+            color: #0d2622;
+            font-weight: 700;
+            font-size: 24px;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: rgba(13, 38, 34, 0.8);
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+
+
+        .social-section h6 {
+            color: #0d2622;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+
+        .footer-links a {
+            display: flex;
+            align-items: center;
+            color: rgba(13, 38, 34, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            padding: 4px 0;
+        }
+
+        .footer-links a:hover {
+            color: #0d2622;
+            padding-left: 8px;
+        }
+
+        .footer-links i {
+            color: #0d2622;
+            font-size: 12px;
+            width: 16px;
+        }
+
+        .service-areas {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .area-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(13, 38, 34, 0.8);
+            font-size: 14px;
+        }
+
+        .area-item i {
+            color: #0d2622;
+            font-size: 12px;
+        }
+
+        .business-hours h6 {
+            color: #0d2622;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hours-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .hours-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: rgba(13, 38, 34, 0.8);
+        }
+
+        .hours-item span:first-child {
+            font-weight: 600;
+            color: #0d2622;
+        }
+
+        .footer-bottom {
+            margin-top: 1.5rem;
+        }
+
+        .copyright-text {
+            color: rgba(13, 38, 34, 0.7);
+            font-size: 13px;
+        }
+
+        .footer-bottom-links a {
+            font-size: 13px;
+            color: rgba(13, 38, 34, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-bottom-links a:hover {
+            color: #0d2622;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .footer-brand-title {
+                font-size: 20px;
+            }
+
+            .social-links a {
+                width: 35px;
+                height: 35px;
+                line-height: 35px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.5rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--dark-color);
+        }
+
+        /* Map Styles */
+        .map-container {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .location-section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .map-actions .btn {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .gm-style-iw {
+            font-family: 'Cairo', sans-serif !important;
+        }
+
+        .gm-style-iw-d {
+            overflow: hidden !important;
+        }
+
+        /* View toggle buttons */
+        .btn-group .btn {
+            border-radius: 8px;
+        }
+
+        .btn-group .btn:first-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .btn-group .btn:last-child {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .btn-group .btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    <!-- Navigation -->
+    {% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-shopping-cart me-2"></i>Dalal Alsaudia
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home me-1"></i>الرئيسية
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="productsDropdown" role="button"
+                            data-bs-toggle="dropdown">
+                            <i class="fas fa-box me-1"></i>المنتجات
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'products:list' %}">جميع المنتجات</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:cars' %}">السيارات</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:real_estate' %}">العقارات</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:hotels' %}">الفنادق</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'categories:list' %}">
+                            <i class="fas fa-th-list me-1"></i>الفئات
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>{{ user.first_name|default:user.username }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'users:profile' %}">الملف الشخصي</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:add' %}">إضافة منتج</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:my_products' %}">منتجاتي</a></li>
+                            <li><a class="dropdown-item" href="{% url 'orders:my_orders' %}">طلباتي</a></li>
+                            <li><a class="dropdown-item" href="{% url 'messaging:inbox' %}">الرسائل</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'users:logout' %}">تسجيل الخروج</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:login' %}">
+                            <i class="fas fa-sign-in-alt me-1"></i>دخول
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:register' %}">
+                            <i class="fas fa-user-plus me-1"></i>تسجيل
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <!-- Main Content -->
+    <main style="margin-top: 80px; min-height: calc(100vh - 80px);">
+        <!-- Messages -->
+        {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <i
+                    class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" style="direction: ltr; text-align: left;">
+        <div class="container">
+            <!-- Main Footer Content -->
+            <div class="row g-4">
+                <!-- Company Info Section -->
+                <div class="col-lg-5 col-md-12">
+                    <div class="footer-brand-section">
+                        <div class="footer-logo mb-4">
+                            <img src="{% static 'css/logo.png' %}" alt="Protech Garage Doors"
+                                style="height: 70px; width: auto;">
+                        </div>
+                        <h3 class="footer-brand-title">Protech Garage Doors LLC</h3>
+                        <p class="footer-description">
+                            Your trusted partner for professional garage door services. We specialize in repair,
+                            installation, and maintenance with over 15 years of experience in the industry.
+                        </p>
+
+                        <!-- Social Media -->
+                        <div class="social-section mt-4">
+                            <h6>Follow Us</h6>
+                            <div class="social-links">
+                                <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                                <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Section -->
+                <div class="col-lg-2 col-md-6 col-sm-6">
+                    <div class="footer-section">
+                        <h5>Our Services</h5>
+                        <ul class="footer-links">
+                            <li><a href="#"><i class="fas fa-wrench me-2"></i>Door Repair</a></li>
+                            <li><a href="#"><i class="fas fa-tools me-2"></i>Installation</a></li>
+                            <li><a href="#"><i class="fas fa-sync-alt me-2"></i>Replacement</a></li>
+                            <li><a href="#"><i class="fas fa-cog me-2"></i>Maintenance</a></li>
+                            <li><a href="#"><i class="fas fa-key me-2"></i>Opener Services</a></li>
+                            <li><a href="#"><i class="fas fa-shield-alt me-2"></i>Emergency Repair</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Quick Links Section -->
+                <div class="col-lg-2 col-md-6 col-sm-6">
+                    <div class="footer-section">
+                        <h5>Quick Links</h5>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'home' %}"><i class="fas fa-home me-2"></i>Home</a></li>
+                            <li><a href="{% url 'products:list' %}"><i class="fas fa-box me-2"></i>Products</a></li>
+                            <li><a href="{% url 'categories:list' %}"><i class="fas fa-th-list me-2"></i>Categories</a>
+                            </li>
+                            <li><a href="#about"><i class="fas fa-info-circle me-2"></i>About Us</a></li>
+                            <li><a href="#contact"><i class="fas fa-phone me-2"></i>Contact</a></li>
+                            <li><a href="#quote"><i class="fas fa-calculator me-2"></i>Get Quote</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Service Areas & Hours -->
+                <div class="col-lg-3 col-md-12">
+                    <div class="footer-section">
+                        <h5>Service Areas</h5>
+                        <div class="service-areas">
+                            <div class="area-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Downtown District</span>
+                            </div>
+                            <div class="area-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Suburban Areas</span>
+                            </div>
+                            <div class="area-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Industrial Zones</span>
+                            </div>
+                        </div>
+
+                        <div class="business-hours mt-4">
+                            <h6>Business Hours</h6>
+                            <div class="hours-list">
+                                <div class="hours-item">
+                                    <span>Mon - Fri:</span>
+                                    <span>8:00 AM - 6:00 PM</span>
+                                </div>
+                                <div class="hours-item">
+                                    <span>Saturday:</span>
+                                    <span>9:00 AM - 4:00 PM</span>
+                                </div>
+                                <div class="hours-item">
+                                    <span>Sunday:</span>
+                                    <span>Emergency Only</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="footer-bottom">
+                <hr class="my-4" style="border-color: rgba(13, 38, 34, 0.2);">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0 copyright-text">
+                            &copy; 2024 Protech Garage Doors LLC. All rights reserved. | Licensed & Insured
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="footer-bottom-links">
+                            <a href="#" class="me-3">Privacy Policy</a>
+                            <a href="#" class="me-3">Terms of Service</a>
+                            <a href="#">Sitemap</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Google Maps API -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw&libraries=places&language=ar&region=SA&callback=initMap"></script>
+
+    <!-- Custom JS -->
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function () {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Auto-dismiss alerts
+        setTimeout(function () {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function (alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Loading button effect
+        function showLoading(button) {
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span class="loading"></span> جاري التحميل...';
+            button.disabled = true;
+
+            setTimeout(function () {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

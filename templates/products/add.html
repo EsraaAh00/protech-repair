@@ -1,0 +1,801 @@
+{% extends 'base.html' %}
+
+{% block title %}إضافة منتج جديد - Dalal Alsaudia{% endblock %}
+
+{% block extra_css %}
+<style>
+    .add-product-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 0 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .form-container {
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .step-indicator {
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0;
+        padding: 0 2rem;
+    }
+
+    .step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        padding: 0 1rem;
+    }
+
+    .step::before {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 50%;
+        width: 100%;
+        height: 2px;
+        background: #ddd;
+        z-index: 1;
+    }
+
+    .step:last-child::before {
+        display: none;
+    }
+
+    .step-number {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #ddd;
+        color: #666;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.5rem;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+
+    .step.active .step-number {
+        background: var(--primary-color);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .step.completed .step-number {
+        background: var(--success-color);
+        color: white;
+    }
+
+    .step.completed::before {
+        background: var(--success-color);
+    }
+
+    .form-section {
+        padding: 2rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .form-section:last-child {
+        border-bottom: none;
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-floating {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-floating > .form-control,
+    .form-floating > .form-select {
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        padding: 1rem 0.75rem;
+        height: auto;
+        transition: all 0.3s ease;
+    }
+
+    .form-floating > .form-control:focus,
+    .form-floating > .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .form-floating > label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .image-upload-area {
+        border: 3px dashed #ddd;
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: #f8f9fa;
+    }
+
+    .image-upload-area:hover {
+        border-color: var(--primary-color);
+        background: #f0f8ff;
+        transform: translateY(-2px);
+    }
+
+    .image-upload-area.dragover {
+        border-color: var(--success-color);
+        background: #f0fff4;
+    }
+
+    .image-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .preview-item {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .remove-image {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(220, 53, 69, 0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.8rem;
+    }
+
+    .category-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    .category-card {
+        border: 2px solid #e9ecef;
+        border-radius: 20px;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .category-card:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .category-card.selected {
+        border-color: var(--primary-color);
+        background: linear-gradient(135deg, var(--primary-color), #2a5298);
+        color: white;
+    }
+
+    .category-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+
+    .category-card.selected .category-icon {
+        color: white;
+    }
+
+    .price-input-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .currency-label {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.8rem 1.2rem;
+        border-radius: 15px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .submit-section {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 2.5rem;
+        text-align: center;
+    }
+
+    .preview-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin: 2rem 0;
+    }
+
+    .feature-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+
+    .feature-tag {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .terms-section {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .loading-content {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        text-align: center;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .btn-next, .btn-prev {
+        padding: 0.8rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-next {
+        background: var(--gradient-primary);
+        border: none;
+        color: white;
+    }
+
+    .btn-next:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        color: white;
+    }
+
+    .btn-prev {
+        background: #6c757d;
+        border: none;
+        color: white;
+    }
+
+    .btn-submit {
+        background: var(--gradient-secondary);
+        border: none;
+        padding: 1rem 3rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Add Product Hero -->
+<section class="add-product-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="fas fa-plus-circle me-3"></i>إضافة منتج جديد
+                </h1>
+                <p class="lead">انشر منتجك واصل إلى آلاف المشترين المحتملين في جميع أنحاء المملكة</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-container">
+                <!-- Form Header -->
+                <div class="form-header">
+                    <h3 class="fw-bold mb-0">أضف منتجك في 4 خطوات سهلة</h3>
+                </div>
+
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step active" id="step-1">
+                        <div class="step-number">1</div>
+                        <small>معلومات أساسية</small>
+                    </div>
+                    <div class="step" id="step-2">
+                        <div class="step-number">2</div>
+                        <small>التفاصيل</small>
+                    </div>
+                    <div class="step" id="step-3">
+                        <div class="step-number">3</div>
+                        <small>الصور</small>
+                    </div>
+                    <div class="step" id="step-4">
+                        <div class="step-number">4</div>
+                        <small>المراجعة والنشر</small>
+                    </div>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" id="productForm">
+                    {% csrf_token %}
+                    
+                    <!-- Step 1: Basic Information -->
+                    <div class="form-section" id="section-1">
+                        <h4 class="section-title">
+                            <i class="fas fa-info-circle"></i>المعلومات الأساسية
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.title }}
+                                    <label for="{{ form.title.id_for_label }}">عنوان المنتج *</label>
+                                </div>
+                                {% if form.title.errors %}
+                                    <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.category }}
+                                    <label for="{{ form.category.id_for_label }}">الفئة *</label>
+                                </div>
+                                {% if form.category.errors %}
+                                    <div class="text-danger small">{{ form.category.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Category Visual Selector -->
+                        <div class="category-selector">
+                            {% for category in categories %}
+                                <div class="category-card" data-category="{{ category.id }}">
+                                    <div class="category-icon">
+                                        {% if 'سيارات' in category.name or 'car' in category.slug %}
+                                            <i class="fas fa-car"></i>
+                                        {% elif 'عقارات' in category.name or 'real' in category.slug %}
+                                            <i class="fas fa-home"></i>
+                                        {% elif 'فنادق' in category.name or 'hotel' in category.slug %}
+                                            <i class="fas fa-hotel"></i>
+                                        {% else %}
+                                            <i class="fas fa-tag"></i>
+                                        {% endif %}
+                                    </div>
+                                    <h6 class="fw-bold">{{ category.name }}</h6>
+                                    <small>{{ category.description|default:"" }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    {{ form.price }}
+                                    <label for="{{ form.price.id_for_label }}">السعر *</label>
+                                </div>
+                                {% if form.price.errors %}
+                                    <div class="text-danger small">{{ form.price.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <div class="currency-label">
+                                    <i class="fas fa-money-bill me-2"></i>ريال سعودي
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="location" name="location" 
+                                           placeholder="اكتب العنوان أو اختر من الخريطة">
+                                    <label for="location">العنوان *</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-outline-primary h-100 w-100" onclick="openLocationPicker()">
+                                    <i class="fas fa-map-marker-alt me-2"></i>اختر من الخريطة
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Hidden fields for coordinates -->
+                        {{ form.location_latitude }}
+                        {{ form.location_longitude }}
+
+                        <div class="text-end mt-3">
+                            <button type="button" class="btn btn-next" onclick="nextStep(2)">
+                                التالي <i class="fas fa-arrow-left ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Details -->
+                    <div class="form-section" id="section-2" style="display: none;">
+                        <h4 class="section-title">
+                            <i class="fas fa-list-alt"></i>التفاصيل
+                        </h4>
+
+                        <div class="form-floating">
+                            {{ form.description }}
+                            <label for="{{ form.description.id_for_label }}">وصف المنتج *</label>
+                        </div>
+                        {% if form.description.errors %}
+                            <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <button type="button" class="btn btn-prev" onclick="prevStep(1)">
+                                <i class="fas fa-arrow-right me-2"></i>السابق
+                            </button>
+                            <button type="button" class="btn btn-next" onclick="nextStep(3)">
+                                التالي <i class="fas fa-arrow-left ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Images -->
+                    <div class="form-section" id="section-3" style="display: none;">
+                        <h4 class="section-title">
+                            <i class="fas fa-images"></i>صور المنتج
+                        </h4>
+
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">اسحب الصور هنا أو انقر لاختيارها</h5>
+                            <p class="text-muted">يمكنك رفع حتى 8 صور (JPG, PNG, GIF)</p>
+                            <input type="file" id="imageInput" name="images" multiple accept="image/*" style="display: none;">
+                        </div>
+
+                        <div class="image-preview" id="imagePreview">
+                            <!-- Preview images will be added here -->
+                        </div>
+
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>نصائح للصور:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>استخدم صور عالية الجودة وواضحة</li>
+                                <li>اعرض المنتج من زوايا مختلفة</li>
+                                <li>تأكد من الإضاءة الجيدة</li>
+                                <li>الصورة الأولى ستكون الصورة الرئيسية</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <button type="button" class="btn btn-prev" onclick="prevStep(2)">
+                                <i class="fas fa-arrow-right me-2"></i>السابق
+                            </button>
+                            <button type="button" class="btn btn-next" onclick="nextStep(4)">
+                                التالي <i class="fas fa-arrow-left ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Review and Submit -->
+                    <div class="form-section" id="section-4" style="display: none;">
+                        <h4 class="section-title">
+                            <i class="fas fa-check-circle"></i>مراجعة المنتج
+                        </h4>
+
+                        <div class="preview-card">
+                            <h5 id="preview-title">عنوان المنتج</h5>
+                            <p id="preview-category" class="text-muted">الفئة</p>
+                            <h4 id="preview-price" class="text-primary">السعر</h4>
+                            <p id="preview-description">الوصف</p>
+                            <div id="preview-images" class="mt-3"></div>
+                        </div>
+
+                        <div class="terms-section">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                <label class="form-check-label" for="agreeTerms">
+                                    أوافق على <a href="#" target="_blank">شروط الاستخدام</a> و <a href="#" target="_blank">سياسة الخصوصية</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <button type="button" class="btn btn-prev" onclick="prevStep(3)">
+                                <i class="fas fa-arrow-right me-2"></i>السابق
+                            </button>
+                            <button type="submit" class="btn btn-submit">
+                                <i class="fas fa-plus-circle me-2"></i>نشر المنتج
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <h5>جاري نشر المنتج...</h5>
+        <p>يرجى الانتظار</p>
+    </div>
+</div>
+
+<script>
+let currentStep = 1;
+let selectedFiles = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const imageUploadArea = document.getElementById('imageUploadArea');
+
+    // Image upload functionality
+    imageUploadArea.addEventListener('click', () => imageInput.click());
+    
+    imageUploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+
+    imageUploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+    });
+
+    imageUploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        const files = Array.from(e.dataTransfer.files);
+        handleFiles(files);
+    });
+
+    imageInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        handleFiles(files);
+    });
+
+    function handleFiles(files) {
+        files.forEach(file => {
+            if (selectedFiles.length < 8 && file.type.startsWith('image/')) {
+                selectedFiles.push(file);
+                displayImage(file, selectedFiles.length - 1);
+            }
+        });
+        updateFileInput();
+    }
+
+    function displayImage(file, index) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.innerHTML = `
+                <img src="${e.target.result}" alt="Preview">
+                <button type="button" class="remove-image" onclick="removeImage(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            imagePreview.appendChild(previewItem);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    window.removeImage = function(index) {
+        selectedFiles.splice(index, 1);
+        imagePreview.innerHTML = '';
+        selectedFiles.forEach((file, i) => {
+            displayImage(file, i);
+        });
+        updateFileInput();
+    };
+
+    function updateFileInput() {
+        const dt = new DataTransfer();
+        selectedFiles.forEach(file => {
+            dt.items.add(file);
+        });
+        imageInput.files = dt.files;
+    }
+
+    // Category selector
+    document.querySelectorAll('.category-card').forEach(card => {
+        card.addEventListener('click', function() {
+            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('{{ form.category.id_for_label }}').value = this.dataset.category;
+        });
+    });
+
+    // Location picker
+    const locationInput = document.getElementById('location');
+    const latInput = document.getElementById('{{ form.location_latitude.id_for_label }}');
+    const lngInput = document.getElementById('{{ form.location_longitude.id_for_label }}');
+
+    if (locationInput && latInput && lngInput) {
+        locationInput.addEventListener('blur', function() {
+            if (this.value && !latInput.value) {
+                latInput.value = '24.7136';
+                lngInput.value = '46.6753';
+            }
+        });
+    }
+
+    // Form submission
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    });
+});
+
+// Step navigation functions
+function nextStep(step) {
+    if (validateCurrentStep()) {
+        document.getElementById(`section-${currentStep}`).style.display = 'none';
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        document.getElementById(`step-${currentStep}`).classList.add('completed');
+        
+        currentStep = step;
+        document.getElementById(`section-${currentStep}`).style.display = 'block';
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+        
+        if (step === 4) {
+            updatePreview();
+        }
+    }
+}
+
+function prevStep(step) {
+    document.getElementById(`section-${currentStep}`).style.display = 'none';
+    document.getElementById(`step-${currentStep}`).classList.remove('active');
+    
+    currentStep = step;
+    document.getElementById(`section-${currentStep}`).style.display = 'block';
+    document.getElementById(`step-${currentStep}`).classList.add('active');
+    document.getElementById(`step-${currentStep}`).classList.remove('completed');
+}
+
+function validateCurrentStep() {
+    if (currentStep === 1) {
+        const title = document.getElementById('{{ form.title.id_for_label }}').value;
+        const category = document.getElementById('{{ form.category.id_for_label }}').value;
+        const price = document.getElementById('{{ form.price.id_for_label }}').value;
+        
+        if (!title || !category || !price) {
+            alert('يرجى ملء جميع الحقول المطلوبة');
+            return false;
+        }
+    }
+    
+    if (currentStep === 2) {
+        const description = document.getElementById('{{ form.description.id_for_label }}').value;
+        if (!description) {
+            alert('يرجى إضافة وصف للمنتج');
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+function updatePreview() {
+    const title = document.getElementById('{{ form.title.id_for_label }}').value;
+    const category = document.getElementById('{{ form.category.id_for_label }}');
+    const price = document.getElementById('{{ form.price.id_for_label }}').value;
+    const description = document.getElementById('{{ form.description.id_for_label }}').value;
+    
+    document.getElementById('preview-title').textContent = title || 'عنوان المنتج';
+    document.getElementById('preview-category').textContent = category.options[category.selectedIndex].text || 'الفئة';
+    document.getElementById('preview-price').textContent = price ? `${price} ريال سعودي` : 'السعر';
+    document.getElementById('preview-description').textContent = description || 'الوصف';
+    
+    // Preview images
+    const previewImagesDiv = document.getElementById('preview-images');
+    previewImagesDiv.innerHTML = '';
+    selectedFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '10px';
+            img.style.margin = '5px';
+            previewImagesDiv.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function openLocationPicker() {
+    // يمكن إضافة خريطة هنا لاحقاً
+    alert('سيتم إضافة خريطة لاختيار الموقع قريباً');
+}
+</script>
+{% endblock %} 

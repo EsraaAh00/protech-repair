@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+
+{% block title %}تسجيل الدخول - Dalal Alsaudia{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-container {
+        min-height: calc(100vh - 160px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: -80px -15px -5rem;
+        padding: 80px 15px 5rem;
+    }
+
+    .login-card {
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        max-width: 900px;
+        width: 100%;
+    }
+
+    .login-hero {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 3rem;
+        text-align: center;
+    }
+
+    .login-form {
+        padding: 3rem;
+    }
+
+    .form-floating {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        padding: 1rem 0.75rem;
+        height: auto;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .btn-login {
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .social-login {
+        text-align: center;
+        margin: 2rem 0;
+    }
+
+    .social-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin: 0 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: white;
+    }
+
+    .social-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .google { background: #db4437; }
+    .facebook { background: #3b5998; }
+    .twitter { background: #1da1f2; }
+
+    .divider {
+        position: relative;
+        text-align: center;
+        margin: 2rem 0;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #dee2e6;
+    }
+
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        color: #6c757d;
+    }
+
+    .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 1rem 0;
+    }
+
+    .forgot-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .forgot-link:hover {
+        text-decoration: underline;
+    }
+
+    .register-link {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #dee2e6;
+    }
+
+    @media (max-width: 768px) {
+        .login-container {
+            margin: -80px 0 -5rem;
+            padding: 80px 1rem 5rem;
+        }
+        
+        .login-card {
+            margin: 0;
+        }
+        
+        .login-hero,
+        .login-form {
+            padding: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="row g-0">
+            <div class="col-lg-6">
+                <div class="login-hero">
+                    <h2 class="fw-bold mb-3">مرحباً بك مرة أخرى!</h2>
+                    <p class="lead">سجل دخولك لتتمكن من الوصول إلى حسابك ومتابعة التسوق</p>
+                    <div class="mt-4">
+                        <i class="fas fa-shopping-cart fa-4x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="login-form">
+                    <h3 class="fw-bold text-center mb-4 text-primary">تسجيل الدخول</h3>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   placeholder="اسم المستخدم" required>
+                            <label for="username">اسم المستخدم أو البريد الإلكتروني</label>
+                        </div>
+                        
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   placeholder="كلمة المرور" required>
+                            <label for="password">كلمة المرور</label>
+                        </div>
+                        
+                        <div class="remember-forgot">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                                <label class="form-check-label" for="remember">
+                                    تذكرني
+                                </label>
+                            </div>
+                            <a href="{% url 'users:password_reset' %}" class="forgot-link">
+                                نسيت كلمة المرور؟
+                            </a>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-login btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="divider">
+                        <span>أو سجل الدخول باستخدام</span>
+                    </div>
+                    
+                    <div class="social-login">
+                        <a href="#" class="social-btn google">
+                            <i class="fab fa-google"></i>
+                        </a>
+                        <a href="#" class="social-btn facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-btn twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="register-link">
+                        <p class="text-muted">
+                            ليس لديك حساب؟ 
+                            <a href="{% url 'users:register' %}" class="text-primary fw-bold text-decoration-none">
+                                سجل الآن
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Add some interactive effects
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = document.querySelectorAll('.form-control');
+    
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        if (!username || !password) {
+            e.preventDefault();
+            alert('يرجى ملء جميع الحقول المطلوبة');
+        }
+    });
+});
+</script>
+{% endblock %} 
