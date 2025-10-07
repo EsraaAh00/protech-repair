@@ -80,17 +80,17 @@ sudo apt install python3 python3-pip python3-venv postgresql redis-server nginx
 ### 2. إعداد قاعدة البيانات
 ```bash
 # إنشاء قاعدة بيانات
-sudo -u postgres createdb dalal_saudi
-sudo -u postgres createuser dalal_user
-sudo -u postgres psql -c "ALTER USER dalal_user WITH PASSWORD 'your_password';"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE dalal_saudi TO dalal_user;"
+sudo -u postgres createdb protech_repair
+sudo -u postgres createuser protech_user
+sudo -u postgres psql -c "ALTER USER protech_user WITH PASSWORD 'your_password';"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE protech_repair TO protech_user;"
 ```
 
 ### 3. تثبيت المشروع
 ```bash
 # تحميل المشروع
 git clone <repository_url>
-cd dalal_saudi_project
+cd protech-repair
 
 # إنشاء بيئة افتراضية
 python3 -m venv venv
@@ -104,10 +104,10 @@ pip install -r requirements.txt
 ### 4. تكوين الإعدادات
 ```bash
 # نسخ ملف الإعدادات
-cp dalal_saudi/settings.py.example dalal_saudi/settings.py
+cp core/settings.py.example core/settings.py
 
 # تحرير الإعدادات (قاعدة البيانات، المفتاح السري، إلخ)
-nano dalal_saudi/settings.py
+nano core/settings.py
 ```
 
 ### 5. تشغيل المشروع
@@ -129,14 +129,12 @@ python manage.py runserver 0.0.0.0:8000
 ## هيكل المشروع
 
 ```
-dalal_saudi_project/
-├── dalal_saudi/          # إعدادات المشروع
+protech-repair/
+├── core/                 # إعدادات المشروع
 ├── users/                # إدارة المستخدمين
 ├── products/             # إدارة المنتجات
 ├── categories/           # إدارة الفئات
 ├── messaging/            # نظام المراسلة
-├── auctions/             # نظام المزادات
-├── locations/            # نظام المواقع
 ├── admin_panel/          # لوحة الإدارة
 ├── reviews/              # نظام التقييمات
 ├── orders/               # إدارة الطلبات
@@ -229,9 +227,9 @@ cd ~/myprojectdir
 
 user : AdminCars      pass : cars@2024
 
-
-dalal_saudi
-source myprojectenv/bin/activate
+## Virtual Environment Activation
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
 n/gunicorn --version
 gunicorn (version 23.0.0)
 
