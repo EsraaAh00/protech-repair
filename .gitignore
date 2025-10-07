@@ -9,3 +9,6 @@ __pycache__/
 *.pyzw
 *.pyz
 .venv
+db.sqlite3
+venv/Lib/site-packages/distutils-precedence.pth
+venv/Scripts/python.exe
