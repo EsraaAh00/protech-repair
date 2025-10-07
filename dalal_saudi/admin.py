@@ -126,7 +126,6 @@ from users.admin import CustomUserAdmin
 from messaging.admin import MessageAdmin, ConversationAdmin
 from orders.admin import OrderAdmin
 from reviews.admin import ReviewAdmin
-from auctions.admin import AuctionAdmin, BidAdmin
 
 # تسجيل النماذج الأساسية
 admin_site.register(Product, ProductAdmin)
@@ -137,11 +136,8 @@ admin_site.register(Category, CategoryAdmin)
 from messaging.models import Message, Conversation
 from orders.models import Order
 from reviews.models import Review
-from auctions.models import Auction, Bid
 
 admin_site.register(Message, MessageAdmin)
 admin_site.register(Conversation, ConversationAdmin)
 admin_site.register(Order, OrderAdmin)
-admin_site.register(Review, ReviewAdmin)
-admin_site.register(Auction, AuctionAdmin)
-admin_site.register(Bid, BidAdmin) 
+admin_site.register(Review, ReviewAdmin) 

@@ -8,7 +8,6 @@ from django.utils import timezone
 from datetime import timedelta
 from products.models import Product, Car, RealEstate, HotelBooking
 from users.models import User
-from auctions.models import Auction
 from reviews.models import Review
 from orders.models import Order
 from messaging.models import Message
@@ -23,10 +22,6 @@ def admin_dashboard(request):
     active_products = Product.objects.filter(status='active').count()
     total_users = User.objects.count()
     new_users_today = User.objects.filter(date_joined__date=timezone.now().date()).count()
-    
-    # إحصائيات المزادات
-    active_auctions = Auction.objects.filter(status='active').count()
-    total_auctions = Auction.objects.count()
     
     # إحصائيات الطلبات
     pending_orders = Order.objects.filter(status='pending').count()
@@ -51,8 +46,6 @@ def admin_dashboard(request):
         'active_products': active_products,
         'total_users': total_users,
         'new_users_today': new_users_today,
-        'active_auctions': active_auctions,
-        'total_auctions': total_auctions,
         'pending_orders': pending_orders,
         'completed_orders': completed_orders,
         'recent_pending': recent_pending,
@@ -141,16 +134,10 @@ def product_detail_admin(request, product_id):
     # جلب الرسائل المتعلقة بالمنتج
     messages_count = Message.objects.filter(product=product).count()
     
-    # جلب المزاد إن وجد
-    auction = None
-    if hasattr(product, 'auction'):
-        auction = product.auction
-    
     context = {
         'product': product,
         'product_details': product_details,
         'messages_count': messages_count,
-        'auction': auction,
     }
     
     return render(request, 'admin_panel/product_detail.html', context)
