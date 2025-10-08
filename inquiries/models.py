@@ -83,8 +83,8 @@ class ContactInquiry(models.Model):
     user_agent = models.CharField(max_length=500, blank=True, verbose_name="User Agent")
     
     class Meta:
-        verbose_name = "استفسار"
-        verbose_name_plural = "الاستفسارات"
+        verbose_name = "Contact Inquiry"
+        verbose_name_plural = "Contact Inquiries"
         ordering = ['-created_at']
         indexes = [
             models.Index(fields=['-created_at']),
@@ -148,8 +148,8 @@ class InquiryNote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الإنشاء")
     
     class Meta:
-        verbose_name = "ملاحظة"
-        verbose_name_plural = "الملاحظات"
+        verbose_name = "Inquiry Note"
+        verbose_name_plural = "Inquiry Notes"
         ordering = ['-created_at']
     
     def __str__(self):
@@ -172,8 +172,8 @@ class InquiryAttachment(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الرفع")
     
     class Meta:
-        verbose_name = "مرفق"
-        verbose_name_plural = "المرفقات"
+        verbose_name = "Inquiry Attachment"
+        verbose_name_plural = "Inquiry Attachments"
         ordering = ['-uploaded_at']
     
     def __str__(self):

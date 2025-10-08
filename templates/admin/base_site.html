@@ -14,26 +14,31 @@
             text-align: left;
         }
         
+        /* Force enable sidebar */
+        #nav-sidebar {
+            display: block !important;
+        }
+        
         /* Additional site customizations */
         .admin-header {
             background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%);
             color: white;
-            padding: 15px 20px;
-            border-radius: 0 0 15px 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 8px 20px;
+            border-radius: 0 0 10px 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .admin-header h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 18px;
             font-weight: 600;
         }
         
         .admin-header .subtitle {
-            font-size: 14px;
+            font-size: 12px;
             opacity: 0.9;
-            margin-top: 5px;
+            margin-top: 3px;
         }
         
         .breadcrumbs {
@@ -57,28 +62,9 @@
         /* Improve site logo */
         .site-logo {
             display: inline-block;
-            font-size: 24px;
-            margin-right: 10px;
+            font-size: 18px;
+            margin-right: 8px;
             vertical-align: middle;
-        }
-        
-        /* Improve navigation */
-        .user-tools {
-            float: right;
-            margin-top: 10px;
-        }
-        
-        .user-tools a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
-        
-        .user-tools a:hover {
-            background: rgba(255, 255, 255, 0.1);
         }
         
         /* Add welcome message */
@@ -120,30 +106,26 @@
         .footer a:hover {
             text-decoration: underline;
         }
+        
+        /* Sidebar hover effects */
+        .sidebar-link:hover {
+            background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%) !important;
+            color: white !important;
+            transform: translateX(2px);
+        }
     </style>
 {% endblock %}
 
 {% block branding %}
-<div class="admin-header">
-    <h1 id="site-name">
-        <span class="site-logo">🏛️</span>
-        <a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a>
+<div class="admin-header" style="background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%); color: white; padding: 8px 20px; border-radius: 0 0 10px 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+    <h1 id="site-name" style="margin: 0; font-size: 18px; font-weight: 600;">
+        <span class="site-logo" style="display: inline-block; font-size: 18px; margin-right: 8px; vertical-align: middle;">🏛️</span>
+        <a href="{% url 'admin:index' %}" style="color: white; text-decoration: none;">ProTech Repair Admin</a>
     </h1>
-    <div class="subtitle">Comprehensive E-Commerce Management System</div>
 </div>
 {% endblock %}
 
 {% block nav-global %}
-    <div class="user-tools">
-        {% if has_permission %}
-            <a href="{% url 'admin:index' %}">🏠 Home</a>
-            {% if user.is_superuser %}
-                <a href="/admin/statistics/">📊 Statistics</a>
-            {% endif %}
-            <a href="{% url 'admin:password_change' %}">🔑 Change Password</a>
-            <a href="{% url 'admin:logout' %}">🚪 Logout</a>
-        {% endif %}
-    </div>
 {% endblock %}
 
 {% block content %}
@@ -164,7 +146,13 @@
         </div>
     {% endif %}
     
-    {{ block.super }}
+    <!-- Sidebar for all admin pages -->
+    <div style="display: flex; gap: 20px;">
+        {% include 'admin/sidebar.html' %}
+        <div style="flex: 1;">
+            {{ block.super }}
+        </div>
+    </div>
 {% endblock %}
 
 {% block footer %}

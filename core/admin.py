@@ -23,6 +23,7 @@ class ProtechAdminSite(AdminSite):
     site_header = "ProTech Garage Doors - Administration"
     site_title = "ProTech - Control Panel"
     index_title = "Welcome to ProTech Control Panel"
+    enable_nav_sidebar = True  # Enable sidebar
     
     def get_urls(self):
         urls = super().get_urls()
@@ -131,10 +132,12 @@ class ProtechAdminSite(AdminSite):
             is_active=True
         ).select_related('category').order_by('-created_at')[:5]
         
+        # Enable sidebar
         extra_context.update({
             'quick_stats': quick_stats,
             'pending_inquiries': pending_inquiries,
             'recent_products': recent_products,
+            'is_nav_sidebar_enabled': True,
         })
         
         return super().index(request, extra_context)
@@ -162,6 +165,18 @@ admin_site.register(ServiceCategory, ServiceCategoryAdmin)
 
 # Register Inquiries
 admin_site.register(ContactInquiry, ContactInquiryAdmin)
+
+# Register additional models
+from products.models import ProductImage, OpenerSpecifications, DoorSpecifications
+from services.models import ServiceImage
+from inquiries.models import InquiryNote, InquiryAttachment
+
+admin_site.register(ProductImage, ProductImageAdmin)
+admin_site.register(OpenerSpecifications, OpenerSpecificationsAdmin)
+admin_site.register(DoorSpecifications, DoorSpecificationsAdmin)
+admin_site.register(ServiceImage, ServiceImageAdmin)
+admin_site.register(InquiryNote, InquiryNoteAdmin)
+admin_site.register(InquiryAttachment, InquiryAttachmentAdmin)
 
 # Register Users
 admin_site.register(User, CustomUserAdmin)

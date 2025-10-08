@@ -1,0 +1,42 @@
+{% load static %}
+<div style="width: 250px; background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%); border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); height: fit-content; position: sticky; top: 20px;">
+    <h3 style="margin: 0 0 15px 0; color: #2C5F7B; font-size: 16px; font-weight: 600;">📋 Navigation</h3>
+    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+        <a href="{% url 'admin:index' %}" class="sidebar-link" style="display: block; color: #2C5F7B; text-decoration: none; padding: 8px 12px; border-radius: 6px; margin: 2px 0; transition: all 0.2s; font-weight: 600; background: #f0f4ff;">🏠 Dashboard</a>
+    </div>
+    <div style="margin-bottom: 20px;">
+        <h4 style="background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%); color: white; padding: 8px 12px; border-radius: 6px; margin: 0 0 8px 0; font-size: 12px; font-weight: 600; text-transform: uppercase;">📦 Products</h4>
+        <div style="padding-left: 10px;">
+            <a href="{% url 'admin:products_product_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Products</a>
+            <a href="{% url 'admin:products_productcategory_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Categories</a>
+            <a href="{% url 'admin:products_productimage_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Images</a>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+        <h4 style="background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%); color: white; padding: 8px 12px; border-radius: 6px; margin: 0 0 8px 0; font-size: 12px; font-weight: 600; text-transform: uppercase;">🔧 Services</h4>
+        <div style="padding-left: 10px;">
+            <a href="{% url 'admin:services_service_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Services</a>
+            <a href="{% url 'admin:services_servicecategory_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Categories</a>
+            <a href="{% url 'admin:services_serviceimage_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Images</a>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+        <h4 style="background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%); color: white; padding: 8px 12px; border-radius: 6px; margin: 0 0 8px 0; font-size: 12px; font-weight: 600; text-transform: uppercase;">📋 Inquiries</h4>
+        <div style="padding-left: 10px;">
+            <a href="{% url 'admin:inquiries_contactinquiry_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Contact Inquiries</a>
+            <a href="{% url 'admin:inquiries_inquirynote_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Notes</a>
+            <a href="{% url 'admin:inquiries_inquiryattachment_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Attachments</a>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+        <h4 style="background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%); color: white; padding: 8px 12px; border-radius: 6px; margin: 0 0 8px 0; font-size: 12px; font-weight: 600; text-transform: uppercase;">👥 Users</h4>
+        <div style="padding-left: 10px;">
+            <a href="{% url 'admin:users_user_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Users</a>
+        </div>
+    </div>
+    
+
+</div>

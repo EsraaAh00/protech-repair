@@ -17,8 +17,8 @@ class ServiceCategory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        verbose_name = "فئة خدمة"
-        verbose_name_plural = "فئات الخدمات"
+        verbose_name = "Service Category"
+        verbose_name_plural = "Service Categories"
         ordering = ['order', 'name']
     
     def save(self, *args, **kwargs):
@@ -78,8 +78,8 @@ class Service(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = "خدمة"
-        verbose_name_plural = "الخدمات"
+        verbose_name = "Service"
+        verbose_name_plural = "Services"
         ordering = ['order', 'title']
     
     def save(self, *args, **kwargs):
@@ -111,8 +111,8 @@ class ServiceImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        verbose_name = "صورة خدمة"
-        verbose_name_plural = "صور الخدمات"
+        verbose_name = "Service Image"
+        verbose_name_plural = "Service Images"
         ordering = ['order', '-created_at']
     
     def __str__(self):

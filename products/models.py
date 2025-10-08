@@ -19,8 +19,8 @@ class ProductCategory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        verbose_name = "فئة منتج"
-        verbose_name_plural = "فئات المنتجات"
+        verbose_name = "Product Category"
+        verbose_name_plural = "Product Categories"
         ordering = ['order', 'name']
     
     def save(self, *args, **kwargs):
@@ -107,8 +107,8 @@ class Product(models.Model):
     views_count = models.IntegerField(default=0, verbose_name="عدد المشاهدات")
     
     class Meta:
-        verbose_name = "منتج"
-        verbose_name_plural = "المنتجات"
+        verbose_name = "Product"
+        verbose_name_plural = "Products"
         ordering = ['order', '-created_at']
     
     def save(self, *args, **kwargs):
@@ -147,8 +147,8 @@ class ProductImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        verbose_name = "صورة منتج"
-        verbose_name_plural = "صور المنتجات"
+        verbose_name = "Product Image"
+        verbose_name_plural = "Product Images"
         ordering = ['-is_main', 'order', '-created_at']
     
     def __str__(self):
@@ -197,8 +197,8 @@ class OpenerSpecifications(models.Model):
     warranty_years = models.IntegerField(blank=True, null=True, verbose_name="سنوات الضمان")
     
     class Meta:
-        verbose_name = "مواصفات الفتاحة"
-        verbose_name_plural = "مواصفات الفتاحات"
+        verbose_name = "Opener Specifications"
+        verbose_name_plural = "Opener Specifications"
     
     def __str__(self):
         return f"Specs for {self.product.name}"
@@ -299,8 +299,8 @@ class DoorSpecifications(models.Model):
     warranty_years = models.IntegerField(blank=True, null=True, verbose_name="سنوات الضمان")
     
     class Meta:
-        verbose_name = "مواصفات الباب"
-        verbose_name_plural = "مواصفات الأبواب"
+        verbose_name = "Door Specifications"
+        verbose_name_plural = "Door Specifications"
     
     def __str__(self):
         return f"Specs for {self.product.name}"
