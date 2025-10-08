@@ -10,6 +10,16 @@ from .models import (
 )
 from .scraper import scrape_liftmaster_products
 from django.utils.text import slugify
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Try to import selenium scraper
+try:
+    from .selenium_scraper import scrape_with_selenium, SELENIUM_AVAILABLE
+except ImportError:
+    SELENIUM_AVAILABLE = False
+    logger.warning("Selenium scraper not available")
 
 
 class ProductImageInline(admin.TabularInline):
@@ -180,160 +190,77 @@ class ProductAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
     
-    def import_liftmaster_products(self):
-        """Import LiftMaster products manually"""
-        from .models import ProductCategory
-        
-        # Get or create category
-        category, _ = ProductCategory.objects.get_or_create(
-            name_en='Garage Door Openers',
-            defaults={
-                'name': 'فتاحات أبواب الجراج',
-                'slug': 'garage-door-openers',
-                'is_active': True,
-            }
-        )
-        
-        # List of products
-        products_data = [
-            {
-                'name': 'LM-W8ME Sectional Garage Door Opener',
-                'model_number': 'LM-W8ME',
-                'description': 'فتاحة أبواب جراج قطاعية من LiftMaster - موديل LM-W8ME. فتاحة قوية وموثوقة مصممة للأبواب القطاعية، توفر أداءً ممتازاً وسهولة في التشغيل.',
-                'category': 'Sectional Garage Door',
-                'features': 'محرك قوي وموثوق\nمناسب للأبواب القطاعية\nسهل التركيب والصيانة\nضمان من الشركة المصنعة',
-            },
-            {
-                'name': 'LM3800TXSA Sectional Garage Door Opener',
-                'model_number': 'LM3800TXSA',
-                'description': 'فتاحة أبواب جراج قطاعية من LiftMaster - موديل LM3800TXSA. موديل متطور بتقنية حديثة لضمان الأداء الأمثل.',
-                'category': 'Sectional Garage Door',
-                'features': 'تقنية متقدمة\nأداء عالي\nموثوقية ممتازة\nسهل الاستخدام',
-            },
-            {
-                'name': 'LM80EV DC Sectional Garage Door Opener',
-                'model_number': 'LM80EV',
-                'description': 'فتاحة أبواب جراج قطاعية DC من LiftMaster - موديل LM80EV. محرك DC بكفاءة طاقة عالية وأداء هادئ.',
-                'category': 'Sectional Garage Door',
-                'features': 'محرك DC موفر للطاقة\nتشغيل هادئ\nبطارية احتياطية\nكفاءة عالية',
-            },
-            {
-                'name': 'LM100EV Sectional Garage Door Opener',
-                'model_number': 'LM100EV',
-                'description': 'فتاحة أبواب جراج قطاعية من LiftMaster - موديل LM100EV. حل مثالي للأبواب القطاعية متوسطة الحجم.',
-                'category': 'Sectional Garage Door',
-                'features': 'مناسب للأبواب متوسطة الحجم\nأداء موثوق\nسهل التركيب\nصيانة قليلة',
-            },
-            {
-                'name': 'LM130EV Sectional Garage Door Opener',
-                'model_number': 'LM130EV',
-                'description': 'فتاحة أبواب جراج قطاعية من LiftMaster - موديل LM130EV. موديل قوي مصمم للأبواب الثقيلة.',
-                'category': 'Sectional Garage Door',
-                'features': 'قوة رفع عالية\nمناسب للأبواب الثقيلة\nمتانة استثنائية\nضمان ممتد',
-            },
-            {
-                'name': 'LM555EVGBSA Roller Garage Opener Weather Resistant',
-                'model_number': 'LM555EVGBSA',
-                'description': 'فتاحة أبواب رولر مقاومة للطقس من LiftMaster - موديل LM555EVGBSA. مصممة خصيصاً لتحمل الظروف الجوية القاسية.',
-                'category': 'Roller Garage Door',
-                'features': 'مقاومة للطقس والرطوبة\nمناسب لأبواب الرولر\nحماية من الغبار والماء\nمتانة عالية',
-            },
-        ]
-        
-        imported = 0
-        skipped = 0
-        errors = 0
-        
-        for product_data in products_data:
-            try:
-                # Check if exists
-                existing = Product.objects.filter(
-                    model_number=product_data['model_number']
-                ).first()
-                
-                if existing:
-                    skipped += 1
-                    continue
-                
-                # Create product
-                Product.objects.create(
-                    name=product_data['name'],
-                    name_en=product_data['name'],
-                    slug=slugify(product_data['name']),
-                    model_number=product_data['model_number'],
-                    category=category,
-                    product_type='opener',
-                    brand='LiftMaster',
-                    description=product_data['description'],
-                    short_description=f"{product_data['category']} - {product_data['model_number']}",
-                    features=product_data.get('features', ''),
-                    is_active=True,
-                )
-                
-                imported += 1
-                
-            except Exception as e:
-                errors += 1
-        
-        return {
-            'success': True,
-            'imported': imported,
-            'skipped': skipped,
-            'errors': errors
-        }
     
     def scrape_liftmaster_view(self, request):
-        """View to handle LiftMaster import"""
+        """View to handle LiftMaster import - scrapes all products from website"""
         if request.method == 'POST':
+            fetch_details = request.POST.get('fetch_details') == 'on'
+            
             try:
-                # Import products directly
-                result = self.import_liftmaster_products()
+                if not SELENIUM_AVAILABLE:
+                    self.message_user(
+                        request,
+                        "❌ Selenium غير مثبت. قم بتثبيته أولاً باستخدام: pip install selenium webdriver-manager",
+                        messages.ERROR
+                    )
+                    return redirect('..')
                 
-                if result['imported'] > 0:
-                    self.message_user(
-                        request,
-                        f"✅ تم استيراد المنتجات بنجاح! المضاف: {result['imported']}, المتخطى: {result['skipped']}",
-                        messages.SUCCESS
-                    )
-                    self.message_user(
-                        request,
-                        "💡 يمكنك الآن إضافة الصور والأسعار لكل منتج من خلال تعديل المنتج.",
-                        messages.INFO
-                    )
-                elif result['skipped'] > 0:
-                    self.message_user(
-                        request,
-                        f"⏭️ جميع المنتجات موجودة بالفعل. المتخطى: {result['skipped']}",
-                        messages.INFO
-                    )
+                # Use Selenium to scrape all products from website
+                self.message_user(
+                    request,
+                    "⏳ جارٍ جلب جميع المنتجات من الموقع... قد يستغرق بضع دقائق.",
+                    messages.INFO
+                )
+                
+                result = scrape_with_selenium(fetch_details=fetch_details)
+                
+                if result['success']:
+                    if result['scraped'] > 0:
+                        self.message_user(
+                            request,
+                            f"✅ تم جلب المنتجات من الموقع بنجاح! المضاف: {result['scraped']}, المتخطى: {result['skipped']}, الأخطاء: {result['errors']}",
+                            messages.SUCCESS
+                        )
+                        self.message_user(
+                            request,
+                            "💡 يمكنك الآن تعديل المنتجات وإضافة الأسعار من خلال لوحة التحكم.",
+                            messages.INFO
+                        )
+                    elif result['skipped'] > 0:
+                        self.message_user(
+                            request,
+                            f"⏭️ جميع المنتجات موجودة بالفعل. المتخطى: {result['skipped']}",
+                            messages.INFO
+                        )
+                    else:
+                        self.message_user(
+                            request,
+                            "⚠️ لم يتم العثور على منتجات جديدة في الموقع.",
+                            messages.WARNING
+                        )
                 else:
                     self.message_user(
                         request,
-                        "⚠️ لم يتم استيراد أي منتجات جديدة.",
-                        messages.WARNING
-                    )
-                
-                if result['errors'] > 0:
-                    self.message_user(
-                        request,
-                        f"⚠️ حدثت {result['errors']} أخطاء أثناء الاستيراد.",
-                        messages.WARNING
+                        f"❌ فشل جلب المنتجات: {result['message']}",
+                        messages.ERROR
                     )
                     
             except Exception as e:
                 self.message_user(
                     request,
-                    f"❌ حدث خطأ أثناء استيراد المنتجات: {str(e)}",
+                    f"❌ حدث خطأ أثناء جلب المنتجات: {str(e)}",
                     messages.ERROR
                 )
+                logger.exception("Error during import")
             
             return redirect('..')
         
         # GET request - show confirmation page
         context = {
             **self.admin_site.each_context(request),
-            'title': 'استيراد منتجات LiftMaster',
+            'title': 'جلب منتجات من LiftMaster',
             'opts': self.model._meta,
+            'selenium_available': SELENIUM_AVAILABLE,
         }
         return render(request, 'admin/products/scrape_confirm.html', context)
 

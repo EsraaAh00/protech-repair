@@ -168,42 +168,87 @@
             </svg>
         </div>
         <div class="scrape-title">
-            <h1>استيراد منتجات LiftMaster</h1>
-            <p>Import LiftMaster Products</p>
+            <h1>جلب منتجات من LiftMaster</h1>
+            <p>Fetch Products from LiftMaster Website</p>
         </div>
     </div>
     
     <div class="info-box">
         <h3>📋 ماذا سيحدث؟ / What will happen?</h3>
         <ul>
-            <li>سيتم استيراد 6 منتجات رئيسية من LiftMaster / 6 main LiftMaster products will be imported</li>
-            <li>سيتم حفظ عنوان المنتج، رقم الموديل، والوصف / Product title, model number, and description will be saved</li>
-            <li>سيتم حفظ المميزات لكل منتج / Features will be saved for each product</li>
-            <li>المنتجات المكررة لن يتم إضافتها / Duplicate products will be skipped</li>
+            <li>سيتم جلب جميع المنتجات المتاحة من موقع LiftMaster / All available products will be fetched from LiftMaster website</li>
+            <li>سيتم حفظ: العنوان، رقم الموديل، الوصف، الصور / Will save: title, model number, description, images</li>
+            <li>سيتم جلب روابط PDF للمنتجات إن وجدت / PDF links will be fetched if available</li>
+            <li>المنتجات المكررة لن يتم إضافتها / Duplicate products will be automatically skipped</li>
             <li>سيتم تصنيف المنتجات تلقائياً / Products will be automatically categorized</li>
-            <li>يمكنك إضافة الصور والأسعار لاحقاً من لوحة التحكم / You can add images and prices later from the admin panel</li>
+            <li>يمكنك تعديل المنتجات وإضافة الأسعار لاحقاً / You can edit products and add prices later</li>
         </ul>
     </div>
     
-    <div class="warning-box">
-        <strong>✨ ملاحظة / Note:</strong> عملية الاستيراد سريعة جداً (أقل من ثانية).
-        <br>
-        The import process is very fast (less than a second).
+    {% if not selenium_available %}
+    <div class="warning-box" style="background: #ffebee; border-left-color: #d32f2f;">
+        <strong style="color: #c62828;">❌ تنبيه مهم / Important Warning:</strong>
         <br><br>
-        <strong>💡 بعد الاستيراد:</strong> ستحتاج لإضافة الصور والأسعار لكل منتج من خلال تعديل المنتجات في لوحة التحكم.
+        Selenium غير مثبت. لجلب المنتجات من الموقع، يجب تثبيت المكتبات التالية:
         <br>
-        After import: You'll need to add images and prices for each product by editing them in the admin panel.
+        Selenium is not installed. To fetch products from the website, install:
+        <br><br>
+        <code style="background: white; padding: 8px 12px; border-radius: 4px; display: block; margin: 10px 0; font-family: monospace;">
+            pip install selenium webdriver-manager
+        </code>
+        <br>
+        أو قم بتشغيل:
+        <br>
+        Or run:
+        <br>
+        <code style="background: white; padding: 8px 12px; border-radius: 4px; display: block; margin: 10px 0; font-family: monospace;">
+            .\venv\Scripts\python.exe -m pip install selenium==4.15.2 webdriver-manager==4.0.1
+        </code>
     </div>
+    {% else %}
+    <div class="warning-box">
+        <strong>⏱️ الوقت المتوقع / Estimated Time:</strong> 
+        <br>
+        قد تستغرق العملية من 5-10 دقائق حسب عدد المنتجات وسرعة الإنترنت.
+        <br>
+        The process may take 5-10 minutes depending on number of products and internet speed.
+        <br><br>
+        <strong>💡 نصيحة:</strong> لا تغلق المتصفح حتى تكتمل العملية.
+        <br>
+        Tip: Don't close the browser until the process is complete.
+    </div>
+    {% endif %}
     
     <form method="post" class="form-container">
         {% csrf_token %}
+        
+        {% if selenium_available %}
+        <div style="background: #e7f3ff; padding: 20px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #2196F3;">
+            <h4 style="margin-top: 0; color: #1976D2;">⚙️ خيارات الجلب / Scraping Options:</h4>
+            <label style="display: flex; align-items: center; cursor: pointer;">
+                <input type="checkbox" name="fetch_details" checked style="width: 20px; height: 20px; margin-left: 10px;">
+                <div>
+                    <strong>جلب تفاصيل إضافية / Fetch Additional Details</strong>
+                    <p style="margin: 5px 0 0 0; font-size: 13px; color: #666;">
+                        زيارة صفحة كل منتج لجلب الوصف الكامل والمميزات وروابط PDF (موصى به)
+                        <br>
+                        Visit each product page for full description, features, and PDF links (recommended)
+                    </p>
+                </div>
+            </label>
+        </div>
+        {% endif %}
         
         <div class="button-container">
             <a href="{% url 'admin:products_product_changelist' %}" class="btn btn-secondary">
                 إلغاء / Cancel
             </a>
-            <button type="submit" class="btn btn-primary">
-                ابدأ الاستيراد / Start Import
+            <button type="submit" class="btn btn-primary" {% if not selenium_available %}disabled{% endif %}>
+                {% if selenium_available %}
+                    ابدأ جلب المنتجات / Start Fetching
+                {% else %}
+                    غير متاح / Not Available
+                {% endif %}
             </button>
         </div>
     </form>
