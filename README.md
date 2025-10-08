@@ -1,274 +1,416 @@
-# منصة دلال السعودية - Dalal Saudi Arabia Platform
+# 🚪 ProTech Garage Doors - Repair & Installation
 
-## نظرة عامة
+## نظرة عامة / Overview
 
-منصة دلال السعودية هي منصة إلكترونية متكاملة لبيع وشراء السيارات والعقارات وحجز الفنادق في المملكة العربية السعودية. تم تطويرها باستخدام Django وتتضمن ميزات متقدمة مثل نظام المراسلة والمزادات والخرائط التفاعلية.
+**ProTech Garage Doors** هو موقع إلكتروني متكامل لشركة متخصصة في صيانة وتركيب أبواب الجراج. يوفر الموقع عرضاً احترافياً للخدمات والمنتجات مع نظام استفسارات متقدم وإشعارات واتساب.
 
-## الميزات الرئيسية
-
-### 🚗 قسم السيارات
-- عرض السيارات الجديدة والمستعملة
-- معلومات تفصيلية (الماركة، الموديل، السنة، المسافة المقطوعة)
-- صور متعددة عالية الجودة
-- نظام تقييم وتعليقات
-
-### 🏠 قسم العقارات
-- شقق، فلل، أراضي، محلات تجارية
-- معلومات شاملة (المساحة، عدد الغرف، الموقع)
-- جولات افتراضية
-- خرائط تفاعلية
-
-### 🏨 قسم الفنادق
-- حجز الفنادق والشقق المفروشة
-- تقييمات النزلاء
-- صور وتفاصيل الغرف
-- نظام حجز متقدم
-
-### 💬 نظام المراسلة
-- دردشة فورية بين المستخدمين
-- ربط المحادثات بالمنتجات
-- إشعارات فورية
-- واجهة سهلة الاستخدام
-
-### 🔨 نظام المزادات
-- إنشاء مزادات على المنتجات
-- مزايدة فورية
-- عد تنازلي للوقت
-- تحديد الفائز تلقائياً
-
-### 🗺️ نظام الخرائط
-- عرض مواقع المنتجات على الخريطة
-- البحث الجغرافي
-- الاتجاهات والمسارات
-- المنتجات القريبة
-
-### 👨‍💼 لوحة الإدارة
-- موافقة المسؤول على المنتجات
-- إدارة المستخدمين
-- إحصائيات وتقارير
-- إعدادات النظام
-
-## التقنيات المستخدمة
-
-- **Backend:** Django 4.2, Python 3.8+
-- **Frontend:** HTML5, CSS3, JavaScript, Bootstrap 5
-- **Database:** PostgreSQL, Redis
-- **Maps:** Leaflet.js, OpenStreetMap
-- **Real-time:** AJAX, WebSocket
-- **Deployment:** Nginx, Gunicorn
-
-## متطلبات النظام
-
-- Python 3.8+
-- PostgreSQL 12+
-- Redis 6.0+
-- Ubuntu 20.04+ (مُوصى به)
-- 4GB RAM (الحد الأدنى)
-- 50GB Storage
-
-## التثبيت والتشغيل
-
-### 1. تحضير البيئة
-```bash
-# تحديث النظام
-sudo apt update && sudo apt upgrade -y
-
-# تثبيت المتطلبات
-sudo apt install python3 python3-pip python3-venv postgresql redis-server nginx
-```
-
-### 2. إعداد قاعدة البيانات
-```bash
-# إنشاء قاعدة بيانات
-sudo -u postgres createdb protech_repair
-sudo -u postgres createuser protech_user
-sudo -u postgres psql -c "ALTER USER protech_user WITH PASSWORD 'your_password';"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE protech_repair TO protech_user;"
-```
-
-### 3. تثبيت المشروع
-```bash
-# تحميل المشروع
-git clone <repository_url>
-cd protech-repair
-
-# إنشاء بيئة افتراضية
-python3 -m venv venv
-# source venv/bin/activate
-venv\Scripts\activate
-
-# تثبيت المتطلبات
-pip install -r requirements.txt
-```
-
-### 4. تكوين الإعدادات
-```bash
-# نسخ ملف الإعدادات
-cp core/settings.py.example core/settings.py
-
-# تحرير الإعدادات (قاعدة البيانات، المفتاح السري، إلخ)
-nano core/settings.py
-```
-
-### 5. تشغيل المشروع
-```bash
-# تطبيق الهجرات
-python manage.py makemigrations
-python manage.py migrate
-
-# إنشاء مستخدم مسؤول
-python manage.py createsuperuser
-
-# جمع الملفات الثابتة
-python manage.py collectstatic
-
-# تشغيل الخادم
-python manage.py runserver 0.0.0.0:8000
-```
-
-## هيكل المشروع
-
-```
-protech-repair/
-├── core/                 # إعدادات المشروع
-├── users/                # إدارة المستخدمين
-├── products/             # إدارة المنتجات
-├── categories/           # إدارة الفئات
-├── messaging/            # نظام المراسلة
-├── admin_panel/          # لوحة الإدارة
-├── reviews/              # نظام التقييمات
-├── orders/               # إدارة الطلبات
-├── templates/            # قوالب HTML
-├── static/               # ملفات CSS/JS
-├── media/                # ملفات المستخدمين
-└── requirements.txt      # متطلبات Python
-```
-
-## الاستخدام
-
-### للمستخدمين العاديين
-1. إنشاء حساب جديد أو تسجيل الدخول
-2. تصفح المنتجات أو البحث عنها
-3. التواصل مع البائعين عبر نظام المراسلة
-4. المشاركة في المزادات
-5. عرض المواقع على الخريطة
-
-### للبائعين
-1. إضافة منتجات جديدة مع الصور والتفاصيل
-2. تحديد الموقع الجغرافي للمنتج
-3. إنشاء مزادات (اختياري)
-4. التواصل مع المشترين المهتمين
-5. إدارة المنتجات والطلبات
-
-### للمسؤولين
-1. مراجعة والموافقة على المنتجات الجديدة
-2. إدارة المستخدمين والصلاحيات
-3. مراقبة النشاط والإحصائيات
-4. إدارة إعدادات النظام
-
-## الأمان
-
-- تشفير كلمات المرور باستخدام Django's PBKDF2
-- حماية من هجمات CSRF و XSS
-- تحقق من صحة البيانات المدخلة
-- نظام صلاحيات متقدم
-- تسجيل العمليات الحساسة
-
-## الدعم والصيانة
-
-- مراقبة الأداء والأخطاء
-- نسخ احتياطية دورية لقاعدة البيانات
-- تحديثات أمنية منتظمة
-- دعم فني متواصل
-
-## الترخيص
-
-هذا المشروع مطور خصيصاً لأغراض تجارية. جميع الحقوق محفوظة.
-
-## التواصل
-
-للاستفسارات والدعم الفني، يرجى التواصل عبر:
-- البريد الإلكتروني: support@dalalsaudi.com
-- الهاتف: +966-XX-XXX-XXXX
+**ProTech Garage Doors** is a complete website for a company specialized in garage door repair and installation. The website provides a professional display of services and products with an advanced inquiry system and WhatsApp notifications.
 
 ---
 
-**تم التطوير بواسطة:** Manus AI  
-**الإصدار:** 1.0  
-**تاريخ الإصدار:** يونيو 2025
+## 🌟 الميزات الرئيسية / Key Features
 
+### 🔧 نظام الخدمات / Services System
+- عرض شامل للخدمات المقدمة (إصلاح، تركيب، صيانة)
+- تصنيف الخدمات حسب النوع
+- صور للخدمات مع معرض before/after
+- أسعار ابتدائية للخدمات
+- خدمات مميزة
 
-doman 
-dalalalsaudia.com
+### 🚪 نظام المنتجات / Products System
+- فتاحات أبواب الجراج (Openers)
+  - Chain Drive, Belt Drive, Wall Mount
+  - مواصفات تفصيلية (Wi-Fi, Battery Backup, Camera)
+  - معلومات القوة الحصانية والسرعة
+  
+- أبواب الجراج (Doors)
+  - أنماط متعددة (Long Panel, Contemporary, Carriage House)
+  - مواد مختلفة (Steel, Aluminum, Wood)
+  - معلومات العزل (R-Value)
+  - خيارات الألوان والنوافذ
 
+- الإكسسوارات وقطع الغيار
+- منتجات مميزة والأكثر مبيعاً
 
-ip :167.99.0.225                          pass : osam0Esmael
+### 📱 نظام الاستفسارات / Inquiry System
+- نموذج تواصل متقدم
+- أنواع استفسارات متعددة:
+  - تقدير مجاني / Free Estimate
+  - طلب خدمة / Service Request
+  - استفسار عن منتج / Product Info
+  - حالة طارئة / Emergency
+- ربط الاستفسار بخدمة أو منتج محدد
+- تتبع حالة الاستفسار (جديد، تم التواصل، قيد المعالجة، مكتمل)
+- ملاحظات إدارية
+- نظام مرفقات
 
+### 💬 تكامل WhatsApp / WhatsApp Integration
+- إرسال إشعار تلقائي عند استلام استفسار جديد
+- رسائل منسقة احترافياً
+- معلومات كاملة عن الاستفسار
+- دعم ثنائي اللغة (عربي/إنجليزي)
+- إعادة إرسال من لوحة التحكم
 
+### 📊 لوحة تحكم متقدمة / Advanced Admin Panel
+- إحصائيات شاملة:
+  - عدد المنتجات والخدمات
+  - الاستفسارات (جديدة، قيد المعالجة، مكتملة)
+  - المنتجات الأكثر مشاهدة
+  - إحصائيات أسبوعية
+- إدارة كاملة للمحتوى
+- نظام بحث وفلترة متقدم
+- Actions جماعية
+- معاينة رسائل WhatsApp
 
- HOSTENGER ACCOUNT 
+---
 
- USER : 89fares@gmail.com   PASS : 7i-Fz7c#i_m86j2
+## 🛠️ التقنيات المستخدمة / Technologies Used
 
- go dady account 
- USER : 89fares@gmail.com   PASS : Marshoud@1234
+- **Backend:** Django 4.2+
+- **Database:** SQLite (Development), PostgreSQL (Production recommended)
+- **Frontend:** HTML5, CSS3, JavaScript, Bootstrap 5
+- **Admin:** Django Admin (Customized)
+- **Language:** Python 3.8+
 
+---
 
-digitalocean
-accunt : 
-user : 89fares@gmail.com                      pass: 7i-Fz7c#i_m86jK
+## 📦 متطلبات النظام / System Requirements
 
-ssh root@167.99.0.225                       pass : osam0Esmael 
+```
+Python >= 3.8
+Django >= 4.2
+Pillow (for images)
+```
 
-adduser sammy          pass :osama
+---
 
-su sammy
-cd ~/myprojectdir
+## 🚀 التثبيت والتشغيل / Installation & Setup
 
-user : AdminCars      pass : cars@2024
+### 1. تحضير البيئة / Environment Setup
 
-## Virtual Environment Activation
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
-n/gunicorn --version
-gunicorn (version 23.0.0)
+```bash
+# Clone the repository
+git clone <repository_url>
+cd protech-repair
 
+# Create virtual environment
 python -m venv venv
->venv\scripts\activate
->pip3 install django
->django-admin startproject dicussion_board
->django-admin startproject dicussion_board .
->py manage.py runserver
-py manage.py startapp
->c
-cyrl c
->py manage.py runserver 5000
->django-admin startapp boards
------->python manage.py makemigrations
------->python manage.py migrate
 
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+
+# Linux/Mac:
+source venv/bin/activate
+
+# Install requirements
+pip install -r requirements.txt
+```
+
+### 2. إعداد قاعدة البيانات / Database Setup
+
+```bash
+# Run migrations
+python manage.py migrate
+
+# Populate initial data
+python manage.py populate_services
+python manage.py populate_products
+
+# Create superuser
 python manage.py createsuperuser
+```
 
+### 3. تشغيل الخادم / Run Server
 
-python manage.py collectstatic
+```bash
+# Development server
+python manage.py runserver
 
-su sammy
-cd ~/myprojectdir
-source myprojectenv/bin/activate
+# The site will be available at: http://localhost:8000
+# Admin panel at: http://localhost:8000/admin
+```
 
-deactivate
-sudo apt install gunicornsudo apt install gunicorn
+---
 
-sudo apt install snap
-sudo snap install --classic certbot
-sudo ln -s /snap/bin/certbot/usr/bin/certbot
-sudo certbot --nginx
-sudo systemctl restart gunicorn
-sudo systemctl daemon-reload 
-sudo systemctl restart gunicorn.socket gunicorn.service
-sudo nginx -t && sudo systemctl restart nginx
-sudo nano /etc/nginx/sites-available/myproject
-sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
+## ⚙️ الإعدادات / Configuration
 
-sudo nano /etc/nginx/sites-available/myproject
+### WhatsApp Integration
 
+في `core/settings.py`:
+
+```python
+# WhatsApp Configuration
+WHATSAPP_ENABLED = True  # Enable WhatsApp notifications
+WHATSAPP_API_URL = 'https://api.example.com/whatsapp'  # Your API URL
+WHATSAPP_API_TOKEN = 'your-token-here'  # Your API token
+WHATSAPP_PHONE_NUMBER = '+1234567890'  # Owner's WhatsApp number
+```
+
+**خيارات WhatsApp API:**
+- Twilio API
+- WhatsApp Business API
+- Third-party services
+
+### Email Configuration
+
+```python
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@gmail.com'
+EMAIL_HOST_PASSWORD = 'your-password'
+ADMIN_EMAIL = 'admin@protechgaragedoors.com'
+```
+
+---
+
+## 📁 هيكل المشروع / Project Structure
+
+```
+protech-repair/
+├── core/                    # Project settings and configuration
+│   ├── settings.py         # Main settings
+│   ├── urls.py             # Main URLs
+│   ├── views.py            # Homepage view
+│   └── admin.py            # Custom admin site
+│
+├── services/               # Services app
+│   ├── models.py           # Service, ServiceCategory, ServiceImage
+│   ├── admin.py            # Services admin
+│   ├── views.py            # Services views
+│   ├── urls.py             # Services URLs
+│   └── management/         # Management commands
+│       └── commands/
+│           └── populate_services.py
+│
+├── products/               # Products app
+│   ├── models.py           # Product, ProductCategory, OpenerSpecs, DoorSpecs
+│   ├── admin.py            # Products admin
+│   ├── views.py            # Products views
+│   ├── urls.py             # Products URLs
+│   └── management/
+│       └── commands/
+│           └── populate_products.py
+│
+├── inquiries/              # Inquiries app (Contact system)
+│   ├── models.py           # ContactInquiry, InquiryNote, InquiryAttachment
+│   ├── forms.py            # Contact forms
+│   ├── admin.py            # Inquiries admin
+│   ├── views.py            # Inquiries views
+│   ├── urls.py             # Inquiries URLs
+│   ├── utils.py            # WhatsApp & Email utilities
+│   └── signals.py          # Auto-send notifications
+│
+├── users/                  # Users app
+├── templates/              # HTML templates
+├── static/                 # Static files (CSS, JS, Images)
+├── media/                  # User uploaded files
+└── requirements.txt        # Python dependencies
+```
+
+---
+
+## 📊 Models Overview
+
+### Services App
+
+#### ServiceCategory
+- name, name_en
+- slug, description, icon
+- order, is_active
+
+#### Service
+- title, title_en, slug
+- category (ForeignKey)
+- description, short_description, features
+- image, icon, starting_price
+- is_featured, order, is_active
+
+#### ServiceImage
+- service (ForeignKey)
+- image, title, caption
+- is_before_after, order
+
+---
+
+### Products App
+
+#### ProductCategory
+- name, name_en
+- slug, description, icon
+- order, is_active
+
+#### Product
+- name, name_en, slug, model_number
+- category, product_type (opener/door/accessory/part)
+- brand, description, features, specifications
+- price, image
+- is_featured, is_best_seller, is_new
+- views_count
+
+#### OpenerSpecifications
+- product (OneToOne)
+- drive_type (chain/belt/screw/wall_mount/jackshaft)
+- horsepower
+- has_wifi, has_battery_backup, has_camera, has_smart_features
+- lifting_capacity, speed, noise_level
+- warranty_years
+
+#### DoorSpecifications
+- product (OneToOne)
+- panel_style, material
+- width_options, height_options
+- insulation_type, r_value
+- color_options, texture_options
+- has_windows, window_options
+- warranty_years
+
+---
+
+### Inquiries App
+
+#### ContactInquiry
+- name, email, phone, address
+- inquiry_type (free_estimate/service_request/product_info/general/emergency)
+- service_needed (ForeignKey), product_interest (ForeignKey)
+- message
+- status (new/contacted/in_progress/completed/cancelled)
+- whatsapp_sent, whatsapp_sent_at, whatsapp_error
+- admin_notes
+- ip_address, user_agent
+
+#### InquiryNote
+- inquiry (ForeignKey)
+- note, created_by, created_at
+
+#### InquiryAttachment
+- inquiry (ForeignKey)
+- file, description, uploaded_at
+
+---
+
+## 🎨 الواجهات / Templates (TODO)
+
+يجب إنشاء القوالب التالية:
+
+### Homepage
+- `templates/home.html`
+  - Hero section with contact form
+  - Featured services
+  - Featured products
+  - Call-to-action sections
+
+### Services
+- `templates/services/service_list.html`
+- `templates/services/service_detail.html`
+
+### Products
+- `templates/products/product_list.html`
+- `templates/products/product_detail.html`
+- `templates/products/openers.html`
+- `templates/products/doors.html`
+
+### Inquiries
+- `templates/inquiries/contact_form.html`
+- `templates/inquiries/thank_you.html`
+
+---
+
+## 🔐 الأمان / Security
+
+- ✅ IP address tracking for inquiries
+- ✅ User agent tracking
+- ✅ CSRF protection
+- ✅ Form validation
+- ✅ Admin-only views
+- ⚠️ For production:
+  - Set `DEBUG = False`
+  - Update `SECRET_KEY`
+  - Configure `ALLOWED_HOSTS`
+  - Use HTTPS
+  - Configure proper database (PostgreSQL recommended)
+
+---
+
+## 📱 الصفحات الرئيسية / Main Pages
+
+1. **Homepage** `/` - عرض الخدمات والمنتجات المميزة
+2. **Services** `/services/` - قائمة الخدمات
+3. **Service Detail** `/services/<slug>/` - تفاصيل الخدمة
+4. **Products** `/products/` - قائمة المنتجات
+5. **Openers** `/products/openers/` - فتاحات الأبواب
+6. **Doors** `/products/doors/` - أبواب الجراج
+7. **Product Detail** `/products/<slug>/` - تفاصيل المنتج
+8. **Contact** `/inquiries/contact/` - نموذج التواصل
+9. **Admin Panel** `/admin/` - لوحة التحكم
+
+---
+
+## 🎯 البيانات الأولية / Initial Data
+
+### Services (8 خدمات):
+1. إصلاح زنبرك الباب / Spring Repair
+2. إصلاح فتاحة الباب / Opener Repair
+3. إصلاح الكابلات والبكرات / Cable & Roller Repair
+4. تركيب باب جراج جديد / New Door Installation
+5. تركيب فتاحة الباب / Opener Installation
+6. صيانة دورية / Regular Maintenance
+7. استبدال اللوحات التالفة / Panel Replacement
+8. برمجة جهاز التحكم عن بعد / Remote Programming
+
+### Products (5 منتجات):
+**Openers:**
+1. Chain Drive 1/2 HP (LiftMaster 8500W)
+2. Belt Drive Smart with Wi-Fi (LiftMaster 8160WB)
+3. Wall Mount with Camera (LiftMaster 87504-267)
+
+**Doors:**
+4. Long Panel Garage Door (Clopay LP-100)
+5. Contemporary Garage Door (Clopay MOD-200)
+
+---
+
+## 📞 الدعم / Support
+
+للمزيد من المعلومات أو المساعدة، يرجى التواصل.
+
+For more information or support, please contact.
+
+---
+
+## 📝 الترخيص / License
+
+هذا المشروع مطور خصيصاً لـ ProTech Garage Doors.
+
+This project is specifically developed for ProTech Garage Doors.
+
+---
+
+## 🚧 التطوير المستقبلي / Future Development
+
+- [ ] إنشاء قوالب HTML كاملة
+- [ ] تصميم responsive
+- [ ] تكامل نظام الدفع (اختياري)
+- [ ] معرض الأعمال السابقة
+- [ ] نظام التقييمات
+- [ ] Blog/Articles
+- [ ] Multi-language support
+
+---
+
+**🎉 مشروع ProTech Garage Doors جاهز للعمل!**
+
+**🎉 ProTech Garage Doors Project is Ready!**
+
+---
+
+**Contact Information:**
+- Phone: (714) 515-0313 / (951) 466-7900
+- Email: info@ProtechGarageDoorsRepair.com
+- Location: Corona, CA 92880
+- License: #1070155
+
+---

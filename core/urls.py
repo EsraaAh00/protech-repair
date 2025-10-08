@@ -11,8 +11,10 @@ urlpatterns = [
     path('', views.home_view, name='home'),
     path('users/', include('users.urls', namespace='users')),
     path('products/', include('products.urls', namespace='products')),
-    path('categories/', include('categories.urls', namespace='categories')),
-    path('orders/', include('orders.urls', namespace='orders')),
+    path('services/', include('services.urls', namespace='services')),
+    path('inquiries/', include('inquiries.urls', namespace='inquiries')),
+    # path('categories/', include('categories.urls', namespace='categories')),  # Old
+    # path('orders/', include('orders.urls', namespace='orders')),  # Replaced by inquiries
     path('accounts/', include('django.contrib.auth.urls')),  # Default auth URLs
 ]
 

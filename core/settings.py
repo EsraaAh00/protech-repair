@@ -25,8 +25,10 @@ INSTALLED_APPS = [
     # Local apps
     'users',
     'products',
-    'categories',
-    'orders',
+    'services',
+    'inquiries',
+    # 'categories',  # Kept for reference, but not used in new structure
+    # 'orders',  # Replaced by inquiries
 ]
 
 MIDDLEWARE = [
@@ -108,4 +110,25 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# WhatsApp Configuration
+WHATSAPP_ENABLED = False  # Set to True when ready to use
+WHATSAPP_API_URL = ''  # e.g., https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json
+WHATSAPP_API_TOKEN = ''  # Your API token
+WHATSAPP_PHONE_NUMBER = ''  # Owner's WhatsApp number (e.g., +1234567890)
+
+# Email Configuration
+ADMIN_EMAIL = 'info@protechgaragedoors.com'  # Admin email for notifications
+DEFAULT_FROM_EMAIL = 'noreply@protechgaragedoors.com'
+
+# Email Backend (for development)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# For production, use:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your-email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'your-password'
 

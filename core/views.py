@@ -1,55 +1,63 @@
+# core/views.py
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
-from products.models import Product, Car, RealEstate
-from categories.models import Category
+from products.models import Product, ProductCategory
+from services.models import Service, ServiceCategory
+from inquiries.forms import QuickContactForm
 
 User = get_user_model()
 
+
 def home_view(request):
-    """صفحة الرئيسية مع الإحصائيات والمنتجات المميزة"""
+    """
+    صفحة الرئيسية - شركة أبواب الجراج
+    Homepage - Garage Door Company
+    """
     
-    # المنتجات المميزة (آخر 8 منتجات معتمدة)
+    # Featured Products (مميزة)
     featured_products = Product.objects.filter(
-        status='active', 
-        is_approved=True
-    ).select_related('seller', 'category').prefetch_related('images')[:8]
+        is_active=True,
+        is_featured=True
+    ).select_related('category')[:6]
     
-    # الإحصائيات
-    total_products = Product.objects.filter(status='active', is_approved=True).count()
-    total_users = User.objects.count()
-    total_cars = Product.objects.filter(
-        status='active', 
-        is_approved=True,
-        category__slug='cars'
-    ).count()
-    total_properties = Product.objects.filter(
-        status='active', 
-        is_approved=True,
-        category__slug='real-estate'
-    ).count()
+    # Best Seller Products (الأكثر مبيعاً)
+    bestseller_products = Product.objects.filter(
+        is_active=True,
+        is_best_seller=True
+    ).select_related('category')[:4]
     
-    # أحدث السيارات
-    latest_cars = Product.objects.filter(
-        status='active',
-        is_approved=True,
-        category__slug='cars'
-    ).select_related('seller').prefetch_related('images')[:3]
+    # Featured Services (خدمات مميزة)
+    featured_services = Service.objects.filter(
+        is_active=True,
+        is_featured=True
+    ).select_related('category')[:6]
     
-    # أحدث العقارات
-    latest_properties = Product.objects.filter(
-        status='active',
-        is_approved=True,
-        category__slug='real-estate'
-    ).select_related('seller').prefetch_related('images')[:3]
+    # All Services for display
+    all_services = Service.objects.filter(is_active=True)[:8]
+    
+    # Product Categories
+    product_categories = ProductCategory.objects.filter(is_active=True)[:4]
+    
+    # Service Categories
+    service_categories = ServiceCategory.objects.filter(is_active=True)[:4]
+    
+    # Statistics
+    total_products = Product.objects.filter(is_active=True).count()
+    total_services = Service.objects.filter(is_active=True).count()
+    
+    # Quick Contact Form
+    quick_contact_form = QuickContactForm()
     
     context = {
         'featured_products': featured_products,
+        'bestseller_products': bestseller_products,
+        'featured_services': featured_services,
+        'all_services': all_services,
+        'product_categories': product_categories,
+        'service_categories': service_categories,
         'total_products': total_products,
-        'total_users': total_users,
-        'total_cars': total_cars,
-        'total_properties': total_properties,
-        'latest_cars': latest_cars,
-        'latest_properties': latest_properties,
+        'total_services': total_services,
+        'quick_contact_form': quick_contact_form,
     }
     
-    return render(request, 'home.html', context) 
+    return render(request, 'home.html', context)
