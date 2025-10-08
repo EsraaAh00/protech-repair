@@ -12,7 +12,6 @@ urlpatterns = [
     path('users/', include('users.urls', namespace='users')),
     path('products/', include('products.urls', namespace='products')),
     path('categories/', include('categories.urls', namespace='categories')),
-    path('reviews/', include('reviews.urls', namespace='reviews')),
     path('orders/', include('orders.urls', namespace='orders')),
     path('accounts/', include('django.contrib.auth.urls')),  # Default auth URLs
 ]

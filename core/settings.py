@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'users',
     'products',
     'categories',
-    'reviews',
     'orders',
 ]
 

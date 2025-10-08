@@ -124,7 +124,6 @@ from users.admin import CustomUserAdmin
 
 # تسجيل النماذج الجديدة
 from orders.admin import OrderAdmin
-from reviews.admin import ReviewAdmin
 
 # تسجيل النماذج الأساسية
 admin_site.register(Product, ProductAdmin)
@@ -133,7 +132,5 @@ admin_site.register(Category, CategoryAdmin)
 
 # تسجيل النماذج الجديدة
 from orders.models import Order
-from reviews.models import Review
 
-admin_site.register(Order, OrderAdmin)
-admin_site.register(Review, ReviewAdmin) 
+admin_site.register(Order, OrderAdmin) 

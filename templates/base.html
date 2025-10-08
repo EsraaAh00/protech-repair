@@ -156,213 +156,55 @@
             box-shadow: var(--shadow-light);
         }
 
-        /* Footer Styles - Matching Home Page Design */
+        /* Footer Styles - Compact Design */
         .footer {
             background: #fbf8eb;
             color: #0d2622;
-            padding: 1.5rem 0 0.8rem;
-            margin-top: 5rem;
+            padding: 0;
+            margin-top: 3rem;
             font-family: 'Arial', sans-serif;
-            border-radius: 28px 28px 0 0;
-            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.15);
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .footer h5 {
-            color: #fbf8eb;
-            background: #0d2622;
-            padding: 8px 16px;
-            border-radius: 6px;
-            margin-bottom: 1.5rem;
+            color: #0d2622;
+            padding: 0;
+            margin-bottom: 0.5rem;
             font-weight: 700;
             font-size: 14px;
+            border-bottom: 2px solid #0d2622;
             display: inline-block;
+            padding-bottom: 3px;
         }
 
         .footer a {
             color: rgba(13, 38, 34, 0.8);
             text-decoration: none;
             transition: color 0.3s ease;
-            font-size: 14px;
         }
 
         .footer a:hover {
             color: #0d2622;
-        }
-
-        .footer p {
-            color: rgba(13, 38, 34, 0.9);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .footer ul li {
-            margin-bottom: 8px;
-        }
-
-        .footer-logo img {
-            filter: brightness(1.2);
-            transition: transform 0.3s ease;
-        }
-
-        .footer-logo img:hover {
-            transform: scale(1.05);
-        }
-
-        .social-links a {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            background: rgba(13, 38, 34, 0.1);
-            border-radius: 50%;
-            text-align: center;
-            line-height: 40px;
-            transition: all 0.3s ease;
-            margin-right: 10px;
-        }
-
-        .social-links a:hover {
-            background: #0d2622;
-            color: #fbf8eb;
-            transform: translateY(-2px);
-        }
-
-        /* New Footer Design Styles */
-        .footer-brand-title {
-            color: #0d2622;
-            font-weight: 700;
-            font-size: 24px;
-            margin-bottom: 1rem;
-        }
-
-        .footer-description {
-            color: rgba(13, 38, 34, 0.8);
-            font-size: 15px;
-            line-height: 1.7;
-            margin-bottom: 0;
-        }
-
-
-        .social-section h6 {
-            color: #0d2622;
-            font-weight: 700;
-            font-size: 14px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-links {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-links li {
-            margin-bottom: 8px;
-        }
-
-        .footer-links a {
-            display: flex;
-            align-items: center;
-            color: rgba(13, 38, 34, 0.7);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            padding: 4px 0;
-        }
-
-        .footer-links a:hover {
-            color: #0d2622;
-            padding-left: 8px;
-        }
-
-        .footer-links i {
-            color: #0d2622;
-            font-size: 12px;
-            width: 16px;
-        }
-
-        .service-areas {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .area-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: rgba(13, 38, 34, 0.8);
-            font-size: 14px;
-        }
-
-        .area-item i {
-            color: #0d2622;
-            font-size: 12px;
-        }
-
-        .business-hours h6 {
-            color: #0d2622;
-            font-weight: 700;
-            font-size: 14px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .hours-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .hours-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            color: rgba(13, 38, 34, 0.8);
-        }
-
-        .hours-item span:first-child {
-            font-weight: 600;
-            color: #0d2622;
-        }
-
-        .footer-bottom {
-            margin-top: 1.5rem;
-        }
-
-        .copyright-text {
-            color: rgba(13, 38, 34, 0.7);
-            font-size: 13px;
-        }
-
-        .footer-bottom-links a {
-            font-size: 13px;
-            color: rgba(13, 38, 34, 0.7);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-bottom-links a:hover {
-            color: #0d2622;
+            text-decoration: underline;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .footer-brand-title {
-                font-size: 20px;
+            .footer {
+                margin-top: 2rem;
             }
 
-            .social-links a {
-                width: 35px;
-                height: 35px;
-                line-height: 35px;
+            .footer .row {
+                text-align: center;
+            }
+
+            .footer .col-lg-3 {
+                margin-bottom: 1rem;
+            }
+
+            .footer h5 {
+                font-size: 13px;
             }
         }
 
@@ -562,124 +404,63 @@
 
     <!-- Footer -->
     <footer class="footer" style="direction: ltr; text-align: left;">
-        <div class="container">
-            <!-- Main Footer Content -->
-            <div class="row g-4">
-                <!-- Company Info Section -->
-                <div class="col-lg-5 col-md-12">
-                    <div class="footer-brand-section">
-                        <div class="footer-logo mb-4">
-                            <img src="{% static 'css/logo.png' %}" alt="Protech Garage Doors"
-                                style="height: 70px; width: auto;">
-                        </div>
-                        <h3 class="footer-brand-title">Protech Garage Doors LLC</h3>
-                        <p class="footer-description">
-                            Your trusted partner for professional garage door services. We specialize in repair,
-                            installation, and maintenance with over 15 years of experience in the industry.
-                        </p>
-
-                        <!-- Social Media -->
-                        <div class="social-section mt-4">
-                            <h6>Follow Us</h6>
-                            <div class="social-links">
-                                <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                                <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
-                                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                            </div>
+        <div class="container py-4">
+            <div class="row align-items-center g-3">
+                <!-- Company Logo & Name -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="d-flex align-items-center">
+                        <img src="{% static 'css/logo.png' %}" alt="Protech Garage Doors" 
+                             style="height: 50px; width: auto; margin-right: 12px;">
+                        <div>
+                            <h5 class="mb-0" style="font-size: 16px; font-weight: 700; color: #0d2622;">Protech Garage Doors LLC</h5>
+                            <p class="mb-0" style="font-size: 11px; color: rgba(13, 38, 34, 0.6);">License #1070155 • Bonded • Insured</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Services Section -->
-                <div class="col-lg-2 col-md-6 col-sm-6">
-                    <div class="footer-section">
-                        <h5>Our Services</h5>
-                        <ul class="footer-links">
-                            <li><a href="#"><i class="fas fa-wrench me-2"></i>Door Repair</a></li>
-                            <li><a href="#"><i class="fas fa-tools me-2"></i>Installation</a></li>
-                            <li><a href="#"><i class="fas fa-sync-alt me-2"></i>Replacement</a></li>
-                            <li><a href="#"><i class="fas fa-cog me-2"></i>Maintenance</a></li>
-                            <li><a href="#"><i class="fas fa-key me-2"></i>Opener Services</a></li>
-                            <li><a href="#"><i class="fas fa-shield-alt me-2"></i>Emergency Repair</a></li>
-                        </ul>
+                <!-- Location & Hours -->
+                <div class="col-lg-3 col-md-6">
+                    <div style="font-size: 13px; line-height: 1.8;">
+                        <div class="mb-1">
+                            <i class="fas fa-map-marker-alt me-2" style="color: #0d2622; width: 14px;"></i>
+                            <strong>Corona, CA 92880</strong>
+                        </div>
+                        <div>
+                            <i class="fas fa-clock me-2" style="color: #0d2622; width: 14px;"></i>
+                            <strong>Mon-Fri:</strong> 8am-5pm | <strong>Sat-Sun:</strong> Closed
+                        </div>
                     </div>
                 </div>
 
-                <!-- Quick Links Section -->
-                <div class="col-lg-2 col-md-6 col-sm-6">
-                    <div class="footer-section">
-                        <h5>Quick Links</h5>
-                        <ul class="footer-links">
-                            <li><a href="{% url 'home' %}"><i class="fas fa-home me-2"></i>Home</a></li>
-                            <li><a href="{% url 'products:list' %}"><i class="fas fa-box me-2"></i>Products</a></li>
-                            <li><a href="{% url 'categories:list' %}"><i class="fas fa-th-list me-2"></i>Categories</a>
-                            </li>
-                            <li><a href="#about"><i class="fas fa-info-circle me-2"></i>About Us</a></li>
-                            <li><a href="#contact"><i class="fas fa-phone me-2"></i>Contact</a></li>
-                            <li><a href="#quote"><i class="fas fa-calculator me-2"></i>Get Quote</a></li>
-                        </ul>
+                <!-- Contact Numbers -->
+                <div class="col-lg-3 col-md-6">
+                    <div style="font-size: 13px; line-height: 1.8;">
+                        <div class="mb-1">
+                            <i class="fas fa-phone me-2" style="color: #0d2622; width: 14px;"></i>
+                            <a href="tel:7145150313" style="color: rgba(13, 38, 34, 0.8); text-decoration: none; font-weight: 600;">(714) 515-0313</a>
+                        </div>
+                        <div>
+                            <i class="fas fa-phone-alt me-2" style="color: #0d2622; width: 14px;"></i>
+                            <a href="tel:9514667900" style="color: rgba(13, 38, 34, 0.8); text-decoration: none; font-weight: 600;">(951) 466-7900</a>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Service Areas & Hours -->
-                <div class="col-lg-3 col-md-12">
-                    <div class="footer-section">
-                        <h5>Service Areas</h5>
-                        <div class="service-areas">
-                            <div class="area-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Downtown District</span>
-                            </div>
-                            <div class="area-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Suburban Areas</span>
-                            </div>
-                            <div class="area-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Industrial Zones</span>
-                            </div>
-                        </div>
-
-                        <div class="business-hours mt-4">
-                            <h6>Business Hours</h6>
-                            <div class="hours-list">
-                                <div class="hours-item">
-                                    <span>Mon - Fri:</span>
-                                    <span>8:00 AM - 6:00 PM</span>
-                                </div>
-                                <div class="hours-item">
-                                    <span>Saturday:</span>
-                                    <span>9:00 AM - 4:00 PM</span>
-                                </div>
-                                <div class="hours-item">
-                                    <span>Sunday:</span>
-                                    <span>Emergency Only</span>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Emergency Notice -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="text-center p-2" style="background: rgba(220, 53, 69, 0.1); border-radius: 8px; border-left: 3px solid #dc3545;">
+                        <i class="fas fa-exclamation-circle" style="color: #dc3545;"></i>
+                        <strong style="color: #dc3545; font-size: 13px; display: block; margin-top: 4px;">Emergency Service Available</strong>
                     </div>
                 </div>
             </div>
 
-            <!-- Bottom Footer -->
-            <div class="footer-bottom">
-                <hr class="my-4" style="border-color: rgba(13, 38, 34, 0.2);">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <p class="mb-0 copyright-text">
-                            &copy; 2024 Protech Garage Doors LLC. All rights reserved. | Licensed & Insured
-                        </p>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <div class="footer-bottom-links">
-                            <a href="#" class="me-3">Privacy Policy</a>
-                            <a href="#" class="me-3">Terms of Service</a>
-                            <a href="#">Sitemap</a>
-                        </div>
-                    </div>
-                </div>
+            <!-- Copyright -->
+            <hr style="border-color: rgba(13, 38, 34, 0.15); margin: 1rem 0 0.8rem;">
+            <div class="text-center">
+                <p class="mb-0" style="font-size: 11px; color: rgba(13, 38, 34, 0.5);">
+                    &copy; 2024 Protech Garage Doors LLC. All rights reserved.
+                </p>
             </div>
         </div>
     </footer>
