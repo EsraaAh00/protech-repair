@@ -730,11 +730,6 @@
                                 <button class="btn btn-success btn-lg">
                                     <i class="fas fa-calendar-check me-2"></i>احجز الآن
                                 </button>
-                            {% else %}
-                                <a href="{% url 'messaging:start_conversation' product.id %}" 
-                                   class="btn btn-primary btn-lg">
-                                    <i class="fas fa-comment me-2"></i>تواصل مع البائع
-                                </a>
                             {% endif %}
                             
                             {% if product.contact_phone %}
@@ -765,7 +760,7 @@
                 {% else %}
                     <div class="alert alert-warning">
                         <i class="fas fa-sign-in-alt me-2"></i>
-                        <a href="{% url 'users:login' %}">سجل الدخول</a> للتواصل مع البائع
+                        <a href="{% url 'login' %}">سجل الدخول</a> للتواصل مع البائع
                     </div>
                 {% endif %}
             </div>

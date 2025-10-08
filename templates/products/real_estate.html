@@ -485,8 +485,8 @@
                                            class="btn btn-primary">
                                             <i class="fas fa-eye me-2"></i>عرض التفاصيل
                                         </a>
-                                        {% if user.is_authenticated and user != property.seller %}
-                                            <a href="{% url 'messaging:start_conversation' property.id %}" 
+                                        {% if user.is_authenticated and user != property.seller and property.contact_phone %}
+                                            <a href="tel:{{ property.contact_phone }}" 
                                                class="btn btn-outline-success btn-sm">
                                                 <i class="fas fa-phone me-2"></i>اتصل بالمالك
                                             </a>

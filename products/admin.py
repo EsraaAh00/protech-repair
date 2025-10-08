@@ -137,7 +137,7 @@ class ProductAdmin(admin.ModelAdmin):
         'category_display', 'views_stats', 'messages_count', 'created_display'
     ]
     list_filter = [
-        'status', 'category', 'created_at', 'seller__is_seller',
+        'status', 'category', 'created_at',
         'is_approved', 'is_sold'
     ]
     search_fields = [
@@ -212,14 +212,11 @@ class ProductAdmin(admin.ModelAdmin):
             '{}'
             '</a>'
             '</div>'
-            '<small style="color: #6c757d; font-size: 10px;">{} منتج</small><br>'
-            '<span style="background: {}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 9px;">{}</span>'
+            '<small style="color: #6c757d; font-size: 10px;">{} منتج</small>'
             '</div>',
-            reverse('admin:users_customuser_change', args=[obj.seller.pk]),
+            reverse('admin:users_user_change', args=[obj.seller.pk]),
             seller_name,
-            seller_products_count,
-            '#28a745' if obj.seller.is_seller else '#6c757d',
-            'بائع' if obj.seller.is_seller else 'مستخدم'
+            seller_products_count
         )
     seller_info.short_description = 'البائع'
     
@@ -280,18 +277,12 @@ class ProductAdmin(admin.ModelAdmin):
     
     def messages_count(self, obj):
         """عدد الرسائل المتعلقة بالمنتج"""
-        from messaging.models import Message
-        messages_count = Message.objects.filter(product=obj).count()
-        conversations_count = obj.conversations.count()
-        
+        # Messaging functionality has been removed
         return format_html(
             '<div style="text-align: center;">'
-            '<div style="font-size: 14px; font-weight: bold; color: #6c757d; margin-bottom: 3px;">{}</div>'
-            '<div style="font-size: 10px; color: #6c757d;">رسالة</div>'
-            '<div style="font-size: 10px; color: #007bff; margin-top: 2px;">{} محادثة</div>'
-            '</div>',
-            messages_count,
-            conversations_count
+            '<div style="font-size: 14px; font-weight: bold; color: #6c757d; margin-bottom: 3px;">-</div>'
+            '<div style="font-size: 10px; color: #6c757d;">غير متاح</div>'
+            '</div>'
         )
     messages_count.short_description = 'الرسائل'
     
@@ -324,13 +315,6 @@ class ProductAdmin(admin.ModelAdmin):
         if not obj.pk:
             return 'احفظ المنتج أولاً لعرض الإحصائيات'
         
-        from messaging.models import Message, Conversation
-        
-        # إحصائيات الرسائل والمحادثات
-        messages_count = Message.objects.filter(product=obj).count()
-        conversations_count = obj.conversations.count()
-        unread_messages = Message.objects.filter(product=obj, is_read=False).count()
-        
         # إحصائيات أخرى
         images_count = obj.images.count()
         
@@ -342,21 +326,6 @@ class ProductAdmin(admin.ModelAdmin):
                 <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid #007bff;">
                     <h4 style="color: #007bff; margin: 0 0 10px 0; font-size: 14px;">المشاهدات</h4>
                     <div style="font-size: 20px; font-weight: bold; color: #495057;">{obj.views_count or 0}</div>
-                </div>
-                
-                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid #28a745;">
-                    <h4 style="color: #28a745; margin: 0 0 10px 0; font-size: 14px;">المحادثات</h4>
-                    <div style="font-size: 20px; font-weight: bold; color: #495057;">{conversations_count}</div>
-                </div>
-                
-                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid #ffc107;">
-                    <h4 style="color: #ffc107; margin: 0 0 10px 0; font-size: 14px;">الرسائل</h4>
-                    <div style="font-size: 20px; font-weight: bold; color: #495057;">{messages_count}</div>
-                </div>
-                
-                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid #dc3545;">
-                    <h4 style="color: #dc3545; margin: 0 0 10px 0; font-size: 14px;">غير مقروءة</h4>
-                    <div style="font-size: 20px; font-weight: bold; color: #495057;">{unread_messages}</div>
                 </div>
                 
                 <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid #6c757d;">

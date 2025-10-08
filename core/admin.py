@@ -13,9 +13,9 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class DalalSaudiAdminSite(AdminSite):
-    site_header = "إدارة Dalal Alsaudia"
-    site_title = "Dalal Alsaudia - لوحة التحكم"
-    index_title = "مرحباً في لوحة التحكم الرئيسية"
+    site_header = "ProTech Repair Administration"
+    site_title = "ProTech Repair - Control Panel"
+    index_title = "Welcome to the Main Control Panel"
     
     def get_urls(self):
         urls = super().get_urls()
@@ -73,7 +73,7 @@ class DalalSaudiAdminSite(AdminSite):
             'popular_products': popular_products,
             'active_sellers': active_sellers,
             'category_stats': category_stats,
-            'title': 'إحصائيات الموقع',
+            'title': 'Site Statistics',
             'site_title': self.site_title,
             'site_header': self.site_header,
         }
@@ -123,7 +123,6 @@ from categories.admin import CategoryAdmin
 from users.admin import CustomUserAdmin
 
 # تسجيل النماذج الجديدة
-from messaging.admin import MessageAdmin, ConversationAdmin
 from orders.admin import OrderAdmin
 from reviews.admin import ReviewAdmin
 
@@ -133,11 +132,8 @@ admin_site.register(User, CustomUserAdmin)
 admin_site.register(Category, CategoryAdmin)
 
 # تسجيل النماذج الجديدة
-from messaging.models import Message, Conversation
 from orders.models import Order
 from reviews.models import Review
 
-admin_site.register(Message, MessageAdmin)
-admin_site.register(Conversation, ConversationAdmin)
 admin_site.register(Order, OrderAdmin)
 admin_site.register(Review, ReviewAdmin) 

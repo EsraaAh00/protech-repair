@@ -12,8 +12,7 @@ class ReviewAdmin(admin.ModelAdmin):
         'comment_preview', 'timestamp'
     ]
     list_filter = [
-        'rating', 'timestamp', 'product__category',
-        'reviewer__is_seller', 'seller__is_seller'
+        'rating', 'timestamp', 'product__category'
     ]
     search_fields = [
         'reviewer__username', 'reviewer__first_name', 'reviewer__last_name',
@@ -45,12 +44,11 @@ class ReviewAdmin(admin.ModelAdmin):
         """معلومات المراجع"""
         if obj.reviewer:
             name = obj.reviewer.get_full_name() or obj.reviewer.username
-            badge = '🏪' if obj.reviewer.is_seller else '👤'
             reviews_count = Review.objects.filter(reviewer=obj.reviewer).count()
             return format_html(
-                '<strong>{}</strong> {}<br>'
+                '<strong>{}</strong><br>'
                 '<small>المستخدم: {} | إجمالي التقييمات: {}</small>',
-                name, badge, obj.reviewer.username, reviews_count
+                name, obj.reviewer.username, reviews_count
             )
         return '-'
     reviewer_info.short_description = 'المراجع'
@@ -82,11 +80,10 @@ class ReviewAdmin(admin.ModelAdmin):
             seller_products_count = obj.seller.products.count()
             return format_html(
                 '👤 <a href="{}" target="_blank">{}</a><br>'
-                '<small>عدد المنتجات: {} | نوع الحساب: {}</small>',
+                '<small>عدد المنتجات: {}</small>',
                 reverse('admin:users_user_change', args=[obj.seller.pk]),
                 obj.seller.get_full_name() or obj.seller.username,
-                seller_products_count,
-                'بائع' if obj.seller.is_seller else 'مستخدم عادي'
+                seller_products_count
             )
         return 'غير محدد'
     target_info.short_description = 'الهدف المقيم'
@@ -138,7 +135,6 @@ class ReviewAdmin(admin.ModelAdmin):
                         <li>إجمالي التقييمات: <strong>{reviewer_stats['total_reviews']}</strong></li>
                         <li>متوسط التقييمات: <strong>{reviewer_stats['avg_rating']:.1f if reviewer_stats['avg_rating'] else 0}/5</strong></li>
                         <li>تاريخ التسجيل: <strong>{obj.reviewer.date_joined.strftime("%Y-%m-%d")}</strong></li>
-                        <li>نوع الحساب: <strong>{'بائع' if obj.reviewer.is_seller else 'مشتري'}</strong></li>
                     </ul>
                 </div>
                 

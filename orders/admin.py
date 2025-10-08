@@ -12,8 +12,7 @@ class OrderAdmin(admin.ModelAdmin):
         'total_amount_formatted', 'status_badge', 'order_date'
     ]
     list_filter = [
-        'status', 'order_date', 'product__category',
-        'buyer__is_seller', 'seller__is_seller'
+        'status', 'order_date', 'product__category'
     ]
     search_fields = [
         'buyer__username', 'buyer__first_name', 'buyer__last_name',
@@ -62,12 +61,11 @@ class OrderAdmin(admin.ModelAdmin):
         """معلومات المشتري"""
         if obj.buyer:
             name = obj.buyer.get_full_name() or obj.buyer.username
-            badge = '🏪' if obj.buyer.is_seller else '👤'
             email = obj.buyer.email or 'لا يوجد إيميل'
             return format_html(
-                '<strong>{}</strong> {}<br>'
+                '<strong>{}</strong><br>'
                 '<small>المستخدم: {} | الإيميل: {}</small>',
-                name, badge, obj.buyer.username, email
+                name, obj.buyer.username, email
             )
         return '-'
     buyer_info.short_description = 'المشتري'
@@ -76,22 +74,20 @@ class OrderAdmin(admin.ModelAdmin):
         """معلومات البائع"""
         if obj.seller:
             name = obj.seller.get_full_name() or obj.seller.username
-            badge = '🏪' if obj.seller.is_seller else '👤'
             email = obj.seller.email or 'لا يوجد إيميل'
             return format_html(
-                '<strong>{}</strong> {}<br>'
+                '<strong>{}</strong><br>'
                 '<small>المستخدم: {} | الإيميل: {}</small>',
-                name, badge, obj.seller.username, email
+                name, obj.seller.username, email
             )
         elif obj.product and obj.product.seller:
             # استخدام بائع المنتج إذا لم يكن البائع محدد في الطلب
             seller = obj.product.seller
             name = seller.get_full_name() or seller.username
-            badge = '🏪' if seller.is_seller else '👤'
             return format_html(
-                '<strong>{}</strong> {} <small>(من المنتج)</small><br>'
+                '<strong>{}</strong> <small>(من المنتج)</small><br>'
                 '<small>المستخدم: {}</small>',
-                name, badge, seller.username
+                name, seller.username
             )
         return '-'
     seller_info.short_description = 'البائع'
@@ -141,7 +137,6 @@ class OrderAdmin(admin.ModelAdmin):
                     <ul style="margin: 5px 0; padding-left: 20px;">
                         <li>إجمالي طلبات المشتري: <strong>{buyer_orders_count}</strong></li>
                         <li>تاريخ التسجيل: <strong>{obj.buyer.date_joined.strftime("%Y-%m-%d")}</strong></li>
-                        <li>نوع الحساب: <strong>{'بائع' if obj.buyer.is_seller else 'مشتري'}</strong></li>
                     </ul>
                 </div>
                 

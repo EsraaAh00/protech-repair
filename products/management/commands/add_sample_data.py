@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from products.models import Product
-from messaging.models import Message, Conversation
 from orders.models import Order
 from reviews.models import Review
 from decimal import Decimal
@@ -10,7 +9,7 @@ import random
 User = get_user_model()
 
 class Command(BaseCommand):
-    help = 'إضافة بيانات تجريبية للمحادثات والطلبات والتقييمات'
+    help = 'إضافة بيانات تجريبية للطلبات والتقييمات'
 
     def handle(self, *args, **options):
         # التأكد من وجود مستخدمين ومنتجات
@@ -44,40 +43,6 @@ class Command(BaseCommand):
 
         all_users = list(users) + test_users
         
-        # إضافة محادثات ورسائل
-        conversations_created = 0
-        messages_created = 0
-        
-        for product in products[:5]:
-            buyer = random.choice([u for u in all_users if u != product.seller])
-            
-            conversation, created = Conversation.objects.get_or_create(
-                product=product,
-                defaults={}
-            )
-            
-            if created:
-                conversation.participants.add(product.seller, buyer)
-                conversations_created += 1
-                
-                messages_data = [
-                    (buyer, f'مرحباً، أنا مهتم بـ {product.title}. هل يمكنني معرفة المزيد؟'),
-                    (product.seller, f'أهلاً وسهلاً! {product.title} في حالة ممتازة. السعر {product.price} ر.س'),
-                    (buyer, 'هل يمكن التفاوض على السعر؟'),
-                    (product.seller, 'يمكننا مناقشة السعر. ما هو العرض الذي تقترحه؟'),
-                ]
-                
-                for sender, content in messages_data:
-                    Message.objects.create(
-                        conversation=conversation,
-                        sender=sender,
-                        receiver=product.seller if sender == buyer else buyer,
-                        product=product,
-                        content=content,
-                        is_read=random.choice([True, False])
-                    )
-                    messages_created += 1
-
         # إضافة طلبات
         orders_created = 0
         
@@ -126,8 +91,6 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('=' * 50))
         self.stdout.write(self.style.SUCCESS('تم إنشاء البيانات التجريبية بنجاح!'))
         self.stdout.write(self.style.SUCCESS('=' * 50))
-        self.stdout.write(self.style.SUCCESS(f'📞 المحادثات: {conversations_created}'))
-        self.stdout.write(self.style.SUCCESS(f'💬 الرسائل: {messages_created}'))
         self.stdout.write(self.style.SUCCESS(f'🛒 الطلبات: {orders_created}'))
         self.stdout.write(self.style.SUCCESS(f'⭐ التقييمات: {reviews_created}'))
         self.stdout.write(self.style.SUCCESS('=' * 50)) 

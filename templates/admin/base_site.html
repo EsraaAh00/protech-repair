@@ -8,7 +8,13 @@
     <link rel="stylesheet" type="text/css" href="{% static 'admin/css/admin_custom.css' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* تخصيصات إضافية للموقع */
+        /* Set LTR direction */
+        body {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        /* Additional site customizations */
         .admin-header {
             background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%);
             color: white;
@@ -48,17 +54,17 @@
             text-decoration: underline;
         }
         
-        /* تحسين أيقونة الموقع */
+        /* Improve site logo */
         .site-logo {
             display: inline-block;
             font-size: 24px;
-            margin-left: 10px;
+            margin-right: 10px;
             vertical-align: middle;
         }
         
-        /* تحسين التنقل */
+        /* Improve navigation */
         .user-tools {
-            float: left;
+            float: right;
             margin-top: 10px;
         }
         
@@ -75,7 +81,7 @@
             background: rgba(255, 255, 255, 0.1);
         }
         
-        /* إضافة رسالة ترحيب */
+        /* Add welcome message */
         .welcome-message {
             background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
             padding: 15px 20px;
@@ -96,7 +102,7 @@
             font-size: 14px;
         }
         
-        /* تحسين footer */
+        /* Improve footer */
         .footer {
             background: #f8f9fa;
             padding: 20px;
@@ -123,19 +129,19 @@
         <span class="site-logo">🏛️</span>
         <a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a>
     </h1>
-    <div class="subtitle">نظام إدارة متكامل لموقع التجارة الإلكترونية</div>
+    <div class="subtitle">Comprehensive E-Commerce Management System</div>
 </div>
 {% endblock %}
 
 {% block nav-global %}
     <div class="user-tools">
         {% if has_permission %}
-            <a href="{% url 'admin:index' %}">🏠 الرئيسية</a>
+            <a href="{% url 'admin:index' %}">🏠 Home</a>
             {% if user.is_superuser %}
-                <a href="/admin/statistics/">📊 الإحصائيات</a>
+                <a href="/admin/statistics/">📊 Statistics</a>
             {% endif %}
-            <a href="{% url 'admin:password_change' %}">🔑 تغيير كلمة المرور</a>
-            <a href="{% url 'admin:logout' %}">🚪 تسجيل الخروج</a>
+            <a href="{% url 'admin:password_change' %}">🔑 Change Password</a>
+            <a href="{% url 'admin:logout' %}">🚪 Logout</a>
         {% endif %}
     </div>
 {% endblock %}
@@ -153,8 +159,8 @@
     
     {% if user.is_authenticated and user.is_staff %}
         <div class="welcome-message">
-            <h3>مرحباً {{ user.get_full_name|default:user.username }}! 👋</h3>
-            <p>أهلاً وسهلاً بك في لوحة التحكم الخاصة بموقع Dalal Alsaudia</p>
+            <h3>Welcome {{ user.get_full_name|default:user.username }}! 👋</h3>
+            <p>Welcome to ProTech Repair Control Panel</p>
         </div>
     {% endif %}
     
@@ -164,13 +170,13 @@
 {% block footer %}
     <div class="footer">
         <p>
-            © 2024 Dalal Alsaudia - جميع الحقوق محفوظة | 
-            <a href="/">زيارة الموقع الرئيسي</a> | 
-            <a href="mailto:admin@dalalsaudi.com">تواصل معنا</a>
+            © 2024 ProTech Repair - All Rights Reserved | 
+            <a href="/">Visit Main Site</a> | 
+            <a href="mailto:admin@protechrepair.com">Contact Us</a>
         </p>
         <p style="font-size: 12px; margin-top: 10px;">
-            آخر تحديث: {% now "Y/m/d H:i" %} | 
-            إصدار النظام: 1.0.0
+            Last Update: {% now "Y/m/d H:i" %} | 
+            System Version: 1.0.0
         </p>
     </div>
-{% endblock %} 
+{% endblock %}

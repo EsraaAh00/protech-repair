@@ -5,6 +5,11 @@
 
 {% block extrahead %}
 <style>
+    body {
+        direction: ltr;
+        text-align: left;
+    }
+    
     .dashboard-welcome {
         background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%);
         color: white;
@@ -76,7 +81,7 @@
         padding: 10px 0;
         border-bottom: 1px solid #f0f0f0;
         display: flex;
-        justify-content: between;
+        justify-content: space-between;
         align-items: center;
     }
     
@@ -128,61 +133,69 @@
     
     .badge-warning { background: #ffc107; color: #212529; }
     .badge-success { background: #28a745; }
+    
+    .data-table th {
+        text-align: left;
+    }
+    
+    .data-table td {
+        text-align: left;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
-    <!-- ترحيب -->
+    <!-- Welcome -->
     <div class="dashboard-welcome">
-        <h1 style="margin: 0 0 10px 0;">🎯 مرحباً في لوحة التحكم</h1>
-        <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;">إدارة موقع Dalal Alsaudia</p>
+        <h1 style="margin: 0 0 10px 0;">🎯 Welcome to Dashboard</h1>
+        <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;">ProTech Repair Management</p>
     </div>
     
-    <!-- إحصائيات سريعة -->
+    <!-- Quick Stats -->
     {% if quick_stats %}
     <div class="quick-stats">
         <div class="stat-box products">
             <div class="stat-number" style="color: #007bff;">{{ quick_stats.total_products }}</div>
-            <div class="stat-label">إجمالي المنتجات</div>
+            <div class="stat-label">Total Products</div>
         </div>
         <div class="stat-box pending">
             <div class="stat-number" style="color: #ffc107;">{{ quick_stats.pending_approval }}</div>
-            <div class="stat-label">بانتظار الموافقة</div>
+            <div class="stat-label">Pending Approval</div>
         </div>
         <div class="stat-box users">
             <div class="stat-number" style="color: #28a745;">{{ quick_stats.new_users_today }}</div>
-            <div class="stat-label">مستخدمين جدد اليوم</div>
+            <div class="stat-label">New Users Today</div>
         </div>
         <div class="stat-box revenue">
             <div class="stat-number" style="color: #17a2b8;">{{ quick_stats.total_revenue|floatformat:0 }}</div>
-            <div class="stat-label">إجمالي المبيعات (ر.س)</div>
+            <div class="stat-label">Total Revenue (SAR)</div>
         </div>
     </div>
     {% endif %}
     
-    <!-- إجراءات سريعة -->
+    <!-- Quick Actions -->
     <div class="quick-actions">
         <a href="{% url 'admin:products_product_add' %}" class="action-btn">
-            ➕ إضافة منتج
+            ➕ Add Product
         </a>
         <a href="{% url 'admin:users_user_add' %}" class="action-btn">
-            👤 إضافة مستخدم
+            👤 Add User
         </a>
         <a href="{% url 'admin:categories_category_add' %}" class="action-btn">
-            🏷️ إضافة فئة
+            🏷️ Add Category
         </a>
         <a href="/admin/statistics/" class="action-btn">
-            📊 الإحصائيات
+            📊 Statistics
         </a>
     </div>
     
     <div class="row">
-        <!-- المنتجات المعلقة -->
+        <!-- Pending Products -->
         {% if pending_products %}
         <div class="col-6">
             <div class="pending-items">
-                <h3 style="margin-bottom: 20px; color: #333;">⏳ منتجات بانتظار الموافقة</h3>
+                <h3 style="margin-bottom: 20px; color: #333;">⏳ Products Pending Approval</h3>
                 <ul class="item-list">
                     {% for product in pending_products %}
                     <li>
@@ -191,24 +204,24 @@
                             <small style="color: #666;">{{ product.seller.username }} - {{ product.category.name }}</small>
                         </div>
                         <div>
-                            <span class="badge badge-warning">معلق</span>
+                            <span class="badge badge-warning">Pending</span>
                         </div>
                     </li>
                     {% endfor %}
                 </ul>
                 <div style="text-align: center; margin-top: 15px;">
                     <a href="{% url 'admin:products_product_changelist' %}?status=pending_approval" 
-                       style="color: #007bff; text-decoration: none; font-weight: bold;">عرض الكل →</a>
+                       style="color: #007bff; text-decoration: none; font-weight: bold;">View All →</a>
                 </div>
             </div>
         </div>
         {% endif %}
         
-        <!-- المستخدمين الجدد -->
+        <!-- Recent Users -->
         {% if recent_users %}
         <div class="col-6">
             <div class="recent-items">
-                <h3 style="margin-bottom: 20px; color: #333;">👥 آخر المستخدمين المسجلين</h3>
+                <h3 style="margin-bottom: 20px; color: #333;">👥 Recently Registered Users</h3>
                 <ul class="item-list">
                     {% for user in recent_users %}
                     <li>
@@ -217,14 +230,14 @@
                             <small style="color: #666;">{{ user.email }}</small>
                         </div>
                         <div>
-                            <span class="badge badge-success">نشط</span>
+                            <span class="badge badge-success">Active</span>
                         </div>
                     </li>
                     {% endfor %}
                 </ul>
                 <div style="text-align: center; margin-top: 15px;">
                     <a href="{% url 'admin:users_user_changelist' %}" 
-                       style="color: #007bff; text-decoration: none; font-weight: bold;">عرض الكل →</a>
+                       style="color: #007bff; text-decoration: none; font-weight: bold;">View All →</a>
                 </div>
             </div>
         </div>
@@ -232,16 +245,16 @@
     </div>
 </div>
 
-<!-- النماذج الافتراضية -->
+<!-- Default Models -->
 {% if app_list %}
     <div style="margin-top: 30px;">
-        <h2 style="color: #333; margin-bottom: 20px;">📋 إدارة النماذج</h2>
+        <h2 style="color: #333; margin-bottom: 20px;">📋 Model Management</h2>
         {% for app in app_list %}
             <div class="app-{{ app.app_label }} module" style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
                 <table>
                     <caption>
                         <h3 style="color: #2C5F7B; margin-bottom: 15px;">
-                            {% if app.app_label == 'products' %}🛍️{% elif app.app_label == 'categories' %}🏷️{% elif app.app_label == 'users' %}👥{% else %}📦{% endif %}
+                            {% if app.app_label == 'products' %}🛍️{% elif app.app_label == 'categories' %}🏷️{% elif app.app_label == 'auth' %}👥{% else %}📦{% endif %}
                             <a href="{{ app.app_url }}" class="section" title="{% blocktranslate with name=app.name %}Models in the {{ name }} application{% endblocktranslate %}">{{ app.name }}</a>
                         </h3>
                     </caption>
@@ -256,16 +269,16 @@
                             {% endif %}
 
                             {% if model.add_url %}
-                                <td><a href="{{ model.add_url }}" class="addlink" style="color: #28a745; text-decoration: none;">إضافة</a></td>
+                                <td><a href="{{ model.add_url }}" class="addlink" style="color: #28a745; text-decoration: none;">Add</a></td>
                             {% else %}
                                 <td>&nbsp;</td>
                             {% endif %}
 
                             {% if model.admin_url %}
                                 {% if model.view_only %}
-                                    <td><a href="{{ model.admin_url }}" class="viewlink" style="color: #17a2b8; text-decoration: none;">عرض</a></td>
+                                    <td><a href="{{ model.admin_url }}" class="viewlink" style="color: #17a2b8; text-decoration: none;">View</a></td>
                                 {% else %}
-                                    <td><a href="{{ model.admin_url }}" class="changelink" style="color: #ffc107; text-decoration: none;">تغيير</a></td>
+                                    <td><a href="{{ model.admin_url }}" class="changelink" style="color: #ffc107; text-decoration: none;">Change</a></td>
                                 {% endif %}
                             {% else %}
                                 <td>&nbsp;</td>
@@ -277,6 +290,6 @@
         {% endfor %}
     </div>
 {% else %}
-    <p style="text-align: center; color: #666; margin-top: 50px;">لا توجد نماذج متاحة.</p>
+    <p style="text-align: center; color: #666; margin-top: 50px;">No models available.</p>
 {% endif %}
-{% endblock %} 
+{% endblock %}

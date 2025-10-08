@@ -5,19 +5,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 from .admin import admin_site
-from messaging.views import mark_messages_read_admin
 
 urlpatterns = [
     path('admin/', admin_site.urls),
-    path('admin/mark-messages-read/', mark_messages_read_admin, name='admin_mark_messages_read'),
     path('', views.home_view, name='home'),
     path('users/', include('users.urls', namespace='users')),
     path('products/', include('products.urls', namespace='products')),
     path('categories/', include('categories.urls', namespace='categories')),
-    path('messaging/', include('messaging.urls', namespace='messaging')),
-    path('admin-panel/', include('admin_panel.urls', namespace='admin_panel')),
     path('reviews/', include('reviews.urls', namespace='reviews')),
     path('orders/', include('orders.urls', namespace='orders')),
+    path('accounts/', include('django.contrib.auth.urls')),  # Default auth URLs
 ]
 
 if settings.DEBUG:

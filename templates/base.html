@@ -514,26 +514,24 @@
                             <i class="fas fa-user me-1"></i>{{ user.first_name|default:user.username }}
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'users:profile' %}">الملف الشخصي</a></li>
                             <li><a class="dropdown-item" href="{% url 'products:add' %}">إضافة منتج</a></li>
                             <li><a class="dropdown-item" href="{% url 'products:my_products' %}">منتجاتي</a></li>
                             <li><a class="dropdown-item" href="{% url 'orders:my_orders' %}">طلباتي</a></li>
-                            <li><a class="dropdown-item" href="{% url 'messaging:inbox' %}">الرسائل</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{% url 'users:logout' %}">تسجيل الخروج</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">تسجيل الخروج</a></li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:login' %}">
+                        <a class="nav-link" href="{% url 'login' %}">
                             <i class="fas fa-sign-in-alt me-1"></i>دخول
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:register' %}">
-                            <i class="fas fa-user-plus me-1"></i>تسجيل
+                        <a class="nav-link" href="/admin/">
+                            <i class="fas fa-user-plus me-1"></i>الإدارة
                         </a>
                     </li>
                     {% endif %}

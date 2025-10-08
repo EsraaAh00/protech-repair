@@ -1,10 +1,15 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
 
-{% block title %}إحصائيات الموقع{% endblock %}
+{% block title %}Site Statistics{% endblock %}
 
 {% block extrahead %}
 <style>
+    body {
+        direction: ltr;
+        text-align: left;
+    }
+    
     .dashboard-stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -72,13 +77,14 @@
     .data-table th {
         background: #f8f9fa;
         padding: 12px;
-        text-align: right;
+        text-align: left;
         border-bottom: 2px solid #e9ecef;
         font-weight: 600;
     }
     
     .data-table td {
         padding: 12px;
+        text-align: left;
         border-bottom: 1px solid #e9ecef;
     }
     
@@ -118,58 +124,58 @@
 
 {% block content %}
 <div class="dashboard-container">
-    <h1 style="margin-bottom: 30px; color: #333; font-weight: 600;">📊 إحصائيات الموقع الشاملة</h1>
+    <h1 style="margin-bottom: 30px; color: #333; font-weight: 600;">📊 Comprehensive Site Statistics</h1>
     
-    <!-- إحصائيات سريعة -->
+    <!-- Quick Statistics -->
     <div class="dashboard-stats">
         <div class="stat-card products">
             <div class="icon">📦</div>
             <div class="stat-number" style="color: #007bff;">{{ total_products|floatformat:0 }}</div>
-            <div class="stat-label">إجمالي المنتجات</div>
+            <div class="stat-label">Total Products</div>
             <div>
-                <span class="badge badge-success">{{ active_products }} نشط</span>
-                <span class="badge badge-warning">{{ pending_products }} بانتظار الموافقة</span>
-                <span class="badge badge-info">{{ sold_products }} مباع</span>
+                <span class="badge badge-success">{{ active_products }} Active</span>
+                <span class="badge badge-warning">{{ pending_products }} Pending</span>
+                <span class="badge badge-info">{{ sold_products }} Sold</span>
             </div>
         </div>
         
         <div class="stat-card users">
             <div class="icon">👥</div>
             <div class="stat-number" style="color: #28a745;">{{ total_users|floatformat:0 }}</div>
-            <div class="stat-label">إجمالي المستخدمين</div>
+            <div class="stat-label">Total Users</div>
             <div>
-                <span class="badge badge-success">{{ active_users }} نشط</span>
-                <span class="badge badge-info">{{ new_users_week }} جديد هذا الأسبوع</span>
+                <span class="badge badge-success">{{ active_users }} Active</span>
+                <span class="badge badge-info">{{ new_users_week }} New This Week</span>
             </div>
         </div>
         
         <div class="stat-card revenue">
             <div class="icon">💰</div>
             <div class="stat-number" style="color: #ffc107;">{{ total_revenue|floatformat:0 }}</div>
-            <div class="stat-label">إجمالي المبيعات (ر.س)</div>
-            <div class="badge badge-success">من المنتجات المباعة</div>
+            <div class="stat-label">Total Revenue (SAR)</div>
+            <div class="badge badge-success">From Sold Products</div>
         </div>
         
         <div class="stat-card categories">
             <div class="icon">🏷️</div>
             <div class="stat-number" style="color: #17a2b8;">{{ total_categories }}</div>
-            <div class="stat-label">عدد الفئات</div>
-            <div class="badge badge-info">فئات نشطة</div>
+            <div class="stat-label">Number of Categories</div>
+            <div class="badge badge-info">Active Categories</div>
         </div>
     </div>
     
     <div class="row">
-        <!-- المنتجات الأكثر مشاهدة -->
+        <!-- Most Viewed Products -->
         <div class="col-6">
             <div class="table-container">
-                <h3 style="margin-bottom: 20px; color: #333;">🔥 المنتجات الأكثر مشاهدة</h3>
+                <h3 style="margin-bottom: 20px; color: #333;">🔥 Most Viewed Products</h3>
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>المنتج</th>
-                            <th>الفئة</th>
-                            <th>المشاهدات</th>
-                            <th>السعر</th>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Views</th>
+                            <th>Price</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -181,13 +187,13 @@
                             </td>
                             <td>{{ product.category.name }}</td>
                             <td>
-                                <span class="badge badge-info">{{ product.views_count }} مشاهدة</span>
+                                <span class="badge badge-info">{{ product.views_count }} views</span>
                             </td>
-                            <td style="color: #28a745; font-weight: bold;">{{ product.price|floatformat:0 }} ر.س</td>
+                            <td style="color: #28a745; font-weight: bold;">{{ product.price|floatformat:0 }} SAR</td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="4" style="text-align: center; color: #666;">لا توجد منتجات حالياً</td>
+                            <td colspan="4" style="text-align: center; color: #666;">No products available</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -195,17 +201,17 @@
             </div>
         </div>
         
-        <!-- البائعين الأكثر نشاطاً -->
+        <!-- Most Active Sellers -->
         <div class="col-6">
             <div class="table-container">
-                <h3 style="margin-bottom: 20px; color: #333;">⭐ البائعين الأكثر نشاطاً</h3>
+                <h3 style="margin-bottom: 20px; color: #333;">⭐ Most Active Sellers</h3>
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>البائع</th>
-                            <th>البريد الإلكتروني</th>
-                            <th>عدد المنتجات</th>
-                            <th>تاريخ التسجيل</th>
+                            <th>Seller</th>
+                            <th>Email</th>
+                            <th>Product Count</th>
+                            <th>Join Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -214,18 +220,18 @@
                             <td>
                                 <strong>{{ seller.get_full_name|default:seller.username }}</strong>
                                 {% if seller.is_staff %}
-                                    <span class="badge badge-warning">موظف</span>
+                                    <span class="badge badge-warning">Staff</span>
                                 {% endif %}
                             </td>
                             <td>{{ seller.email }}</td>
                             <td>
-                                <span class="badge badge-success">{{ seller.products_count }} منتج</span>
+                                <span class="badge badge-success">{{ seller.products_count }} products</span>
                             </td>
                             <td>{{ seller.date_joined|date:"Y/m/d" }}</td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="4" style="text-align: center; color: #666;">لا يوجد بائعين حالياً</td>
+                            <td colspan="4" style="text-align: center; color: #666;">No sellers available</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -234,17 +240,17 @@
         </div>
     </div>
     
-    <!-- إحصائيات الفئات -->
+    <!-- Category Statistics -->
     <div class="table-container">
-        <h3 style="margin-bottom: 20px; color: #333;">📊 إحصائيات الفئات</h3>
+        <h3 style="margin-bottom: 20px; color: #333;">📊 Category Statistics</h3>
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>اسم الفئة</th>
-                    <th>إجمالي المنتجات</th>
-                    <th>المنتجات النشطة</th>
-                    <th>النسبة المئوية</th>
-                    <th>الحالة</th>
+                    <th>Category Name</th>
+                    <th>Total Products</th>
+                    <th>Active Products</th>
+                    <th>Percentage</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -269,42 +275,42 @@
                     </td>
                     <td>
                         {% if category.active_products > 0 %}
-                            <span class="badge badge-success">نشطة</span>
+                            <span class="badge badge-success">Active</span>
                         {% else %}
-                            <span class="badge badge-danger">غير نشطة</span>
+                            <span class="badge badge-danger">Inactive</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" style="text-align: center; color: #666;">لا توجد فئات حالياً</td>
+                    <td colspan="5" style="text-align: center; color: #666;">No categories available</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     
-    <!-- روابط سريعة -->
+    <!-- Quick Links -->
     <div class="table-container">
-        <h3 style="margin-bottom: 20px; color: #333;">🔗 روابط سريعة للإدارة</h3>
+        <h3 style="margin-bottom: 20px; color: #333;">🔗 Quick Management Links</h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
             <a href="{% url 'admin:products_product_changelist' %}" 
                style="background: #007bff; color: white; padding: 15px; border-radius: 10px; text-decoration: none; text-align: center; font-weight: bold;">
-                📦 إدارة المنتجات
+                📦 Manage Products
             </a>
             <a href="{% url 'admin:users_user_changelist' %}" 
                style="background: #28a745; color: white; padding: 15px; border-radius: 10px; text-decoration: none; text-align: center; font-weight: bold;">
-                👥 إدارة المستخدمين
+                👥 Manage Users
             </a>
             <a href="{% url 'admin:categories_category_changelist' %}" 
                style="background: #17a2b8; color: white; padding: 15px; border-radius: 10px; text-decoration: none; text-align: center; font-weight: bold;">
-                🏷️ إدارة الفئات
+                🏷️ Manage Categories
             </a>
             <a href="{% url 'admin:products_product_changelist' %}?status=pending_approval" 
                style="background: #ffc107; color: #212529; padding: 15px; border-radius: 10px; text-decoration: none; text-align: center; font-weight: bold;">
-                ⏳ المنتجات المعلقة
+                ⏳ Pending Products
             </a>
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
