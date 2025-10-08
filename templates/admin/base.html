@@ -38,6 +38,134 @@
         color: white !important;
         transform: translateX(2px);
     }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        /* Hide sidebar on mobile, show toggle button */
+        .sidebar-wrapper {
+            position: fixed;
+            left: -280px;
+            top: 0;
+            height: 100vh;
+            z-index: 1000;
+            transition: left 0.3s ease;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-wrapper.active {
+            left: 0;
+        }
+        
+        .content-wrapper {
+            width: 100% !important;
+            flex: none !important;
+        }
+        
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: block !important;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        /* Header adjustments */
+        .admin-header {
+            padding: 8px 15px !important;
+        }
+        
+        .admin-header h1 {
+            font-size: 16px !important;
+        }
+        
+        /* Table responsive */
+        #content table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        /* Form adjustments */
+        .form-row {
+            flex-direction: column !important;
+        }
+        
+        /* Breadcrumbs */
+        .breadcrumbs {
+            padding: 8px 15px !important;
+            font-size: 12px !important;
+        }
+        
+        /* Dashboard stats */
+        .quick-stats {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+            gap: 10px !important;
+        }
+        
+        .stat-box {
+            padding: 12px !important;
+        }
+        
+        .stat-number {
+            font-size: 1.4rem !important;
+        }
+        
+        /* Quick actions */
+        .quick-actions {
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+            gap: 8px !important;
+        }
+        
+        .action-btn {
+            padding: 8px !important;
+            font-size: 12px !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        /* Extra small devices */
+        .quick-stats {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .quick-actions {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .row {
+            flex-direction: column !important;
+        }
+        
+        .admin-header h1 {
+            font-size: 14px !important;
+        }
+        
+        .site-logo {
+            font-size: 14px !important;
+        }
+    }
+    
+    /* Desktop - hide mobile menu */
+    @media (min-width: 769px) {
+        .mobile-menu-toggle {
+            display: none !important;
+        }
+        
+        .sidebar-wrapper {
+            position: relative !important;
+        }
+    }
 </style>
 </head>
 
@@ -99,10 +227,17 @@
     {% endif %}
 
     <div class="main" id="main">
+      <!-- Mobile Menu Toggle Button -->
+      <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Toggle Menu">
+        ☰
+      </button>
+      
       <!-- Custom Sidebar for all pages -->
       <div style="display: flex; gap: 20px; padding: 20px;">
-        {% include 'admin/sidebar.html' %}
-        <div style="flex: 1;">
+        <div class="sidebar-wrapper">
+          {% include 'admin/sidebar.html' %}
+        </div>
+        <div class="content-wrapper" style="flex: 1;">
           <div id="content-start" class="content" tabindex="-1">
         {% block messages %}
           {% if messages %}
@@ -132,5 +267,33 @@
 </div>
 <!-- END Container -->
 {% block extrajs %}{% endblock %}
+
+<!-- Mobile Sidebar Toggle Script -->
+<script>
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar-wrapper');
+    sidebar.classList.toggle('active');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.querySelector('.sidebar-wrapper');
+    const toggleBtn = document.querySelector('.mobile-menu-toggle');
+    
+    if (window.innerWidth <= 768) {
+        if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+            sidebar.classList.remove('active');
+        }
+    }
+});
+
+// Handle window resize
+window.addEventListener('resize', function() {
+    const sidebar = document.querySelector('.sidebar-wrapper');
+    if (window.innerWidth > 768) {
+        sidebar.classList.remove('active');
+    }
+});
+</script>
 </body>
 </html>

@@ -8,14 +8,14 @@ class ProductCategory(models.Model):
     فئات المنتجات (مثل: فتاحات الأبواب، الأبواب، الإكسسوارات)
     Product Categories (e.g., Openers, Doors, Accessories)
     """
-    name = models.CharField(max_length=100, verbose_name="اسم الفئة")
-    name_en = models.CharField(max_length=100, verbose_name="Category Name", blank=True)
+    name = models.CharField(max_length=100, verbose_name="Category Name")
+    name_en = models.CharField(max_length=100, verbose_name="Category Name (English)", blank=True)
     slug = models.SlugField(unique=True, blank=True)
-    description = models.TextField(blank=True, verbose_name="الوصف")
+    description = models.TextField(blank=True, verbose_name="Description")
     icon = models.CharField(max_length=50, blank=True, help_text="FontAwesome icon class")
-    image = models.ImageField(upload_to='categories/', blank=True, null=True, verbose_name="صورة")
-    order = models.IntegerField(default=0, verbose_name="الترتيب")
-    is_active = models.BooleanField(default=True, verbose_name="نشط")
+    image = models.ImageField(upload_to='categories/', blank=True, null=True, verbose_name="Image")
+    order = models.IntegerField(default=0, verbose_name="Order")
+    is_active = models.BooleanField(default=True, verbose_name="Active")
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -44,37 +44,37 @@ class Product(models.Model):
         ('part', 'قطعة غيار / Part'),
     ]
     
-    name = models.CharField(max_length=200, verbose_name="اسم المنتج")
-    name_en = models.CharField(max_length=200, verbose_name="Product Name", blank=True)
+    name = models.CharField(max_length=200, verbose_name="Product Name")
+    name_en = models.CharField(max_length=200, verbose_name="Product Name (English)", blank=True)
     slug = models.SlugField(unique=True, blank=True)
-    model_number = models.CharField(max_length=50, blank=True, verbose_name="رقم الموديل")
+    model_number = models.CharField(max_length=50, blank=True, verbose_name="Model Number")
     
     category = models.ForeignKey(
         ProductCategory, 
         on_delete=models.SET_NULL, 
         null=True,
         related_name='products',
-        verbose_name="الفئة"
+        verbose_name="Category"
     )
     product_type = models.CharField(
         max_length=20, 
         choices=PRODUCT_TYPE_CHOICES,
         default='opener',
-        verbose_name="نوع المنتج"
+        verbose_name="Product Type"
     )
     
-    brand = models.CharField(max_length=100, blank=True, verbose_name="العلامة التجارية")
+    brand = models.CharField(max_length=100, blank=True, verbose_name="Brand")
     
-    short_description = models.CharField(max_length=300, blank=True, verbose_name="وصف مختصر")
-    description = models.TextField(verbose_name="الوصف")
+    short_description = models.CharField(max_length=300, blank=True, verbose_name="Short Description")
+    description = models.TextField(verbose_name="Description")
     features = models.TextField(
         blank=True,
-        verbose_name="المميزات",
+        verbose_name="Features",
         help_text="One feature per line"
     )
     specifications = models.TextField(
         blank=True,
-        verbose_name="المواصفات التقنية",
+        verbose_name="Specifications",
         help_text="One specification per line"
     )
     
@@ -84,18 +84,21 @@ class Product(models.Model):
         decimal_places=2, 
         blank=True, 
         null=True,
-        verbose_name="السعر"
+        verbose_name="Price"
     )
     
     # Main image
-    image = models.ImageField(upload_to='product_images/', blank=True, null=True, verbose_name="الصورة الرئيسية")
+    image = models.ImageField(upload_to='product_images/', blank=True, null=True, verbose_name="Main Image")
+    
+    # PDF Documentation
+    pdf_url = models.URLField(max_length=500, blank=True, verbose_name="PDF URL", help_text="URL to product PDF documentation")
     
     # Display options
-    is_featured = models.BooleanField(default=False, verbose_name="منتج مميز")
-    is_best_seller = models.BooleanField(default=False, verbose_name="الأكثر مبيعاً")
-    is_new = models.BooleanField(default=False, verbose_name="جديد")
-    order = models.IntegerField(default=0, verbose_name="الترتيب")
-    is_active = models.BooleanField(default=True, verbose_name="نشط")
+    is_featured = models.BooleanField(default=False, verbose_name="Featured")
+    is_best_seller = models.BooleanField(default=False, verbose_name="Best Seller")
+    is_new = models.BooleanField(default=False, verbose_name="New")
+    order = models.IntegerField(default=0, verbose_name="Order")
+    is_active = models.BooleanField(default=True, verbose_name="Active")
     
     # SEO
     meta_title = models.CharField(max_length=200, blank=True)
@@ -104,7 +107,7 @@ class Product(models.Model):
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    views_count = models.IntegerField(default=0, verbose_name="عدد المشاهدات")
+    views_count = models.IntegerField(default=0, verbose_name="Views Count")
     
     class Meta:
         verbose_name = "Product"
@@ -140,9 +143,9 @@ class ProductImage(models.Model):
     Additional product images
     """
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='product_images/', verbose_name="صورة")
-    title = models.CharField(max_length=200, blank=True, verbose_name="العنوان")
-    is_main = models.BooleanField(default=False, verbose_name="صورة رئيسية")
+    image = models.ImageField(upload_to='product_images/', verbose_name="Image")
+    title = models.CharField(max_length=200, blank=True, verbose_name="Title")
+    is_main = models.BooleanField(default=False, verbose_name="Main Image")
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     

@@ -113,6 +113,44 @@
             color: white !important;
             transform: translateX(2px);
         }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .admin-header {
+                padding: 8px 15px !important;
+            }
+            
+            .admin-header h1 {
+                font-size: 16px !important;
+            }
+            
+            .site-logo {
+                font-size: 16px !important;
+            }
+            
+            .welcome-message {
+                padding: 10px 15px !important;
+            }
+            
+            .welcome-message h3 {
+                font-size: 16px !important;
+            }
+            
+            .welcome-message p {
+                font-size: 12px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-header h1 {
+                font-size: 14px !important;
+            }
+            
+            .site-logo {
+                font-size: 14px !important;
+                margin-right: 4px !important;
+            }
+        }
     </style>
 {% endblock %}
 

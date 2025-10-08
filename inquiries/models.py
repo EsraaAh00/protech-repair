@@ -26,17 +26,17 @@ class ContactInquiry(models.Model):
     ]
     
     # Customer information
-    name = models.CharField(max_length=200, verbose_name="الاسم")
-    email = models.EmailField(blank=True, verbose_name="البريد الإلكتروني")
-    phone = models.CharField(max_length=20, verbose_name="رقم الهاتف")
-    address = models.CharField(max_length=500, blank=True, verbose_name="العنوان")
+    name = models.CharField(max_length=200, verbose_name="Name")
+    email = models.EmailField(blank=True, verbose_name="Email")
+    phone = models.CharField(max_length=20, verbose_name="Phone")
+    address = models.CharField(max_length=500, blank=True, verbose_name="Address")
     
     # Inquiry details
     inquiry_type = models.CharField(
         max_length=20,
         choices=INQUIRY_TYPE_CHOICES,
         default='general',
-        verbose_name="نوع الاستفسار"
+        verbose_name="Inquiry Type"
     )
     service_needed = models.ForeignKey(
         Service,
@@ -44,7 +44,7 @@ class ContactInquiry(models.Model):
         null=True,
         blank=True,
         related_name='inquiries',
-        verbose_name="الخدمة المطلوبة"
+        verbose_name="Service Needed"
     )
     product_interest = models.ForeignKey(
         Product,
@@ -52,34 +52,34 @@ class ContactInquiry(models.Model):
         null=True,
         blank=True,
         related_name='inquiries',
-        verbose_name="المنتج المهتم به"
+        verbose_name="Product Interest"
     )
-    message = models.TextField(verbose_name="الرسالة")
+    message = models.TextField(verbose_name="Message")
     
     # Status and tracking
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default='new',
-        verbose_name="الحالة"
+        verbose_name="Status"
     )
     
     # WhatsApp notification
-    whatsapp_sent = models.BooleanField(default=False, verbose_name="تم إرسال واتساب")
-    whatsapp_sent_at = models.DateTimeField(null=True, blank=True, verbose_name="وقت إرسال واتساب")
-    whatsapp_error = models.TextField(blank=True, verbose_name="خطأ واتساب")
+    whatsapp_sent = models.BooleanField(default=False, verbose_name="WhatsApp Sent")
+    whatsapp_sent_at = models.DateTimeField(null=True, blank=True, verbose_name="WhatsApp Sent At")
+    whatsapp_error = models.TextField(blank=True, verbose_name="WhatsApp Error")
     
     # Admin notes
-    admin_notes = models.TextField(blank=True, verbose_name="ملاحظات الإدارة")
+    admin_notes = models.TextField(blank=True, verbose_name="Admin Notes")
     
     # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الإنشاء")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="تاريخ التحديث")
-    contacted_at = models.DateTimeField(null=True, blank=True, verbose_name="تاريخ التواصل")
-    completed_at = models.DateTimeField(null=True, blank=True, verbose_name="تاريخ الإكمال")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+    contacted_at = models.DateTimeField(null=True, blank=True, verbose_name="Contacted At")
+    completed_at = models.DateTimeField(null=True, blank=True, verbose_name="Completed At")
     
     # IP and User Agent for spam prevention
-    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name="عنوان IP")
+    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name="IP Address")
     user_agent = models.CharField(max_length=500, blank=True, verbose_name="User Agent")
     
     class Meta:
@@ -141,11 +141,11 @@ class InquiryNote(models.Model):
         ContactInquiry,
         on_delete=models.CASCADE,
         related_name='notes',
-        verbose_name="الاستفسار"
+        verbose_name="Inquiry"
     )
-    note = models.TextField(verbose_name="الملاحظة")
-    created_by = models.CharField(max_length=100, blank=True, verbose_name="أنشأها")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الإنشاء")
+    note = models.TextField(verbose_name="Note")
+    created_by = models.CharField(max_length=100, blank=True, verbose_name="Created By")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
     
     class Meta:
         verbose_name = "Inquiry Note"
@@ -165,11 +165,11 @@ class InquiryAttachment(models.Model):
         ContactInquiry,
         on_delete=models.CASCADE,
         related_name='attachments',
-        verbose_name="الاستفسار"
+        verbose_name="Inquiry"
     )
-    file = models.FileField(upload_to='inquiry_attachments/', verbose_name="الملف")
-    description = models.CharField(max_length=200, blank=True, verbose_name="الوصف")
-    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الرفع")
+    file = models.FileField(upload_to='inquiry_attachments/', verbose_name="File")
+    description = models.CharField(max_length=200, blank=True, verbose_name="Description")
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Uploaded At")
     
     class Meta:
         verbose_name = "Inquiry Attachment"

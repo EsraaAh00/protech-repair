@@ -7,13 +7,13 @@ class ServiceCategory(models.Model):
     فئات الخدمات (مثل: خدمات الصيانة، خدمات التركيب)
     Service Categories (e.g., Repair Services, Installation Services)
     """
-    name = models.CharField(max_length=100, verbose_name="اسم الفئة")
-    name_en = models.CharField(max_length=100, verbose_name="Category Name", blank=True)
+    name = models.CharField(max_length=100, verbose_name="Category Name")
+    name_en = models.CharField(max_length=100, verbose_name="Category Name (English)", blank=True)
     slug = models.SlugField(unique=True, blank=True)
-    description = models.TextField(blank=True, verbose_name="الوصف")
+    description = models.TextField(blank=True, verbose_name="Description")
     icon = models.CharField(max_length=50, blank=True, help_text="FontAwesome icon class (e.g., fa-wrench)")
-    order = models.IntegerField(default=0, verbose_name="الترتيب")
-    is_active = models.BooleanField(default=True, verbose_name="نشط")
+    order = models.IntegerField(default=0, verbose_name="Order")
+    is_active = models.BooleanField(default=True, verbose_name="Active")
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -35,8 +35,8 @@ class Service(models.Model):
     الخدمات المقدمة (مثل: إصلاح الزنبرك، تركيب الفتاحة)
     Services offered (e.g., Spring Repair, Opener Installation)
     """
-    title = models.CharField(max_length=200, verbose_name="عنوان الخدمة")
-    title_en = models.CharField(max_length=200, verbose_name="Service Title", blank=True)
+    title = models.CharField(max_length=200, verbose_name="Service Title")
+    title_en = models.CharField(max_length=200, verbose_name="Service Title (English)", blank=True)
     slug = models.SlugField(unique=True, blank=True)
     category = models.ForeignKey(
         ServiceCategory, 
@@ -44,12 +44,12 @@ class Service(models.Model):
         null=True, 
         blank=True,
         related_name='services',
-        verbose_name="الفئة"
+        verbose_name="Category"
     )
-    short_description = models.CharField(max_length=300, blank=True, verbose_name="وصف مختصر")
-    description = models.TextField(verbose_name="الوصف")
+    short_description = models.CharField(max_length=300, blank=True, verbose_name="Short Description")
+    description = models.TextField(verbose_name="Description")
     icon = models.CharField(max_length=50, blank=True, help_text="FontAwesome icon class")
-    image = models.ImageField(upload_to='services/', blank=True, null=True, verbose_name="صورة")
+    image = models.ImageField(upload_to='services/', blank=True, null=True, verbose_name="Image")
     
     # Pricing
     starting_price = models.DecimalField(
@@ -57,21 +57,21 @@ class Service(models.Model):
         decimal_places=2, 
         blank=True, 
         null=True,
-        verbose_name="السعر الابتدائي",
+        verbose_name="Starting Price",
         help_text="Starting price (optional)"
     )
     
     # Features - what's included
     features = models.TextField(
         blank=True,
-        verbose_name="المميزات",
+        verbose_name="Features",
         help_text="One feature per line"
     )
     
     # Display options
-    order = models.IntegerField(default=0, verbose_name="الترتيب")
-    is_active = models.BooleanField(default=True, verbose_name="نشط")
-    is_featured = models.BooleanField(default=False, verbose_name="خدمة مميزة")
+    order = models.IntegerField(default=0, verbose_name="Order")
+    is_active = models.BooleanField(default=True, verbose_name="Active")
+    is_featured = models.BooleanField(default=False, verbose_name="Featured")
     
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
@@ -103,10 +103,10 @@ class ServiceImage(models.Model):
     Additional images for services (before/after, examples)
     """
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='services/gallery/', verbose_name="صورة")
-    title = models.CharField(max_length=200, blank=True, verbose_name="العنوان")
-    caption = models.CharField(max_length=300, blank=True, verbose_name="التعليق")
-    is_before_after = models.BooleanField(default=False, verbose_name="صورة قبل وبعد")
+    image = models.ImageField(upload_to='services/gallery/', verbose_name="Image")
+    title = models.CharField(max_length=200, blank=True, verbose_name="Title")
+    caption = models.CharField(max_length=300, blank=True, verbose_name="Caption")
+    is_before_after = models.BooleanField(default=False, verbose_name="Before/After Image")
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     

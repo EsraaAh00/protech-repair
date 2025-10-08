@@ -148,6 +148,76 @@
     .main {
         padding: 20px;
     }
+    
+    /* Responsive Design for Dashboard */
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 10px;
+        }
+        
+        .quick-stats {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+            gap: 10px !important;
+        }
+        
+        .stat-box {
+            padding: 12px !important;
+        }
+        
+        .stat-number {
+            font-size: 1.4rem !important;
+        }
+        
+        .quick-actions {
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+            gap: 8px !important;
+        }
+        
+        .action-btn {
+            padding: 8px !important;
+            font-size: 12px !important;
+        }
+        
+        .row {
+            flex-direction: column !important;
+        }
+        
+        .welcome-message {
+            padding: 10px 15px !important;
+        }
+        
+        .welcome-message h3 {
+            font-size: 16px !important;
+        }
+        
+        .welcome-message p {
+            font-size: 12px !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .quick-stats {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .quick-actions {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .pending-items, .recent-items {
+            padding: 12px !important;
+        }
+        
+        .pending-items h3, .recent-items h3 {
+            font-size: 16px !important;
+        }
+        
+        .item-list li {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 8px;
+        }
+    }
 </style>
 {% endblock %}
 
