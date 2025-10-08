@@ -12,3 +12,4 @@ __pycache__/
 db.sqlite3
 venv/Lib/site-packages/distutils-precedence.pth
 venv/Scripts/python.exe
+db.sqlite3
