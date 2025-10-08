@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     'products',
     'services',
     'inquiries',
-    # 'categories',  # Kept for reference, but not used in new structure
     # 'orders',  # Replaced by inquiries
 ]
 
