@@ -414,3 +414,6 @@ This project is specifically developed for ProTech Garage Doors.
 - License: #1070155
 
 ---
+
+
+-python manage.py add_services

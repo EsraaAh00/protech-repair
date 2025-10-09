@@ -27,7 +27,14 @@
         <div style="padding-left: 10px;">
             <a href="{% url 'admin:inquiries_contactinquiry_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Contact Inquiries</a>
             <a href="{% url 'admin:inquiries_inquirynote_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Notes</a>
-            <a href="{% url 'admin:inquiries_inquiryattachment_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Attachments</a>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+        <h4 style="background: linear-gradient(135deg, #2C5F7B 0%, #1e3a52 100%); color: white; padding: 8px 12px; border-radius: 6px; margin: 0 0 8px 0; font-size: 12px; font-weight: 600; text-transform: uppercase;">📸 Portfolio</h4>
+        <div style="padding-left: 10px;">
+            <a href="{% url 'admin:inquiries_recentwork_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Recent Works</a>
+            <a href="{% url 'admin:inquiries_review_changelist' %}" class="sidebar-link" style="display: block; color: #4a5568; text-decoration: none; padding: 6px 8px; border-radius: 4px; margin: 2px 0; transition: all 0.2s;">Reviews</a>
         </div>
     </div>
     

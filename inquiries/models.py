@@ -156,25 +156,93 @@ class InquiryNote(models.Model):
         return f"Note for {self.inquiry.name} - {self.created_at.strftime('%Y-%m-%d')}"
 
 
-class InquiryAttachment(models.Model):
+class RecentWork(models.Model):
     """
-    مرفقات الاستفسارات (صور أو ملفات من العميل)
-    Inquiry attachments (images or files from customer)
+    Recent work portfolio/gallery
+    عرض الأعمال السابقة
     """
-    inquiry = models.ForeignKey(
-        ContactInquiry,
-        on_delete=models.CASCADE,
-        related_name='attachments',
-        verbose_name="Inquiry"
+    title = models.CharField(max_length=200, verbose_name="Project Title")
+    image = models.ImageField(upload_to='recent_work/', verbose_name="Project Image")
+    description = models.TextField(verbose_name="Project Description")
+    
+    # Display settings
+    is_featured = models.BooleanField(default=False, verbose_name="Featured")
+    order = models.IntegerField(default=0, verbose_name="Display Order")
+    is_active = models.BooleanField(default=True, verbose_name="Active")
+    
+    # Related service (optional)
+    service = models.ForeignKey(
+        Service,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='recent_works',
+        verbose_name="Related Service"
     )
-    file = models.FileField(upload_to='inquiry_attachments/', verbose_name="File")
-    description = models.CharField(max_length=200, blank=True, verbose_name="Description")
-    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Uploaded At")
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
     
     class Meta:
-        verbose_name = "Inquiry Attachment"
-        verbose_name_plural = "Inquiry Attachments"
-        ordering = ['-uploaded_at']
+        verbose_name = "Recent Work"
+        verbose_name_plural = "Recent Works"
+        ordering = ['order', '-created_at']
     
     def __str__(self):
-        return f"Attachment for {self.inquiry.name}"
+        return self.title
+    
+    def get_average_rating(self):
+        """Calculate average rating from reviews"""
+        reviews = self.reviews.filter(is_approved=True)
+        if reviews.exists():
+            return reviews.aggregate(models.Avg('rating'))['rating__avg']
+        return 0
+    
+    def get_total_reviews(self):
+        """Get total approved reviews count"""
+        return self.reviews.filter(is_approved=True).count()
+
+
+class Review(models.Model):
+    """
+    Customer reviews and ratings for recent work
+    تقييمات العملاء للأعمال
+    """
+    recent_work = models.ForeignKey(
+        RecentWork,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name="Recent Work"
+    )
+    
+    # Customer info
+    customer_name = models.CharField(max_length=200, verbose_name="Customer Name")
+    customer_email = models.EmailField(blank=True, verbose_name="Customer Email")
+    
+    # Review details
+    rating = models.IntegerField(
+        choices=[(i, f"{i} Stars") for i in range(1, 6)],
+        verbose_name="Rating",
+        help_text="1 to 5 stars"
+    )
+    review_text = models.TextField(verbose_name="Review Text")
+    
+    # Moderation
+    is_approved = models.BooleanField(default=False, verbose_name="Approved")
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+    
+    class Meta:
+        verbose_name = "Review"
+        verbose_name_plural = "Reviews"
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.customer_name} - {self.rating} stars"
+    
+    def get_stars_display(self):
+        """Return star icons for display"""
+        return "⭐" * self.rating

@@ -152,7 +152,7 @@ from products.admin import (
     OpenerSpecificationsAdmin, DoorSpecificationsAdmin
 )
 from services.admin import ServiceAdmin, ServiceCategoryAdmin, ServiceImageAdmin
-from inquiries.admin import ContactInquiryAdmin, InquiryNoteAdmin, InquiryAttachmentAdmin
+from inquiries.admin import ContactInquiryAdmin, InquiryNoteAdmin, RecentWorkAdmin, ReviewAdmin
 from users.admin import CustomUserAdmin
 
 # Register Products
@@ -169,14 +169,15 @@ admin_site.register(ContactInquiry, ContactInquiryAdmin)
 # Register additional models
 from products.models import ProductImage, OpenerSpecifications, DoorSpecifications
 from services.models import ServiceImage
-from inquiries.models import InquiryNote, InquiryAttachment
+from inquiries.models import InquiryNote, RecentWork, Review
 
 admin_site.register(ProductImage, ProductImageAdmin)
 admin_site.register(OpenerSpecifications, OpenerSpecificationsAdmin)
 admin_site.register(DoorSpecifications, DoorSpecificationsAdmin)
 admin_site.register(ServiceImage, ServiceImageAdmin)
 admin_site.register(InquiryNote, InquiryNoteAdmin)
-admin_site.register(InquiryAttachment, InquiryAttachmentAdmin)
+admin_site.register(RecentWork, RecentWorkAdmin)
+admin_site.register(Review, ReviewAdmin)
 
 # Register Users
 admin_site.register(User, CustomUserAdmin)

@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils import timezone
-from .models import ContactInquiry, InquiryNote, InquiryAttachment
+from .models import ContactInquiry, InquiryNote, RecentWork, Review
 from .utils import send_whatsapp_notification, send_email_notification
 
 
@@ -13,11 +13,11 @@ class InquiryNoteInline(admin.TabularInline):
     readonly_fields = ['created_at']
 
 
-class InquiryAttachmentInline(admin.TabularInline):
-    model = InquiryAttachment
+class ReviewInline(admin.TabularInline):
+    model = Review
     extra = 0
-    fields = ['file', 'description', 'uploaded_at']
-    readonly_fields = ['uploaded_at']
+    fields = ['customer_name', 'rating', 'review_text', 'is_approved', 'created_at']
+    readonly_fields = ['created_at']
 
 
 @admin.register(ContactInquiry)
@@ -40,7 +40,7 @@ class ContactInquiryAdmin(admin.ModelAdmin):
         'ip_address', 'user_agent', 'whatsapp_message_preview'
     ]
     list_per_page = 25
-    inlines = [InquiryNoteInline, InquiryAttachmentInline]
+    inlines = [InquiryNoteInline]
     date_hierarchy = 'created_at'
     
     fieldsets = (
@@ -194,12 +194,113 @@ class InquiryNoteAdmin(admin.ModelAdmin):
         return super().get_queryset(request).select_related('inquiry')
 
 
-@admin.register(InquiryAttachment)
-class InquiryAttachmentAdmin(admin.ModelAdmin):
-    list_display = ['inquiry', 'file', 'description', 'uploaded_at']
-    list_filter = ['uploaded_at']
-    search_fields = ['inquiry__name', 'description']
-    readonly_fields = ['uploaded_at']
+@admin.register(RecentWork)
+class RecentWorkAdmin(admin.ModelAdmin):
+    list_display = [
+        'title', 'service', 'rating_display', 
+        'total_reviews', 'is_featured', 'is_active', 
+        'order', 'created_at'
+    ]
+    list_filter = ['is_featured', 'is_active', 'service', 'created_at']
+    search_fields = ['title', 'description']
+    list_editable = ['order', 'is_featured', 'is_active']
+    readonly_fields = ['created_at', 'updated_at', 'rating_display', 'image_preview']
+    inlines = [ReviewInline]
+    
+    fieldsets = (
+        ('Project Info', {
+            'fields': ('title', 'description', 'service')
+        }),
+        ('Image', {
+            'fields': ('image', 'image_preview')
+        }),
+        ('Display Settings', {
+            'fields': ('is_featured', 'is_active', 'order')
+        }),
+        ('Statistics', {
+            'fields': ('rating_display', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
     
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('inquiry')
+        return super().get_queryset(request).select_related('service')
+    
+    def rating_display(self, obj):
+        """Display average rating with stars"""
+        avg_rating = obj.get_average_rating()
+        total_reviews = obj.get_total_reviews()
+        if avg_rating:
+            stars = "⭐" * int(round(avg_rating))
+            rating_text = f"{avg_rating:.1f}"
+            return format_html(
+                '{} ({}/5 - {} reviews)',
+                stars, rating_text, total_reviews
+            )
+        return format_html('<span style="color: gray;">No reviews yet</span>')
+    rating_display.short_description = 'Rating'
+    
+    def total_reviews(self, obj):
+        """Display total reviews count"""
+        return obj.get_total_reviews()
+    total_reviews.short_description = 'Reviews'
+    
+    def image_preview(self, obj):
+        """Display image preview"""
+        if obj.image:
+            return format_html(
+                '<img src="{}" style="max-width: 300px; max-height: 300px;" />',
+                obj.image.url
+            )
+        return "No image"
+    image_preview.short_description = 'Image Preview'
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = [
+        'customer_name', 'recent_work', 'stars_display',
+        'is_approved', 'created_at'
+    ]
+    list_filter = ['is_approved', 'rating', 'created_at']
+    search_fields = ['customer_name', 'customer_email', 'review_text', 'recent_work__title']
+    list_editable = ['is_approved']
+    readonly_fields = ['created_at', 'updated_at']
+    
+    fieldsets = (
+        ('Customer Info', {
+            'fields': ('customer_name', 'customer_email')
+        }),
+        ('Review Details', {
+            'fields': ('recent_work', 'rating', 'review_text')
+        }),
+        ('Moderation', {
+            'fields': ('is_approved',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('recent_work')
+    
+    def stars_display(self, obj):
+        """Display rating as stars"""
+        return obj.get_stars_display()
+    stars_display.short_description = 'Rating'
+    
+    actions = ['approve_reviews', 'unapprove_reviews']
+    
+    def approve_reviews(self, request, queryset):
+        """Approve selected reviews"""
+        count = queryset.update(is_approved=True)
+        self.message_user(request, f"{count} reviews approved")
+    approve_reviews.short_description = "Approve selected reviews"
+    
+    def unapprove_reviews(self, request, queryset):
+        """Unapprove selected reviews"""
+        count = queryset.update(is_approved=False)
+        self.message_user(request, f"{count} reviews unapproved")
+    unapprove_reviews.short_description = "Unapprove selected reviews"
