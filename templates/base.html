@@ -5,14 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Dalal Alsaudia - منصة البيع والشراء الأولى في المملكة{% endblock %}</title>
+    <title>{% block title %}Protech Garage Doors - Professional Garage Door Repair & Installation{% endblock %}</title>
 
-    <!-- Bootstrap RTL CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
     <!-- Custom CSS -->
@@ -34,7 +34,7 @@
         }
 
         * {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
@@ -66,7 +66,7 @@
         .navbar-nav .nav-link {
             color: white !important;
             font-weight: 500;
-            margin: 0 0.5rem;
+            margin: 0 0.3rem;
             padding: 0.5rem 1rem !important;
             border-radius: 25px;
             transition: all 0.3s ease;
@@ -255,55 +255,6 @@
             background: var(--dark-color);
         }
 
-        /* Map Styles */
-        .map-container {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
-        }
-
-        .location-section {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .map-actions .btn {
-            font-size: 0.9rem;
-            padding: 0.5rem 1rem;
-        }
-
-        .gm-style-iw {
-            font-family: 'Cairo', sans-serif !important;
-        }
-
-        .gm-style-iw-d {
-            overflow: hidden !important;
-        }
-
-        /* View toggle buttons */
-        .btn-group .btn {
-            border-radius: 8px;
-        }
-
-        .btn-group .btn:first-child {
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
-        }
-
-        .btn-group .btn:last-child {
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
-        }
-
-        .btn-group .btn.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -315,7 +266,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="navbar">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-shopping-cart me-2"></i>Dalal Alsaudia
+                <i class="fas fa-wrench me-2"></i>Protech Garage Doors
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -323,60 +274,37 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">
-                            <i class="fas fa-home me-1"></i>الرئيسية
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="productsDropdown" role="button"
-                            data-bs-toggle="dropdown">
-                            <i class="fas fa-box me-1"></i>المنتجات
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'products:list' %}">جميع المنتجات</a></li>
-                            <li><a class="dropdown-item" href="{% url 'products:cars' %}">السيارات</a></li>
-                            <li><a class="dropdown-item" href="{% url 'products:real_estate' %}">العقارات</a></li>
-                            <li><a class="dropdown-item" href="{% url 'products:hotels' %}">الفنادق</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'categories:list' %}">
-                            <i class="fas fa-th-list me-1"></i>الفئات
-                        </a>
-                    </li>
-                </ul>
-
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                            data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-1"></i>{{ user.first_name|default:user.username }}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'products:add' %}">إضافة منتج</a></li>
-                            <li><a class="dropdown-item" href="{% url 'products:my_products' %}">منتجاتي</a></li>
-                            <li><a class="dropdown-item" href="{% url 'orders:my_orders' %}">طلباتي</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">تسجيل الخروج</a></li>
-                        </ul>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">
-                            <i class="fas fa-sign-in-alt me-1"></i>دخول
+                            <i class="fas fa-home me-1"></i>Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin/">
-                            <i class="fas fa-user-plus me-1"></i>الإدارة
+                        <a class="nav-link" href="#services">
+                            <i class="fas fa-tools me-1"></i>Services
                         </a>
                     </li>
-                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#products">
+                            <i class="fas fa-door-closed me-1"></i>Doors
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#recent-work">
+                            <i class="fas fa-images me-1"></i>Recent Work
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">
+                            <i class="fas fa-phone me-1"></i>Contact
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/" style="background: rgba(255, 255, 255, 0.15);">
+                            <i class="fas fa-user-shield me-1"></i>Admin
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -390,8 +318,6 @@
         <div class="container mt-3">
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                <i
-                    class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
@@ -410,7 +336,7 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="d-flex align-items-center">
                         <img src="{% static 'css/logo.png' %}" alt="Protech Garage Doors" 
-                             style="height: 50px; width: auto; margin-right: 12px;">
+                             style="height: 60px; width: auto; margin-right: 12px;">
                         <div>
                             <h5 class="mb-0" style="font-size: 16px; font-weight: 700; color: #0d2622;">Protech Garage Doors LLC</h5>
                             <p class="mb-0" style="font-size: 11px; color: rgba(13, 38, 34, 0.6);">License #1070155 • Bonded • Insured</p>
@@ -468,10 +394,6 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Google Maps API -->
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw&libraries=places&language=ar&region=SA&callback=initMap"></script>
-
     <!-- Custom JS -->
     <script>
         // Navbar scroll effect
@@ -496,7 +418,7 @@
         // Loading button effect
         function showLoading(button) {
             const originalText = button.innerHTML;
-            button.innerHTML = '<span class="loading"></span> جاري التحميل...';
+            button.innerHTML = '<span class="loading"></span> Loading...';
             button.disabled = true;
 
             setTimeout(function () {
