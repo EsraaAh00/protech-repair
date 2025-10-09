@@ -27,17 +27,17 @@ def home_view(request):
         is_active=True
     ).select_related('category')[:6]
     
-    # Openers Products
+    # Openers Products (all for slider)
     openers = Product.objects.filter(
         is_active=True,
         product_type='opener'
-    ).select_related('category')[:4]
+    ).select_related('category')
     
-    # Door Products (first 4 for home display)
+    # Door Products (all for slider)
     doors = Product.objects.filter(
         is_active=True,
         product_type='door'
-    ).select_related('category')[:4]
+    ).select_related('category')
     
     # Recent Work with Reviews (latest 6 projects for slider)
     recent_works = RecentWork.objects.filter(
@@ -64,3 +64,37 @@ def home_view(request):
     }
     
     return render(request, 'home.html', context)
+
+
+def all_openers_view(request):
+    """
+    View All Openers Page
+    """
+    openers = Product.objects.filter(
+        is_active=True,
+        product_type='opener'
+    ).select_related('category')
+    
+    context = {
+        'openers': openers,
+        'page_title': 'All Garage Door Openers'
+    }
+    
+    return render(request, 'all_openers.html', context)
+
+
+def all_doors_view(request):
+    """
+    View All Doors Page
+    """
+    doors = Product.objects.filter(
+        is_active=True,
+        product_type='door'
+    ).select_related('category')
+    
+    context = {
+        'doors': doors,
+        'page_title': 'All Garage Doors'
+    }
+    
+    return render(request, 'all_doors.html', context)

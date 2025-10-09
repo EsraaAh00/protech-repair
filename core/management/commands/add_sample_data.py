@@ -86,7 +86,7 @@ class Command(BaseCommand):
             }
         )
 
-        # Create Openers
+        # Create Openers (8 openers for slider)
         openers_data = [
             {
                 'name': 'Smart WiFi Opener LM80',
@@ -97,20 +97,112 @@ class Command(BaseCommand):
                 'features': 'Smart WiFi-enabled\nBelt drive system\nSmartphone control\nBattery backup\nProfessional installation',
                 'category': opener_cat,
                 'product_type': 'opener',
+                'price': 299.00,
                 'is_active': True,
                 'order': 1
+            },
+            {
+                'name': 'Belt Drive Opener LM100',
+                'name_en': 'Belt Drive Opener LM100',
+                'model_number': 'LM100',
+                'short_description': 'Ultra-quiet belt drive garage door opener',
+                'description': 'Quiet and powerful belt drive opener perfect for homes.',
+                'features': 'Belt drive\nQuiet operation\nSmartphone app\nBattery backup',
+                'category': opener_cat,
+                'product_type': 'opener',
+                'price': 349.00,
+                'is_active': True,
+                'order': 2
+            },
+            {
+                'name': 'Chain Drive Opener CD500',
+                'name_en': 'Chain Drive Opener CD500',
+                'model_number': 'CD500',
+                'short_description': 'Powerful chain drive for heavy doors',
+                'description': 'Durable chain drive opener for heavy-duty applications.',
+                'features': 'Chain drive\n1/2 HP motor\nDurable construction\nLong-lasting',
+                'category': opener_cat,
+                'product_type': 'opener',
+                'price': 249.00,
+                'is_active': True,
+                'order': 3
+            },
+            {
+                'name': 'Smart Opener Pro MAX',
+                'name_en': 'Smart Opener Pro MAX',
+                'model_number': 'PRO-MAX',
+                'short_description': 'Premium smart opener with camera',
+                'description': 'Top-of-the-line opener with integrated camera and smart features.',
+                'features': 'WiFi\nIntegrated camera\nSmart alerts\nPremium quality',
+                'category': opener_cat,
+                'product_type': 'opener',
+                'price': 499.00,
+                'is_active': True,
+                'order': 4
+            },
+            {
+                'name': 'Wall Mount Opener WM1000',
+                'name_en': 'Wall Mount Opener WM1000',
+                'model_number': 'WM1000',
+                'short_description': 'Space-saving wall mount opener',
+                'description': 'Compact wall mount design saves ceiling space.',
+                'features': 'Wall mount\nSpace-saving\nQuiet\nModern design',
+                'category': opener_cat,
+                'product_type': 'opener',
+                'price': 399.00,
+                'is_active': True,
+                'order': 5
+            },
+            {
+                'name': 'Battery Backup Opener BB200',
+                'name_en': 'Battery Backup Opener BB200',
+                'model_number': 'BB200',
+                'short_description': 'Reliable opener with extended battery backup',
+                'description': 'Never get locked out during power outages.',
+                'features': 'Extended battery\nReliable\nQuiet belt drive\nSmart features',
+                'category': opener_cat,
+                'product_type': 'opener',
+                'price': 329.00,
+                'is_active': True,
+                'order': 6
+            },
+            {
+                'name': 'Jackshaft Opener JS300',
+                'name_en': 'Jackshaft Opener JS300',
+                'model_number': 'JS300',
+                'short_description': 'Side-mount jackshaft opener',
+                'description': 'Perfect for garages with limited ceiling space.',
+                'features': 'Side-mount\nSpace-efficient\nPowerful motor\nQuiet',
+                'category': opener_cat,
+                'product_type': 'opener',
+                'price': 449.00,
+                'is_active': True,
+                'order': 7
+            },
+            {
+                'name': 'Economy Opener ECO100',
+                'name_en': 'Economy Opener ECO100',
+                'model_number': 'ECO100',
+                'short_description': 'Affordable and reliable opener',
+                'description': 'Budget-friendly without compromising quality.',
+                'features': 'Affordable\nReliable\nEasy to use\nBasic features',
+                'category': opener_cat,
+                'product_type': 'opener',
+                'price': 199.00,
+                'is_active': True,
+                'order': 8
             }
         ]
 
         for opener_data in openers_data:
             Product.objects.get_or_create(
-                slug=opener_data['model_number'].lower(),
+                model_number=opener_data['model_number'],
                 defaults=opener_data
             )
 
         self.stdout.write(self.style.SUCCESS(f'Created {len(openers_data)} openers'))
 
-        # Create Doors
+        # Create Doors (8 doors for slider)
         doors_data = [
             {
                 'name': 'Traditional Steel Door',
@@ -120,6 +212,7 @@ class Command(BaseCommand):
                 'description': 'Durable steel garage door with traditional raised panel design.',
                 'category': door_cat,
                 'product_type': 'door',
+                'price': 899.00,
                 'is_active': True,
                 'order': 1
             },
@@ -131,6 +224,7 @@ class Command(BaseCommand):
                 'description': 'Sleek modern aluminum garage door perfect for contemporary homes.',
                 'category': door_cat,
                 'product_type': 'door',
+                'price': 1299.00,
                 'is_active': True,
                 'order': 2
             },
@@ -142,6 +236,7 @@ class Command(BaseCommand):
                 'description': 'Beautiful carriage house style door with authentic wood appearance.',
                 'category': door_cat,
                 'product_type': 'door',
+                'price': 1499.00,
                 'is_active': True,
                 'order': 3
             },
@@ -153,14 +248,63 @@ class Command(BaseCommand):
                 'description': 'Custom designed glass garage door for unique architectural styles.',
                 'category': door_cat,
                 'product_type': 'door',
+                'price': 1799.00,
                 'is_active': True,
                 'order': 4
+            },
+            {
+                'name': 'Insulated Steel Door',
+                'name_en': 'Insulated Steel Door',
+                'model_number': 'ISD-005',
+                'short_description': 'Energy-efficient insulated door',
+                'description': 'R-16 insulated steel door for energy efficiency.',
+                'category': door_cat,
+                'product_type': 'door',
+                'price': 1099.00,
+                'is_active': True,
+                'order': 5
+            },
+            {
+                'name': 'Wood-Look Composite Door',
+                'name_en': 'Wood-Look Composite Door',
+                'model_number': 'WLC-006',
+                'short_description': 'Maintenance-free wood appearance',
+                'description': 'Beautiful wood look without the maintenance.',
+                'category': door_cat,
+                'product_type': 'door',
+                'price': 1399.00,
+                'is_active': True,
+                'order': 6
+            },
+            {
+                'name': 'Contemporary Flush Door',
+                'name_en': 'Contemporary Flush Door',
+                'model_number': 'CFD-007',
+                'short_description': 'Sleek flush panel design',
+                'description': 'Modern flush design for contemporary architecture.',
+                'category': door_cat,
+                'product_type': 'door',
+                'price': 1199.00,
+                'is_active': True,
+                'order': 7
+            },
+            {
+                'name': 'Premium Custom Door',
+                'name_en': 'Premium Custom Door',
+                'model_number': 'PCD-008',
+                'short_description': 'Fully customizable premium door',
+                'description': 'Design your perfect garage door with our premium options.',
+                'category': door_cat,
+                'product_type': 'door',
+                'price': 2499.00,
+                'is_active': True,
+                'order': 8
             }
         ]
 
         for door_data in doors_data:
             Product.objects.get_or_create(
-                slug=door_data['model_number'].lower(),
+                model_number=door_data['model_number'],
                 defaults=door_data
             )
 

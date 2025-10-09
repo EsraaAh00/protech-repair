@@ -1023,57 +1023,127 @@
         flex-shrink: 0;
     }
 
-    /* Doors Section */
-    .doors-section {
-        background: linear-gradient(135deg, #fbf8eb 0%, #f5f2e0 100%);
+    /* Products Carousel (Openers & Doors) */
+    .products-carousel {
+        padding: 40px 60px;
     }
 
-    .door-card {
+    .products-control-prev,
+    .products-control-next {
+        width: 45px;
+        height: 45px;
+        background: #0d2622;
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .products-control-prev:hover,
+    .products-control-next:hover {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .products-indicators {
+        margin-bottom: -2rem;
+    }
+
+    .products-indicators button {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #0d2622;
+        opacity: 0.3;
+    }
+
+    .products-indicators button.active {
+        opacity: 1;
+    }
+
+    @media (max-width: 1200px) {
+        .products-carousel {
+            padding: 40px 20px;
+        }
+    }
+
+    /* Product Cards (Openers & Doors) */
+    .product-card {
         background: #fff;
-        border-radius: 16px;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
         transition: all 0.4s ease;
         height: 100%;
+        border: 2px solid transparent;
     }
 
-    .door-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 12px 40px rgba(13, 38, 34, 0.2);
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 30px rgba(13, 38, 34, 0.15);
+        border-color: #0d2622;
     }
 
-    .door-image {
+    .product-image {
         position: relative;
         overflow: hidden;
-        height: 280px;
+        height: 220px;
+        background: #f8f9fa;
     }
 
-    .door-image img {
+    .product-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.6s ease;
+        transition: transform 0.5s ease;
     }
 
-    .door-card:hover .door-image img {
+    .product-card:hover .product-image img {
         transform: scale(1.1);
     }
 
-    .door-info {
-        padding: 1.5rem;
+    .product-info {
+        padding: 1.2rem;
         text-align: center;
     }
 
-    .door-info h4 {
-        font-size: 1.3rem;
+    .product-info h4 {
+        font-size: 1.1rem;
         font-weight: 700;
         color: #0d2622;
+        margin-bottom: 0.3rem;
+    }
+
+    .model-number {
+        font-size: 0.85rem;
+        color: #999;
+        font-weight: 600;
         margin-bottom: 0.5rem;
     }
 
-    .door-info p {
+    .product-info p {
         color: #666;
-        margin: 0;
+        font-size: 0.9rem;
+        margin: 0 0 0.8rem 0;
+        line-height: 1.4;
+    }
+
+    .product-price {
+        margin-top: auto;
+        padding-top: 0.8rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .product-price span {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #0d2622;
+    }
+
+    /* Doors Section */
+    .doors-section {
+        background: linear-gradient(135deg, #fbf8eb 0%, #f5f2e0 100%);
     }
 
     /* Recent Work Section with Slider */
@@ -1814,159 +1884,159 @@
     </div>
 </section>
 
-<!-- Openers Section -->
+<!-- Openers Section with Slider -->
 <section id="openers" class="openers-section">
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="section-title">Garage Door Openers</h2>
             <p class="section-subtitle">Smart and reliable opener solutions</p>
         </div>
+
         {% if openers %}
-        <div class="row align-items-center g-4 mb-5">
-            <div class="col-lg-6">
-                <div class="opener-image">
-                    {% if openers.0.image %}
-                        <img src="{{ openers.0.image.url }}" 
-                             alt="{{ openers.0.name_en|default:openers.0.name }}" 
-                             class="img-fluid rounded-3 shadow-lg">
-                    {% else %}
-                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2069&auto=format&fit=crop" 
-                             alt="Garage Door Opener" class="img-fluid rounded-3 shadow-lg">
+        <!-- Openers Slider -->
+        <div id="openersCarousel" class="carousel slide products-carousel" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for opener in openers %}
+                    {% if forloop.counter0|divisibleby:4 %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="row g-3 justify-content-center">
                     {% endif %}
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="opener-content">
-                    <h3 class="mb-4">{{ openers.0.name_en|default:openers.0.name }}</h3>
-                    {% if openers.0.short_description %}
-                        <p class="lead">{{ openers.0.short_description }}</p>
+                            
+                            <div class="col-lg-3 col-md-6">
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        {% if opener.image %}
+                                            <img src="{{ opener.image.url }}" 
+                                                 alt="{{ opener.name_en|default:opener.name }}" 
+                                                 class="img-fluid">
+                                        {% else %}
+                                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2069&auto=format&fit=crop" 
+                                                 alt="{{ opener.name_en|default:opener.name }}" class="img-fluid">
+                                        {% endif %}
+                                    </div>
+                                    <div class="product-info">
+                                        <h4>{{ opener.name_en|default:opener.name }}</h4>
+                                        {% if opener.model_number %}
+                                            <p class="model-number">{{ opener.model_number }}</p>
+                                        {% endif %}
+                                        <p>{{ opener.short_description|default:opener.description|truncatewords:10 }}</p>
+                                        {% if opener.price %}
+                                            <div class="product-price">
+                                                <span>${{ opener.price }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                    
+                    {% if forloop.counter|divisibleby:4 or forloop.last %}
+                        </div>
+                    </div>
                     {% endif %}
-                    <ul class="feature-list">
-                        {% if openers.0.get_features_list %}
-                            {% for feature in openers.0.get_features_list|slice:":5" %}
-                                <li><i class="fas fa-check-circle"></i> {{ feature }}</li>
-                            {% endfor %}
-                        {% else %}
-                            <li><i class="fas fa-check-circle"></i> Smart WiFi-enabled openers</li>
-                            <li><i class="fas fa-check-circle"></i> Belt & chain drive systems</li>
-                            <li><i class="fas fa-check-circle"></i> Smartphone control integration</li>
-                            <li><i class="fas fa-check-circle"></i> Battery backup systems</li>
-                            <li><i class="fas fa-check-circle"></i> Professional installation & setup</li>
-                        {% endif %}
-                    </ul>
-                    <a href="{% url 'products:product_list' %}" class="btn btn-primary mt-3">View All Openers</a>
-                </div>
+                {% endfor %}
             </div>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev products-control-prev" type="button" data-bs-target="#openersCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next products-control-next" type="button" data-bs-target="#openersCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+
+            <!-- Indicators -->
+            <div class="carousel-indicators products-indicators" id="openersIndicators"></div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'all_openers' %}" class="btn btn-primary btn-lg">View All Openers</a>
         </div>
         {% else %}
-        <div class="row align-items-center g-4">
-            <div class="col-lg-6">
-                <div class="opener-image">
-                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2069&auto=format&fit=crop" 
-                         alt="Garage Door Opener" class="img-fluid rounded-3 shadow-lg">
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="opener-content">
-                    <h3 class="mb-4">Professional Opener Installation</h3>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i> Smart WiFi-enabled openers</li>
-                        <li><i class="fas fa-check-circle"></i> Belt & chain drive systems</li>
-                        <li><i class="fas fa-check-circle"></i> Smartphone control integration</li>
-                        <li><i class="fas fa-check-circle"></i> Battery backup systems</li>
-                        <li><i class="fas fa-check-circle"></i> Professional installation & setup</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-primary mt-3">Get a Quote</a>
-                </div>
-            </div>
+        <div class="text-center">
+            <p>No openers available at the moment.</p>
+            <a href="#contact" class="btn btn-primary mt-3">Contact Us</a>
         </div>
         {% endif %}
     </div>
 </section>
 
-<!-- Doors Section -->
+<!-- Doors Section with Slider -->
 <section id="doors" class="doors-section">
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="section-title">Garage Doors Collection</h2>
             <p class="section-subtitle">Find the perfect door for your home</p>
         </div>
-        <div class="row g-4">
-            {% if doors %}
+
+        {% if doors %}
+        <!-- Doors Slider -->
+        <div id="doorsCarousel" class="carousel slide products-carousel" data-bs-ride="carousel">
+            <div class="carousel-inner">
                 {% for door in doors %}
-                <div class="col-lg-3 col-md-6">
-                    <div class="door-card">
-                        <div class="door-image">
-                            {% if door.image %}
-                                <img src="{{ door.image.url }}" 
-                                     alt="{{ door.name_en|default:door.name }}" 
-                                     class="img-fluid">
-                            {% else %}
-                                <img src="https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?q=80&w=2070&auto=format&fit=crop" 
-                                     alt="{{ door.name_en|default:door.name }}" class="img-fluid">
-                            {% endif %}
-                        </div>
-                        <div class="door-info">
-                            <h4>{{ door.name_en|default:door.name }}</h4>
-                            <p>{{ door.short_description|default:door.description|truncatewords:5 }}</p>
+                    {% if forloop.counter0|divisibleby:4 %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="row g-3 justify-content-center">
+                    {% endif %}
+                            
+                            <div class="col-lg-3 col-md-6">
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        {% if door.image %}
+                                            <img src="{{ door.image.url }}" 
+                                                 alt="{{ door.name_en|default:door.name }}" 
+                                                 class="img-fluid">
+                                        {% else %}
+                                            <img src="https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?q=80&w=2070&auto=format&fit=crop" 
+                                                 alt="{{ door.name_en|default:door.name }}" class="img-fluid">
+                                        {% endif %}
+                                    </div>
+                                    <div class="product-info">
+                                        <h4>{{ door.name_en|default:door.name }}</h4>
+                                        {% if door.model_number %}
+                                            <p class="model-number">{{ door.model_number }}</p>
+                                        {% endif %}
+                                        <p>{{ door.short_description|default:door.description|truncatewords:10 }}</p>
+                                        {% if door.price %}
+                                            <div class="product-price">
+                                                <span>${{ door.price }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                    
+                    {% if forloop.counter|divisibleby:4 or forloop.last %}
                         </div>
                     </div>
-                </div>
+                    {% endif %}
                 {% endfor %}
-            {% else %}
-                <div class="col-lg-3 col-md-6">
-                    <div class="door-card">
-                        <div class="door-image">
-                            <img src="https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?q=80&w=2070&auto=format&fit=crop" 
-                                 alt="Traditional Door" class="img-fluid">
-                        </div>
-                        <div class="door-info">
-                            <h4>Traditional Doors</h4>
-                            <p>Classic raised panel designs</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="door-card">
-                        <div class="door-image">
-                            <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=2070&auto=format&fit=crop" 
-                                 alt="Modern Door" class="img-fluid">
-                        </div>
-                        <div class="door-info">
-                            <h4>Modern Doors</h4>
-                            <p>Contemporary aluminum designs</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="door-card">
-                        <div class="door-image">
-                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop" 
-                                 alt="Carriage Door" class="img-fluid">
-                        </div>
-                        <div class="door-info">
-                            <h4>Carriage Doors</h4>
-                            <p>Elegant wood-like appearance</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="door-card">
-                        <div class="door-image">
-                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" 
-                                 alt="Custom Door" class="img-fluid">
-                        </div>
-                        <div class="door-info">
-                            <h4>Custom Doors</h4>
-                            <p>Personalized designs</p>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
+            </div>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev products-control-prev" type="button" data-bs-target="#doorsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next products-control-next" type="button" data-bs-target="#doorsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+
+            <!-- Indicators -->
+            <div class="carousel-indicators products-indicators" id="doorsIndicators"></div>
         </div>
+
         <div class="text-center mt-5">
-            <a href="{% url 'products:product_list' %}" class="btn btn-primary btn-lg">View All Doors</a>
+            <a href="{% url 'all_doors' %}" class="btn btn-primary btn-lg">View All Doors</a>
         </div>
+        {% else %}
+        <div class="text-center">
+            <p>No doors available at the moment.</p>
+            <a href="#contact" class="btn btn-primary mt-3">Contact Us</a>
+        </div>
+        {% endif %}
     </div>
 </section>
 
@@ -2419,26 +2489,33 @@
     window.addEventListener('scroll', revealOnScroll);
     revealOnScroll(); // Initial call
 
-    // Services Carousel Indicators
-    const servicesCarousel = document.getElementById('servicesCarousel');
-    if (servicesCarousel) {
-        const servicesSlides = servicesCarousel.querySelectorAll('.carousel-item');
-        const servicesIndicators = document.getElementById('servicesIndicators');
-        
-        if (servicesIndicators && servicesSlides.length > 0) {
-            servicesSlides.forEach((slide, index) => {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.setAttribute('data-bs-target', '#servicesCarousel');
-                button.setAttribute('data-bs-slide-to', index);
-                if (index === 0) {
-                    button.classList.add('active');
-                    button.setAttribute('aria-current', 'true');
-                }
-                button.setAttribute('aria-label', `Slide ${index + 1}`);
-                servicesIndicators.appendChild(button);
-            });
+    // Carousel Indicators Helper Function
+    function initCarouselIndicators(carouselId, indicatorsId) {
+        const carousel = document.getElementById(carouselId);
+        if (carousel) {
+            const slides = carousel.querySelectorAll('.carousel-item');
+            const indicators = document.getElementById(indicatorsId);
+            
+            if (indicators && slides.length > 0) {
+                slides.forEach((slide, index) => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.setAttribute('data-bs-target', `#${carouselId}`);
+                    button.setAttribute('data-bs-slide-to', index);
+                    if (index === 0) {
+                        button.classList.add('active');
+                        button.setAttribute('aria-current', 'true');
+                    }
+                    button.setAttribute('aria-label', `Slide ${index + 1}`);
+                    indicators.appendChild(button);
+                });
+            }
         }
     }
+
+    // Initialize all carousel indicators
+    initCarouselIndicators('servicesCarousel', 'servicesIndicators');
+    initCarouselIndicators('openersCarousel', 'openersIndicators');
+    initCarouselIndicators('doorsCarousel', 'doorsIndicators');
 </script>
 {% endblock %}

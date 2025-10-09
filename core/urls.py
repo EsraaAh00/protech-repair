@@ -9,6 +9,8 @@ from .admin import admin_site
 urlpatterns = [
     path('admin/', admin_site.urls),
     path('', views.home_view, name='home'),
+    path('openers/', views.all_openers_view, name='all_openers'),
+    path('doors/', views.all_doors_view, name='all_doors'),
     path('users/', include('users.urls', namespace='users')),
     path('products/', include('products.urls', namespace='products')),
     path('services/', include('services.urls', namespace='services')),

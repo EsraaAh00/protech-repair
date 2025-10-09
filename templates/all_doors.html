@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Garage Doors - Protech Garage Doors{% endblock %}
+
+{% block body_class %}doors-page no-navbar{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hide navbar */
+    body.no-navbar #navbar {
+        display: none !important;
+    }
+
+    /* Floating clean header */
+    .cleanic-header-wrapper {
+        position: fixed;
+        top: 18px;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .cleanic-header-wrapper.hidden {
+        transform: translateY(-100%);
+    }
+
+    .cleanic-header {
+        background: #fbf8eb;
+        border-radius: 14px;
+        padding: 16px 22px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .cleanic-nav {
+        display: flex;
+        align-items: center;
+        gap: 36px;
+        margin: 0 auto;
+        color: #0d2622;
+        font-weight: 600;
+    }
+
+    .cleanic-nav a {
+        color: #0d2622;
+        text-decoration: none;
+        position: relative;
+        padding: 0 12px;
+    }
+
+    .cleanic-nav a:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 16px;
+        background-color: #ccc;
+    }
+
+    .cleanic-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    @media (max-width: 992px) {
+        .cleanic-nav {
+            display: none;
+        }
+    }
+
+    body.doors-page main {
+        margin-top: 0 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% block navbar %}{% endblock %}
+
+<!-- Floating Header -->
+<div class="cleanic-header-wrapper">
+    <div class="container">
+        <div class="cleanic-header">
+            <nav class="cleanic-nav">
+                <a href="{% url 'home' %}#contact">Contact</a>
+                <a href="{% url 'home' %}#about">About</a>
+                <a href="{% url 'home' %}#recent">Recent Work</a>
+                <a href="{% url 'all_doors' %}">Doors</a>
+                <a href="{% url 'all_openers' %}">Openers</a>
+                <a href="{% url 'home' %}#services">Service & Repair</a>
+                <a href="{% url 'home' %}">Home</a>
+            </nav>
+            <div class="cleanic-actions">
+                <img src="/static/css/logo.png" alt="Logo" style="height: 60px; width: auto; display: block;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="page-header py-5">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 fw-bold">Garage Doors Collection</h1>
+            <p class="lead">Explore our complete range of quality garage doors</p>
+        </div>
+    </div>
+</section>
+
+<section class="products-section py-5">
+    <div class="container">
+        {% if doors %}
+        <div class="row g-4">
+            {% for door in doors %}
+            <div class="col-lg-3 col-md-6">
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if door.image %}
+                            <img src="{{ door.image.url }}" 
+                                 alt="{{ door.name_en|default:door.name }}" 
+                                 class="img-fluid">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?q=80&w=2070&auto=format&fit=crop" 
+                                 alt="{{ door.name_en|default:door.name }}" class="img-fluid">
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h4>{{ door.name_en|default:door.name }}</h4>
+                        {% if door.model_number %}
+                            <p class="model-number">Model: {{ door.model_number }}</p>
+                        {% endif %}
+                        <p>{{ door.short_description|default:door.description|truncatewords:15 }}</p>
+                        {% if door.price %}
+                            <div class="product-price">
+                                <span>${{ door.price }}</span>
+                            </div>
+                        {% endif %}
+                        <a href="#contact" class="btn btn-sm btn-outline-primary mt-3">Get Quote</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <h3>No doors available at the moment</h3>
+            <p class="text-muted">Please check back later or contact us for more information.</p>
+            <a href="{% url 'home' %}#contact" class="btn btn-primary mt-3">Contact Us</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #0d2622 0%, #1a4d43 100%);
+        color: #fff;
+        margin-top: 80px;
+    }
+
+    .products-section {
+        min-height: 60vh;
+    }
+
+    .product-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+        height: 100%;
+        border: 2px solid transparent;
+    }
+
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 30px rgba(13, 38, 34, 0.15);
+        border-color: #0d2622;
+    }
+
+    .product-image {
+        position: relative;
+        overflow: hidden;
+        height: 220px;
+        background: #f8f9fa;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.1);
+    }
+
+    .product-info {
+        padding: 1.2rem;
+        text-align: center;
+    }
+
+    .product-info h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #0d2622;
+        margin-bottom: 0.3rem;
+    }
+
+    .model-number {
+        font-size: 0.85rem;
+        color: #999;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-info p {
+        color: #666;
+        font-size: 0.9rem;
+        margin: 0 0 0.8rem 0;
+        line-height: 1.4;
+    }
+
+    .product-price {
+        margin-top: 0.8rem;
+        padding-top: 0.8rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .product-price span {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #0d2622;
+    }
+
+    .btn-outline-primary {
+        border: 2px solid #0d2622;
+        color: #0d2622;
+        font-weight: 600;
+    }
+
+    .btn-outline-primary:hover {
+        background: #0d2622;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Header scroll behavior
+    let lastScrollTop = 0;
+    const header = document.querySelector('.cleanic-header-wrapper');
+    const scrollThreshold = 100;
+
+    window.addEventListener('scroll', function () {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (Math.abs(scrollTop - lastScrollTop) > scrollThreshold) {
+            if (scrollTop > lastScrollTop && scrollTop > 200) {
+                header.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop;
+        }
+    });
+</script>
+{% endblock %}
