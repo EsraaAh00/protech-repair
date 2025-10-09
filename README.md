@@ -417,3 +417,4 @@ This project is specifically developed for ProTech Garage Doors.
 
 
 -python manage.py add_services
+-python manage.py add_doors
