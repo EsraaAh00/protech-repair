@@ -10,26 +10,26 @@ class ContactInquiry(models.Model):
     Customer inquiries and service requests
     """
     INQUIRY_TYPE_CHOICES = [
-        ('free_estimate', 'تقدير مجاني / Free Estimate'),
-        ('service_request', 'طلب خدمة / Service Request'),
-        ('product_info', 'استفسار عن منتج / Product Info'),
-        ('general', 'استفسار عام / General Inquiry'),
-        ('emergency', 'حالة طارئة / Emergency'),
+        ('free_estimate', 'Free Estimate'),
+        ('service_request', 'Service Request'),
+        ('product_info', 'Product Info'),
+        ('general', 'General Inquiry'),
+        ('emergency', 'Emergency'),
     ]
     
     STATUS_CHOICES = [
-        ('new', 'جديد / New'),
-        ('contacted', 'تم التواصل / Contacted'),
-        ('in_progress', 'قيد المعالجة / In Progress'),
-        ('completed', 'مكتمل / Completed'),
-        ('cancelled', 'ملغي / Cancelled'),
+        ('new', 'New'),
+        ('contacted', 'Contacted'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
     ]
     
     # Customer information
     name = models.CharField(max_length=200, verbose_name="Name")
     email = models.EmailField(blank=True, verbose_name="Email")
     phone = models.CharField(max_length=20, verbose_name="Phone")
-    address = models.CharField(max_length=500, blank=True, verbose_name="Address")
+    address = models.CharField(max_length=500, verbose_name="Service Address")
     
     # Inquiry details
     inquiry_type = models.CharField(

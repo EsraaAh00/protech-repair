@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from products.models import Product, ProductCategory
 from services.models import Service, ServiceCategory
+from inquiries.models import RecentWork, ContactInquiry
 from inquiries.forms import QuickContactForm
 
 User = get_user_model()
@@ -10,54 +11,56 @@ User = get_user_model()
 
 def home_view(request):
     """
-    صفحة الرئيسية - شركة أبواب الجراج
     Homepage - Garage Door Company
     """
     
-    # Featured Products (مميزة)
-    featured_products = Product.objects.filter(
-        is_active=True,
-        is_featured=True
+    # Initialize form for display
+    form = QuickContactForm()
+    
+    # Service Categories with Services
+    service_categories = ServiceCategory.objects.filter(
+        is_active=True
+    ).prefetch_related('services')[:4]
+    
+    # All active services for display
+    all_services = Service.objects.filter(
+        is_active=True
     ).select_related('category')[:6]
     
-    # Best Seller Products (الأكثر مبيعاً)
-    bestseller_products = Product.objects.filter(
+    # Openers Products
+    openers = Product.objects.filter(
         is_active=True,
-        is_best_seller=True
+        product_type='opener'
     ).select_related('category')[:4]
     
-    # Featured Services (خدمات مميزة)
-    featured_services = Service.objects.filter(
+    # Door Products (first 4 for home display)
+    doors = Product.objects.filter(
         is_active=True,
-        is_featured=True
-    ).select_related('category')[:6]
+        product_type='door'
+    ).select_related('category')[:4]
     
-    # All Services for display
-    all_services = Service.objects.filter(is_active=True)[:8]
+    # Recent Work with Reviews (latest 6 projects for slider)
+    recent_works = RecentWork.objects.filter(
+        is_active=True
+    ).select_related('service').prefetch_related('reviews')[:6]
     
-    # Product Categories
-    product_categories = ProductCategory.objects.filter(is_active=True)[:4]
+    # Statistics for About section
+    total_customers = ContactInquiry.objects.filter(
+        status='completed'
+    ).count()
     
-    # Service Categories
-    service_categories = ServiceCategory.objects.filter(is_active=True)[:4]
-    
-    # Statistics
-    total_products = Product.objects.filter(is_active=True).count()
-    total_services = Service.objects.filter(is_active=True).count()
-    
-    # Quick Contact Form
-    quick_contact_form = QuickContactForm()
+    # If no data, use default values
+    if total_customers == 0:
+        total_customers = 5000
     
     context = {
-        'featured_products': featured_products,
-        'bestseller_products': bestseller_products,
-        'featured_services': featured_services,
-        'all_services': all_services,
-        'product_categories': product_categories,
         'service_categories': service_categories,
-        'total_products': total_products,
-        'total_services': total_services,
-        'quick_contact_form': quick_contact_form,
+        'all_services': all_services,
+        'openers': openers,
+        'doors': doors,
+        'recent_works': recent_works,
+        'total_customers': total_customers,
+        'quick_contact_form': form,
     }
     
     return render(request, 'home.html', context)

@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}الرئيسية - Dalal Alsaudia{% endblock %}
+{% block title %}Home - Protech Garage Doors{% endblock %}
 
 {% block body_class %}home-page no-navbar{% endblock %}
 
 {% block extra_css %}
 <style>
+    /* Smooth scrolling with offset for fixed header */
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 100px;
+    }
+
     /* Hide navbar when .no-navbar on body */
     body.no-navbar #navbar {
         display: none !important;
@@ -710,13 +716,869 @@
             font-size: 13px;
         }
     }
+
+    /* ===== SECTIONS STYLING ===== */
+
+    /* Common Section Styles */
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #0d2622;
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #0d2622, #1a4d43);
+        border-radius: 2px;
+    }
+
+    .section-subtitle {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+
+    /* Scroll reveal animation */
+    section {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+        padding: 80px 0;
+    }
+
+    section.revealed {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Hero section should be visible by default */
+    .hero-section {
+        opacity: 1;
+        transform: translateY(0);
+        padding: 0;
+    }
+
+    /* Remove extra py-5 padding since we have section padding */
+    .services-section,
+    .openers-section,
+    .doors-section,
+    .recent-work-section,
+    .about-section,
+    .contact-section {
+        padding: 80px 0;
+    }
+
+    @media (max-width: 768px) {
+        section {
+            padding: 60px 0;
+        }
+
+        .services-section,
+        .openers-section,
+        .doors-section,
+        .recent-work-section,
+        .about-section,
+        .contact-section {
+            padding: 60px 0;
+        }
+    }
+
+    @media (max-width: 480px) {
+        section {
+            padding: 40px 0;
+        }
+
+        .services-section,
+        .openers-section,
+        .doors-section,
+        .recent-work-section,
+        .about-section,
+        .contact-section {
+            padding: 40px 0;
+        }
+    }
+
+    /* Services Section */
+    .services-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    /* Service Category Section */
+    .service-category-section {
+        padding: 2rem 0;
+    }
+
+    .category-header {
+        margin-bottom: 2rem;
+    }
+
+    .category-icon {
+        font-size: 2.5rem;
+        color: #0d2622;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .category-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0d2622;
+        margin-bottom: 0.5rem;
+    }
+
+    .category-description {
+        font-size: 1.1rem;
+        color: #666;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Services Carousel */
+    .services-carousel {
+        padding: 40px 60px;
+    }
+
+    .services-control-prev,
+    .services-control-next {
+        width: 45px;
+        height: 45px;
+        background: #0d2622;
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .services-control-prev:hover,
+    .services-control-next:hover {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .services-indicators {
+        margin-bottom: -2rem;
+    }
+
+    .services-indicators button {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #0d2622;
+    }
+
+    /* Service Cards - Small Version */
+    .service-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        height: 100%;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-card-small {
+        padding: 1.8rem 1.5rem;
+        /* min-height: 320px; */
+    }
+
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 35px rgba(13, 38, 34, 0.15);
+        border-color: #0d2622;
+    }
+
+    .service-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #0d2622 0%, #1a4d43 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: all 0.4s ease;
+    }
+
+    .service-icon-small {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 1rem;
+    }
+
+    .service-card:hover .service-icon {
+        transform: rotate(360deg) scale(1.1);
+    }
+
+    .service-icon i {
+        font-size: 2rem;
+        color: #fff;
+    }
+
+    .service-icon-small i {
+        font-size: 1.5rem;
+    }
+
+    .service-card h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0d2622;
+        margin-bottom: 1rem;
+    }
+
+    .service-card-small h4 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .service-card p {
+        color: #666;
+        line-height: 1.6;
+        margin: 0 0 1rem 0;
+    }
+
+    .service-card-small p {
+        font-size: 0.95rem;
+        margin: 0 0 0.8rem 0;
+    }
+
+    .service-price {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .service-price span {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #0d2622;
+    }
+
+    @media (max-width: 992px) {
+        .services-carousel {
+            padding: 40px 20px;
+        }
+    }
+
+    /* Openers Section */
+    .openers-section {
+        background: #fff;
+    }
+
+    .opener-image {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+    }
+
+    .opener-image img {
+        transition: transform 0.6s ease;
+    }
+
+    .opener-image:hover img {
+        transform: scale(1.05);
+    }
+
+    .opener-content {
+        padding: 2rem;
+    }
+
+    .opener-content h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0d2622;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 2rem 0;
+    }
+
+    .feature-list li {
+        padding: 0.8rem 0;
+        font-size: 1.1rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .feature-list i {
+        color: #0d2622;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+
+    /* Doors Section */
+    .doors-section {
+        background: linear-gradient(135deg, #fbf8eb 0%, #f5f2e0 100%);
+    }
+
+    .door-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.4s ease;
+        height: 100%;
+    }
+
+    .door-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 40px rgba(13, 38, 34, 0.2);
+    }
+
+    .door-image {
+        position: relative;
+        overflow: hidden;
+        height: 280px;
+    }
+
+    .door-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .door-card:hover .door-image img {
+        transform: scale(1.1);
+    }
+
+    .door-info {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .door-info h4 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #0d2622;
+        margin-bottom: 0.5rem;
+    }
+
+    .door-info p {
+        color: #666;
+        margin: 0;
+    }
+
+    /* Recent Work Section with Slider */
+    .recent-work-section {
+        background: #fff;
+        padding: 100px 0;
+    }
+
+    /* Carousel Styling */
+    #recentWorksCarousel {
+        padding: 40px 0;
+    }
+
+    .carousel-indicators {
+        margin-bottom: -2rem;
+    }
+
+    .carousel-indicators button {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #0d2622;
+        opacity: 0.3;
+    }
+
+    .carousel-indicators button.active {
+        opacity: 1;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 50px;
+        height: 50px;
+        background: #0d2622;
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .carousel-control-prev {
+        left: -60px;
+    }
+
+    .carousel-control-next {
+        right: -60px;
+    }
+
+    @media (max-width: 1200px) {
+        .carousel-control-prev {
+            left: 10px;
+        }
+        .carousel-control-next {
+            right: 10px;
+        }
+    }
+
+    /* Work Slider Image */
+    .work-slider-image {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+    }
+
+    .work-slider-image img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 16px;
+        transition: transform 0.6s ease;
+    }
+
+    .work-slider-image:hover img {
+        transform: scale(1.05);
+    }
+
+    .work-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 2;
+    }
+
+    .work-badge .badge {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    /* Work Slider Content */
+    .work-slider-content {
+        padding: 2rem;
+        text-align: left;
+    }
+
+    .work-slider-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0d2622;
+        margin-bottom: 1rem;
+        text-align: left;
+    }
+
+    .work-slider-description {
+        font-size: 1.1rem;
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+
+    /* Reviews Section */
+    .reviews-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: left;
+    }
+
+    .reviews-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #0d2622;
+        text-align: left;
+    }
+
+    .review-card {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 3px solid #ffc107;
+        text-align: left;
+    }
+
+    .review-rating {
+        font-size: 0.9rem;
+        text-align: left;
+    }
+
+    .review-text {
+        font-size: 0.95rem;
+        color: #333;
+        font-style: italic;
+        margin: 0.5rem 0;
+        text-align: left;
+    }
+
+    .review-author {
+        font-size: 0.85rem;
+        color: #666;
+        font-weight: 600;
+        margin: 0;
+        text-align: right;
+    }
+
+    /* Old Work Card (Fallback) */
+    .work-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+        height: 100%;
+    }
+
+    .work-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .work-image {
+        position: relative;
+        overflow: hidden;
+        height: 300px;
+    }
+
+    .work-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .work-card:hover .work-image img {
+        transform: scale(1.1);
+    }
+
+    .work-overlay {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2;
+    }
+
+    .work-category {
+        background: #0d2622;
+        color: #fff;
+        padding: 0.5rem 1.2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .work-info {
+        padding: 1.5rem;
+    }
+
+    .work-info h4 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #0d2622;
+        margin-bottom: 0.5rem;
+    }
+
+    /* About Section */
+    .about-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .about-image {
+        position: relative;
+    }
+
+    .about-image img {
+        border-radius: 16px;
+        transition: transform 0.4s ease;
+    }
+
+    .about-image:hover img {
+        transform: scale(1.02);
+    }
+
+    .about-content {
+        padding: 2rem;
+        text-align: left;
+    }
+
+    .about-content .section-title {
+        text-align: left;
+    }
+
+    .about-content p {
+        text-align: left;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1.5rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(13, 38, 34, 0.15);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #0d2622;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    /* Contact Section */
+    .contact-section {
+        background: linear-gradient(135deg, #0d2622 0%, #1a4d43 100%);
+        color: #fff;
+    }
+
+    .contact-section .section-title,
+    .contact-section .section-subtitle {
+        color: #fff;
+    }
+
+    .contact-info-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        transition: all 0.4s ease;
+        height: 100%;
+    }
+
+    .contact-info-card:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-8px);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .contact-icon {
+        width: 70px;
+        height: 70px;
+        background: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: all 0.4s ease;
+    }
+
+    .contact-info-card:hover .contact-icon {
+        transform: scale(1.1) rotate(10deg);
+    }
+
+    .contact-icon i {
+        font-size: 1.8rem;
+        color: #0d2622;
+    }
+
+    .contact-info-card h4 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .contact-info-card p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .contact-info-card a {
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .contact-info-card a:hover {
+        color: #fbf8eb;
+    }
+
+    .contact-form-wrapper {
+        background: #fff;
+        border-radius: 16px;
+        padding: 3rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact-form .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.8rem 1.2rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .contact-form .form-control:focus {
+        border-color: #0d2622;
+        box-shadow: 0 0 0 0.2rem rgba(13, 38, 34, 0.15);
+    }
+
+    /* Center placeholder text in contact form */
+    .contact-form .form-control::placeholder {
+        text-align: left;
+    }
+
+    .contact-form .form-control {
+        text-align: left;
+    }
+
+    /* Alert Messages */
+    .alert {
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .alert-danger,
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+        }
+
+        .opener-content {
+            margin-top: 2rem;
+            padding: 1rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 1.8rem;
+        }
+
+        .service-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .door-image {
+            height: 220px;
+        }
+
+        .work-image {
+            height: 240px;
+        }
+
+        .contact-form-wrapper {
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .section-title {
+            font-size: 1.5rem;
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .service-card {
+            padding: 1.5rem 1rem;
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+        }
+
+        .service-icon i {
+            font-size: 1.5rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.2rem;
+        }
+
+        .door-image {
+            height: 200px;
+        }
+
+        .work-image {
+            height: 200px;
+        }
+
+        .contact-form-wrapper {
+            padding: 1.5rem;
+        }
+
+        .contact-info-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .stat-item {
+            padding: 1rem;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 {% block navbar %}{% endblock %}
 <!-- Hero Section (top of home) -->
-<section class="hero-section py-5">
+<section id="home" class="hero-section py-5">
     <!-- Auto-animated slider background -->
     <div class="hero-slider" data-slides='[
         "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=2069&auto=format&fit=crop",
@@ -753,54 +1615,88 @@
         <div class="hero-content-wrapper">
             <!-- Quote Form (Now on the left) -->
             <div class="quote-form-container">
-                <form class="quote-form" method="post" action="#">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form class="quote-form" method="post" action="{% url 'inquiries:quick_contact' %}">
+                    {% csrf_token %}
                     <h2>Get Your Free Estimate!</h2>
                     <p class="subtitle">Fill out the form below and we'll get back to you within 24 hours</p>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="name">Full Name:</label>
-                            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                            <label for="{{ quick_contact_form.name.id_for_label }}">Full Name:</label>
+                            {{ quick_contact_form.name }}
+                            {% if quick_contact_form.name.errors %}
+                                <small class="text-danger">{{ quick_contact_form.name.errors.0 }}</small>
+                            {% endif %}
                         </div>
 
                         <div class="form-group">
-                            <label for="email">Email Address:</label>
-                            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                            <label for="{{ quick_contact_form.email.id_for_label }}">Email Address:</label>
+                            {{ quick_contact_form.email }}
+                            {% if quick_contact_form.email.errors %}
+                                <small class="text-danger">{{ quick_contact_form.email.errors.0 }}</small>
+                            {% endif %}
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="phone">Phone Number:</label>
-                            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                            <label for="{{ quick_contact_form.phone.id_for_label }}">Phone Number:</label>
+                            {{ quick_contact_form.phone }}
+                            {% if quick_contact_form.phone.errors %}
+                                <small class="text-danger">{{ quick_contact_form.phone.errors.0 }}</small>
+                            {% endif %}
                         </div>
 
                         <div class="form-group">
-                            <label for="service_type">Service Type:</label>
-                            <select id="service_type" name="service_type">
-                                <option value="">Select service type</option>
-                                <option value="repair">Door Repair</option>
-                                <option value="installation">New Installation</option>
-                                <option value="replacement">Door Replacement</option>
-                                <option value="maintenance">Maintenance</option>
-                                <option value="opener">Opener Installation</option>
-                            </select>
+                            <label for="{{ quick_contact_form.inquiry_type.id_for_label }}">Inquiry Type:</label>
+                            {{ quick_contact_form.inquiry_type }}
+                            {% if quick_contact_form.inquiry_type.errors %}
+                                <small class="text-danger">{{ quick_contact_form.inquiry_type.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                    <div class="form-group">
+                            <label for="{{ quick_contact_form.service_needed.id_for_label }}">Service Needed:</label>
+                            {{ quick_contact_form.service_needed }}
+                            {% if quick_contact_form.service_needed.errors %}
+                                <small class="text-danger">{{ quick_contact_form.service_needed.errors.0 }}</small>
+                            {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                            <label for="{{ quick_contact_form.product_interest.id_for_label }}">Product Interest:</label>
+                            {{ quick_contact_form.product_interest }}
+                            {% if quick_contact_form.product_interest.errors %}
+                                <small class="text-danger">{{ quick_contact_form.product_interest.errors.0 }}</small>
+                            {% endif %}
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="address">Service Address:</label>
-                        <input type="text" id="address" name="address" placeholder="Enter your service address" required>
+                        <label for="{{ quick_contact_form.address.id_for_label }}">Service Address:</label>
+                        {{ quick_contact_form.address }}
+                        {% if quick_contact_form.address.errors %}
+                            <small class="text-danger">{{ quick_contact_form.address.errors.0 }}</small>
+                        {% endif %}
                     </div>
 
                     <div class="form-group">
-                        <label for="help">How Can We Help?</label>
-                        <textarea id="help" name="help" placeholder="Describe your needs or requirements" required></textarea>
-                    </div>
-
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="emailUpdates" name="emailUpdates">
-                        <label for="emailUpdates">I would like to receive email updates about promotions and services</label>
+                        <label for="{{ quick_contact_form.message.id_for_label }}">How Can We Help?</label>
+                        {{ quick_contact_form.message }}
+                        {% if quick_contact_form.message.errors %}
+                            <small class="text-danger">{{ quick_contact_form.message.errors.0 }}</small>
+                        {% endif %}
                     </div>
 
                     <button type="submit" class="quote-btn">Submit</button>
@@ -828,9 +1724,499 @@
 
 
 
-<!-- Section Divider -->
-<div class="section-divider"></div>
+<!-- Services Section with Slider -->
+<section id="services" class="services-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Our Services</h2>
+            <p class="section-subtitle">Professional garage door services you can trust</p>
+        </div>
 
+        {% if all_services %}
+        <!-- Services Slider -->
+        <div id="servicesCarousel" class="carousel slide services-carousel" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for service in all_services %}
+                    {% if forloop.counter0|divisibleby:3 %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="row g-3 justify-content-center">
+                    {% endif %}
+                            
+                            <div class="col-lg-4 col-md-6">
+                                <div class="service-card service-card-small">
+                                    <div class="service-icon service-icon-small">
+                                        <i class="fas {{ service.icon|default:'fa-tools' }}"></i>
+                                    </div>
+                                    <h4>{{ service.title_en|default:service.title }}</h4>
+                                    <p>{{ service.short_description|default:service.description|truncatewords:15 }}</p>
+                                    {% if service.starting_price %}
+                                        <div class="service-price">
+                                            <span>From ${{ service.starting_price }}</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                    
+                    {% if forloop.counter|divisibleby:3 or forloop.last %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev services-control-prev" type="button" data-bs-target="#servicesCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next services-control-next" type="button" data-bs-target="#servicesCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+
+            <!-- Indicators -->
+            <div class="carousel-indicators services-indicators" id="servicesIndicators">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+        {% else %}
+        <!-- Fallback content -->
+        <div class="row g-3 justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card service-card-small">
+                    <div class="service-icon service-icon-small">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h4>Emergency Repairs</h4>
+                    <p>24/7 emergency garage door repair services.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card service-card-small">
+                    <div class="service-icon service-icon-small">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h4>Maintenance</h4>
+                    <p>Regular maintenance services.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card service-card-small">
+                    <div class="service-icon service-icon-small">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                    <h4>Spring Replacement</h4>
+                    <p>Expert spring replacement services.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Openers Section -->
+<section id="openers" class="openers-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Garage Door Openers</h2>
+            <p class="section-subtitle">Smart and reliable opener solutions</p>
+        </div>
+        {% if openers %}
+        <div class="row align-items-center g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="opener-image">
+                    {% if openers.0.image %}
+                        <img src="{{ openers.0.image.url }}" 
+                             alt="{{ openers.0.name_en|default:openers.0.name }}" 
+                             class="img-fluid rounded-3 shadow-lg">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2069&auto=format&fit=crop" 
+                             alt="Garage Door Opener" class="img-fluid rounded-3 shadow-lg">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="opener-content">
+                    <h3 class="mb-4">{{ openers.0.name_en|default:openers.0.name }}</h3>
+                    {% if openers.0.short_description %}
+                        <p class="lead">{{ openers.0.short_description }}</p>
+                    {% endif %}
+                    <ul class="feature-list">
+                        {% if openers.0.get_features_list %}
+                            {% for feature in openers.0.get_features_list|slice:":5" %}
+                                <li><i class="fas fa-check-circle"></i> {{ feature }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li><i class="fas fa-check-circle"></i> Smart WiFi-enabled openers</li>
+                            <li><i class="fas fa-check-circle"></i> Belt & chain drive systems</li>
+                            <li><i class="fas fa-check-circle"></i> Smartphone control integration</li>
+                            <li><i class="fas fa-check-circle"></i> Battery backup systems</li>
+                            <li><i class="fas fa-check-circle"></i> Professional installation & setup</li>
+                        {% endif %}
+                    </ul>
+                    <a href="{% url 'products:product_list' %}" class="btn btn-primary mt-3">View All Openers</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <div class="opener-image">
+                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2069&auto=format&fit=crop" 
+                         alt="Garage Door Opener" class="img-fluid rounded-3 shadow-lg">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="opener-content">
+                    <h3 class="mb-4">Professional Opener Installation</h3>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> Smart WiFi-enabled openers</li>
+                        <li><i class="fas fa-check-circle"></i> Belt & chain drive systems</li>
+                        <li><i class="fas fa-check-circle"></i> Smartphone control integration</li>
+                        <li><i class="fas fa-check-circle"></i> Battery backup systems</li>
+                        <li><i class="fas fa-check-circle"></i> Professional installation & setup</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-primary mt-3">Get a Quote</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Doors Section -->
+<section id="doors" class="doors-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Garage Doors Collection</h2>
+            <p class="section-subtitle">Find the perfect door for your home</p>
+        </div>
+        <div class="row g-4">
+            {% if doors %}
+                {% for door in doors %}
+                <div class="col-lg-3 col-md-6">
+                    <div class="door-card">
+                        <div class="door-image">
+                            {% if door.image %}
+                                <img src="{{ door.image.url }}" 
+                                     alt="{{ door.name_en|default:door.name }}" 
+                                     class="img-fluid">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?q=80&w=2070&auto=format&fit=crop" 
+                                     alt="{{ door.name_en|default:door.name }}" class="img-fluid">
+                            {% endif %}
+                        </div>
+                        <div class="door-info">
+                            <h4>{{ door.name_en|default:door.name }}</h4>
+                            <p>{{ door.short_description|default:door.description|truncatewords:5 }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-lg-3 col-md-6">
+                    <div class="door-card">
+                        <div class="door-image">
+                            <img src="https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?q=80&w=2070&auto=format&fit=crop" 
+                                 alt="Traditional Door" class="img-fluid">
+                        </div>
+                        <div class="door-info">
+                            <h4>Traditional Doors</h4>
+                            <p>Classic raised panel designs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="door-card">
+                        <div class="door-image">
+                            <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=2070&auto=format&fit=crop" 
+                                 alt="Modern Door" class="img-fluid">
+                        </div>
+                        <div class="door-info">
+                            <h4>Modern Doors</h4>
+                            <p>Contemporary aluminum designs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="door-card">
+                        <div class="door-image">
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop" 
+                                 alt="Carriage Door" class="img-fluid">
+                        </div>
+                        <div class="door-info">
+                            <h4>Carriage Doors</h4>
+                            <p>Elegant wood-like appearance</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="door-card">
+                        <div class="door-image">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" 
+                                 alt="Custom Door" class="img-fluid">
+                        </div>
+                        <div class="door-info">
+                            <h4>Custom Doors</h4>
+                            <p>Personalized designs</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'products:product_list' %}" class="btn btn-primary btn-lg">View All Doors</a>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Work Section with Slider -->
+<section id="recent" class="recent-work-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Recent Work & Customer Reviews</h2>
+            <p class="section-subtitle">See our latest installations and what our customers say</p>
+        </div>
+
+        {% if recent_works %}
+        <!-- Works Slider -->
+        <div id="recentWorksCarousel" class="carousel slide" data-bs-ride="carousel">
+            <!-- Indicators -->
+            <div class="carousel-indicators">
+                {% for work in recent_works %}
+                <button type="button" data-bs-target="#recentWorksCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                        {% if forloop.first %}class="active"{% endif %} aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+                {% endfor %}
+            </div>
+
+            <!-- Slides -->
+            <div class="carousel-inner">
+                {% for work in recent_works %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="row align-items-center g-5">
+                        <!-- Work Image -->
+                        <div class="col-lg-6">
+                            <div class="work-slider-image">
+                                {% if work.image %}
+                                    <img src="{{ work.image.url }}" 
+                                         alt="{{ work.title }}" class="img-fluid rounded-3 shadow-lg">
+                                {% else %}
+                                    <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?q=80&w=2070&auto=format&fit=crop" 
+                                         alt="{{ work.title }}" class="img-fluid rounded-3 shadow-lg">
+                                {% endif %}
+                                {% if work.service %}
+                                    <div class="work-badge">
+                                        <span class="badge bg-dark">{{ work.service.title_en|default:work.service.title }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Work Info & Reviews -->
+                        <div class="col-lg-6">
+                            <div class="work-slider-content">
+                                <h3 class="work-slider-title">{{ work.title }}</h3>
+                                <p class="work-slider-description">{{ work.description }}</p>
+
+                                <!-- Reviews -->
+                                {% with work.reviews.filter as approved_reviews %}
+                                    {% if work.reviews.all %}
+                                    <div class="reviews-section mt-4">
+                                        <h5 class="reviews-title mb-3">
+                                            <i class="fas fa-star text-warning"></i> Customer Reviews
+                                        </h5>
+                                        {% for review in work.reviews.all|slice:":2" %}
+                                        <div class="review-card mb-3">
+                                            <div class="review-rating mb-2">
+                                                {% for i in "12345"|make_list %}
+                                                    {% if forloop.counter <= review.rating %}
+                                                        <i class="fas fa-star text-warning"></i>
+                                                    {% else %}
+                                                        <i class="far fa-star text-warning"></i>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            <p class="review-text">"{{ review.review_text|truncatewords:20 }}"</p>
+                                            <p class="review-author">- {{ review.customer_name }}</p>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#recentWorksCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#recentWorksCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        {% else %}
+        <!-- Fallback content -->
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="work-card">
+                    <div class="work-image">
+                        <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?q=80&w=2070&auto=format&fit=crop" 
+                             alt="Recent Work 1" class="img-fluid">
+                        <div class="work-overlay">
+                            <span class="work-category">Installation</span>
+                        </div>
+                    </div>
+                    <div class="work-info">
+                        <h4>Modern Aluminum Door</h4>
+                        <p class="text-muted">Residential Installation - Los Angeles, CA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about-section">
+    <div class="container">
+        <div class="row align-items-start g-5">
+            <div class="col-lg-6">
+                <div class="about-content">
+                    <h2 class="section-title mb-4">Welcome to Protech Garage Doors</h2>
+                    <p class="lead mb-4">
+                        We are an established company, family owned & operated. Being a small scale company, we are able to provide our customers with our utmost attention and finest level of service. We are dedicated to ensuring that we take care of all our customers.
+                    </p>
+                    <p class="mb-3">
+                        Mike, the owner, was born and raised in Orange County California. Working in the garage door industry started off as a high school summer job which developed into a full time career. Mike worked for a large scale garage door company for 15 years, in other words he is exceedingly skillful and experienced in this field.
+                    </p>
+                    <p class="mb-3">
+                        After a couple of years, Mike was given a promotion as Lead Technician, his job was to answer calls from other techs on their jobsite who needed assistance. Mike enjoyed encountering and getting to know diverse customers while doing his service calls. After all these years, Mike felt it was time to open his own company and be his own boss.
+                    </p>
+                    <p class="mb-0">
+                        Every customer will receive a free estimate before any work is done. Every customer will also receive professional, dependable, honest and affordable service. We offer a 1-year warranty on all newly installed parts. Contact us today for all your garage door needs!
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-image mb-4">
+                    <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop" 
+                         alt="Garage Door Service & Repair" class="img-fluid rounded-3 shadow-lg">
+                </div>
+                <div class="stats-row row g-4">
+                    <div class="col-6">
+                        <div class="stat-item">
+                            <h3 class="stat-number">15+</h3>
+                            <p class="stat-label">Years Experience</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-item">
+                            <h3 class="stat-number">{{ total_customers|default:'5000' }}+</h3>
+                            <p class="stat-label">Happy Customers</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-item">
+                            <h3 class="stat-number">24/7</h3>
+                            <p class="stat-label">Emergency Service</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-item">
+                            <h3 class="stat-number">100%</h3>
+                            <p class="stat-label">Satisfaction</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Contact Us</h2>
+            <p class="section-subtitle">Get in touch with our team today</p>
+        </div>
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h4>Phone</h4>
+                    <p><a href="tel:+714 515-0313 ">+ (714) 515-0313 </a></p>
+                    <p><a href="tel:+951 466-7900 ">+ (951) 466-7900 </a></p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h4>Email</h4>
+                    <p><a href="mailto:info@ProtechGarageDoorsRepair.com">info@ProtechGarageDoorsRepair.com</a></p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h4>Location</h4>
+                    <p>Corona, CA 92880</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="contact-form-wrapper">
+                    <form class="contact-form" method="post" action="{% url 'inquiries:quick_contact' %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ quick_contact_form.name }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ quick_contact_form.email }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ quick_contact_form.phone }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ quick_contact_form.inquiry_type }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ quick_contact_form.service_needed }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ quick_contact_form.product_interest }}
+                            </div>
+                            <div class="col-12">
+                                {{ quick_contact_form.address }}
+                            </div>
+                            <div class="col-12">
+                                {{ quick_contact_form.message }}
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}
 
@@ -966,14 +2352,93 @@
         });
     });
 
-    // Smooth scroll for anchor links
+    // Smooth scroll for anchor links with offset for fixed header
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                const headerOffset = 100; // Offset for fixed header
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
                 behavior: 'smooth'
             });
+            }
         });
     });
+
+    // Active section highlighting in navigation
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.cleanic-nav a[href^="#"]');
+
+    function highlightActiveSection() {
+        const scrollPosition = window.pageYOffset + 150;
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.style.fontWeight = '600';
+                    link.style.color = '#0d2622';
+                    if (link.getAttribute('href') === `#${sectionId}`) {
+                        link.style.fontWeight = '800';
+                        link.style.color = '#1a4d43';
+                        link.style.textDecoration = 'underline';
+                    }
+                });
+            }
+        });
+    }
+
+    window.addEventListener('scroll', highlightActiveSection);
+    highlightActiveSection(); // Initial call
+
+    // Scroll reveal animation for sections
+    const revealSections = document.querySelectorAll('section:not(.hero-section)');
+    
+    function revealOnScroll() {
+        revealSections.forEach(section => {
+            const sectionTop = section.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+            const revealPoint = windowHeight * 0.85;
+
+            if (sectionTop < revealPoint) {
+                section.classList.add('revealed');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', revealOnScroll);
+    revealOnScroll(); // Initial call
+
+    // Services Carousel Indicators
+    const servicesCarousel = document.getElementById('servicesCarousel');
+    if (servicesCarousel) {
+        const servicesSlides = servicesCarousel.querySelectorAll('.carousel-item');
+        const servicesIndicators = document.getElementById('servicesIndicators');
+        
+        if (servicesIndicators && servicesSlides.length > 0) {
+            servicesSlides.forEach((slide, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.setAttribute('data-bs-target', '#servicesCarousel');
+                button.setAttribute('data-bs-slide-to', index);
+                if (index === 0) {
+                    button.classList.add('active');
+                    button.setAttribute('aria-current', 'true');
+                }
+                button.setAttribute('aria-label', `Slide ${index + 1}`);
+                servicesIndicators.appendChild(button);
+            });
+        }
+    }
 </script>
 {% endblock %}

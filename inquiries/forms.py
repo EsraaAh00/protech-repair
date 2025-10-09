@@ -5,7 +5,6 @@ from .models import ContactInquiry
 
 class ContactInquiryForm(forms.ModelForm):
     """
-    نموذج استفسار العملاء
     Customer inquiry form
     """
     
@@ -19,22 +18,23 @@ class ContactInquiryForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'الاسم الكامل / Full Name',
+                'placeholder': 'Full Name',
                 'required': True
             }),
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'رقم الهاتف / Phone Number',
+                'placeholder': 'Phone Number',
                 'required': True,
                 'type': 'tel'
             }),
             'email': forms.EmailInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'البريد الإلكتروني / Email (optional)',
+                'placeholder': 'Email (optional)',
             }),
             'address': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'العنوان / Address (optional)',
+                'placeholder': 'Service Address *',
+                'required': True
             }),
             'inquiry_type': forms.Select(attrs={
                 'class': 'form-control',
@@ -47,7 +47,7 @@ class ContactInquiryForm(forms.ModelForm):
             }),
             'message': forms.Textarea(attrs={
                 'class': 'form-control',
-                'placeholder': 'كيف يمكننا مساعدتك؟ / How can we help you?',
+                'placeholder': 'How can we help you?',
                 'rows': 4,
                 'required': True
             }),
@@ -59,11 +59,10 @@ class ContactInquiryForm(forms.ModelForm):
         self.fields['service_needed'].required = False
         self.fields['product_interest'].required = False
         self.fields['email'].required = False
-        self.fields['address'].required = False
         
         # Add empty option to dropdowns
-        self.fields['service_needed'].empty_label = "اختر خدمة (اختياري) / Select Service (optional)"
-        self.fields['product_interest'].empty_label = "اختر منتج (اختياري) / Select Product (optional)"
+        self.fields['service_needed'].empty_label = "Select Service (optional)"
+        self.fields['product_interest'].empty_label = "Select Product (optional)"
     
     def clean_phone(self):
         """Validate phone number"""
@@ -73,7 +72,7 @@ class ContactInquiryForm(forms.ModelForm):
         
         # Basic validation - at least 10 digits
         if len(phone) < 10:
-            raise forms.ValidationError("رقم الهاتف غير صحيح / Invalid phone number")
+            raise forms.ValidationError("Invalid phone number")
         
         return phone
     
@@ -86,25 +85,32 @@ class ContactInquiryForm(forms.ModelForm):
         
         # If inquiry type is service_request, service should be selected
         if inquiry_type == 'service_request' and not service_needed:
-            self.add_error('service_needed', 'يرجى اختيار الخدمة المطلوبة / Please select a service')
+            self.add_error('service_needed', 'Please select a service')
         
         # If inquiry type is product_info, product should be selected
         if inquiry_type == 'product_info' and not product_interest:
-            self.add_error('product_interest', 'يرجى اختيار المنتج / Please select a product')
+            self.add_error('product_interest', 'Please select a product')
         
         return cleaned_data
 
 
 class QuickContactForm(forms.Form):
     """
-    نموذج تواصل سريع (للصفحة الرئيسية)
     Quick contact form (for homepage)
     """
+    INQUIRY_TYPE_CHOICES = [
+        ('free_estimate', 'Free Estimate'),
+        ('service_request', 'Service Request'),
+        ('product_info', 'Product Info'),
+        ('general', 'General Inquiry'),
+        ('emergency', 'Emergency'),
+    ]
+    
     name = forms.CharField(
         max_length=200,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'الاسم / Name *',
+            'placeholder': 'Your Name *',
             'required': True
         })
     )
@@ -112,7 +118,7 @@ class QuickContactForm(forms.Form):
         max_length=20,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'الهاتف / Phone *',
+            'placeholder': 'Phone Number *',
             'required': True,
             'type': 'tel'
         })
@@ -121,24 +127,58 @@ class QuickContactForm(forms.Form):
         required=False,
         widget=forms.EmailInput(attrs={
             'class': 'form-control',
-            'placeholder': 'البريد الإلكتروني / Email',
+            'placeholder': 'Email Address',
         })
     )
     address = forms.CharField(
-        required=False,
+        required=True,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'العنوان / Address',
+            'placeholder': 'Service Address *',
+            'required': True
+        })
+    )
+    inquiry_type = forms.ChoiceField(
+        choices=INQUIRY_TYPE_CHOICES,
+        initial='free_estimate',
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+        })
+    )
+    service_needed = forms.ModelChoiceField(
+        queryset=None,  # Will be set in __init__
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+        })
+    )
+    product_interest = forms.ModelChoiceField(
+        queryset=None,  # Will be set in __init__
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'form-control',
         })
     )
     message = forms.CharField(
         widget=forms.Textarea(attrs={
             'class': 'form-control',
-            'placeholder': 'كيف يمكننا مساعدتك؟ / How can we help? *',
+            'placeholder': 'How can we help you? *',
             'rows': 3,
             'required': True
         })
     )
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from services.models import Service
+        from products.models import Product
+        
+        # Set querysets
+        self.fields['service_needed'].queryset = Service.objects.filter(is_active=True)
+        self.fields['service_needed'].empty_label = "Select Service (optional)"
+        
+        self.fields['product_interest'].queryset = Product.objects.filter(is_active=True)
+        self.fields['product_interest'].empty_label = "Select Product (optional)"
     
     def clean_phone(self):
         """Validate phone number"""
@@ -146,7 +186,7 @@ class QuickContactForm(forms.Form):
         phone = phone.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
         
         if len(phone) < 10:
-            raise forms.ValidationError("رقم الهاتف غير صحيح / Invalid phone number")
+            raise forms.ValidationError("Invalid phone number")
         
         return phone
 
