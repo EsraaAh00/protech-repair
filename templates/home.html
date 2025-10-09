@@ -1909,9 +1909,6 @@
                                             <img src="{{ opener.image.url }}" 
                                                  alt="{{ opener.name_en|default:opener.name }}" 
                                                  class="img-fluid">
-                                        {% else %}
-                                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2069&auto=format&fit=crop" 
-                                                 alt="{{ opener.name_en|default:opener.name }}" class="img-fluid">
                                         {% endif %}
                                     </div>
                                     <div class="product-info">
@@ -1924,6 +1921,11 @@
                                             <div class="product-price">
                                                 <span>${{ opener.price }}</span>
                                             </div>
+                                        {% endif %}
+                                        {% if opener.pdf_url %}
+                                            <a href="{{ opener.pdf_url }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                                <i class="fas fa-file-pdf me-1"></i> Learn More
+                                            </a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -1987,9 +1989,6 @@
                                             <img src="{{ door.image.url }}" 
                                                  alt="{{ door.name_en|default:door.name }}" 
                                                  class="img-fluid">
-                                        {% else %}
-                                            <img src="https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?q=80&w=2070&auto=format&fit=crop" 
-                                                 alt="{{ door.name_en|default:door.name }}" class="img-fluid">
                                         {% endif %}
                                     </div>
                                     <div class="product-info">
@@ -2002,6 +2001,11 @@
                                             <div class="product-price">
                                                 <span>${{ door.price }}</span>
                                             </div>
+                                        {% endif %}
+                                        {% if door.pdf_url %}
+                                            <a href="{{ door.pdf_url }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                                <i class="fas fa-file-pdf me-1"></i> Learn More
+                                            </a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -2069,9 +2073,6 @@
                             <div class="work-slider-image">
                                 {% if work.image %}
                                     <img src="{{ work.image.url }}" 
-                                         alt="{{ work.title }}" class="img-fluid rounded-3 shadow-lg">
-                                {% else %}
-                                    <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?q=80&w=2070&auto=format&fit=crop" 
                                          alt="{{ work.title }}" class="img-fluid rounded-3 shadow-lg">
                                 {% endif %}
                                 {% if work.service %}

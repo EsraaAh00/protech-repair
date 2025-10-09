@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from django.core.files.base import ContentFile
 from django.utils.text import slugify
 from django.db import transaction
-from .models import Product, ProductCategory
+from .models import Product, ProductCategory, ProductImage
 import logging
 import time
 from urllib.parse import urljoin
@@ -54,14 +54,25 @@ class LiftMasterScraper:
         Download image from URL and return ContentFile
         """
         try:
+            # Skip data URLs (SVG placeholders)
+            if image_url.startswith('data:'):
+                logger.debug(f"Skipping data URL (placeholder image)")
+                return None
+            
             if not image_url.startswith('http'):
                 image_url = urljoin(self.BASE_URL, image_url)
             
             response = self.session.get(image_url, timeout=30)
             if response.status_code == 200:
+                # Check if content is actually an image
+                content_type = response.headers.get('content-type', '').lower()
+                if not any(img_type in content_type for img_type in ['image/', 'octet-stream']):
+                    logger.debug(f"Skipping non-image content: {content_type}")
+                    return None
+                
                 # Get filename from URL or generate one
-                filename = image_url.split('/')[-1]
-                if not filename or '?' in filename:
+                filename = image_url.split('/')[-1].split('?')[0]
+                if not filename or len(filename) < 3:
                     filename = f"liftmaster_{int(time.time())}.jpg"
                 
                 return ContentFile(response.content, name=filename)
@@ -101,6 +112,7 @@ class LiftMasterScraper:
             # Extract product information
             product_data = {
                 'url': product_url,
+                'all_images': []  # List to store all images
             }
             
             # Title
@@ -113,15 +125,84 @@ class LiftMasterScraper:
             if desc_elem:
                 product_data['description'] = desc_elem.get_text(strip=True)
             
-            # Main image
+            # Collect ALL images from the page
+            all_images_found = set()  # Use set to avoid duplicates
+            
+            # Strategy 1: Look for product gallery/slider
+            gallery_elem = soup.find('div', class_=re.compile(r'gallery|slider|carousel|images', re.IGNORECASE))
+            if gallery_elem:
+                for img in gallery_elem.find_all('img'):
+                    # Try multiple attributes for lazy-loaded images
+                    img_src = (img.get('data-src') or 
+                              img.get('data-lazy-src') or 
+                              img.get('data-original') or 
+                              img.get('data-lazy') or
+                              img.get('src', ''))
+                    
+                    # Skip data URLs and placeholders
+                    if img_src and not img_src.startswith('data:'):
+                        if not any(skip in img_src.lower() for skip in ['logo', 'icon', 'favicon', 'placeholder', 'svg']):
+                            all_images_found.add(img_src)
+            
+            # Strategy 2: Look for product-related images
+            product_section = soup.find('div', class_=re.compile(r'product|item-detail|single-product', re.IGNORECASE))
+            if product_section:
+                for img in product_section.find_all('img'):
+                    img_src = (img.get('data-src') or 
+                              img.get('data-lazy-src') or 
+                              img.get('data-original') or 
+                              img.get('data-lazy') or
+                              img.get('src', ''))
+                    
+                    if img_src and not img_src.startswith('data:'):
+                        if not any(skip in img_src.lower() for skip in ['logo', 'icon', 'favicon', 'placeholder', 'button', 'svg']):
+                            all_images_found.add(img_src)
+            
+            # Strategy 3: Main product image
             img_elem = soup.find('img', class_='product-image') or soup.find('div', class_='product-gallery')
             if img_elem:
                 if img_elem.name == 'img':
-                    product_data['image_url'] = img_elem.get('src', '')
+                    img_src = (img_elem.get('data-src') or 
+                              img_elem.get('data-lazy-src') or 
+                              img_elem.get('data-original') or
+                              img_elem.get('src', ''))
+                    
+                    if img_src and not img_src.startswith('data:'):
+                        all_images_found.add(img_src)
+                        product_data['image_url'] = img_src  # Main image
                 else:
                     img = img_elem.find('img')
                     if img:
-                        product_data['image_url'] = img.get('src', '')
+                        img_src = (img.get('data-src') or 
+                                  img.get('data-lazy-src') or 
+                                  img.get('data-original') or
+                                  img.get('src', ''))
+                        
+                        if img_src and not img_src.startswith('data:'):
+                            all_images_found.add(img_src)
+                            product_data['image_url'] = img_src
+            
+            # Strategy 4: Look for thumbnail images (often in galleries)
+            thumbnails = soup.find_all('img', class_=re.compile(r'thumb|small|preview', re.IGNORECASE))
+            for thumb in thumbnails:
+                # Try to get the full-size version
+                img_src = (thumb.get('data-full') or 
+                          thumb.get('data-large') or 
+                          thumb.get('data-src') or 
+                          thumb.get('data-original') or
+                          thumb.get('src', ''))
+                
+                if img_src and not img_src.startswith('data:'):
+                    if not any(skip in img_src.lower() for skip in ['logo', 'icon', 'favicon', 'svg']):
+                        all_images_found.add(img_src)
+            
+            # Convert set to list and store all images
+            product_data['all_images'] = list(all_images_found)
+            logger.info(f"Found {len(all_images_found)} images for product")
+            
+            # If no main image set but we have images, use the first one as main
+            if not product_data.get('image_url') and product_data['all_images']:
+                product_data['image_url'] = product_data['all_images'][0]
             
             # PDF link
             pdf_link = soup.find('a', href=re.compile(r'\.pdf$', re.IGNORECASE))
@@ -263,7 +344,10 @@ class LiftMasterScraper:
                         if title and len(title) > 3:  # Meaningful title
                             product_info['title'] = title
                     
-                    # Get image
+                    # Get all images for this product
+                    product_images = []
+                    
+                    # Get main image
                     img = element.find('img')
                     if not img and element.name == 'a':
                         parent = element.find_parent(['div', 'article'])
@@ -271,9 +355,31 @@ class LiftMasterScraper:
                             img = parent.find('img')
                     
                     if img:
-                        img_src = img.get('src', '') or img.get('data-src', '')
-                        if img_src:
+                        img_src = (img.get('data-src') or 
+                                  img.get('data-lazy-src') or 
+                                  img.get('data-original') or
+                                  img.get('src', ''))
+                        
+                        if img_src and not img_src.startswith('data:'):
                             product_info['image_url'] = img_src
+                            product_images.append(img_src)
+                    
+                    # Try to find additional images in the element
+                    all_imgs = element.find_all('img') if element.name != 'img' else [element]
+                    for img_elem in all_imgs:
+                        img_src = (img_elem.get('data-src') or 
+                                  img_elem.get('data-lazy-src') or 
+                                  img_elem.get('data-original') or
+                                  img_elem.get('src', ''))
+                        
+                        if img_src and not img_src.startswith('data:'):
+                            if img_src not in product_images:
+                                if not any(skip in img_src.lower() for skip in ['logo', 'icon', 'favicon', 'button', 'svg']):
+                                    product_images.append(img_src)
+                    
+                    # Store all images (only real image URLs, not data URLs)
+                    if product_images:
+                        product_info['all_images'] = product_images
                     
                     # Get short description if available
                     desc_elem = (element.find('p') or 
@@ -304,7 +410,7 @@ class LiftMasterScraper:
     @transaction.atomic
     def save_product(self, product_data):
         """
-        Save scraped product to database
+        Save scraped product to database with all images
         """
         try:
             # Extract model number
@@ -346,16 +452,52 @@ class LiftMasterScraper:
                 is_active=True,
             )
             
-            # Download and save image
-            image_url = product_data.get('image_url', '')
-            if image_url:
-                image_file = self.download_image(image_url)
+            # Download and save main image
+            main_image_url = product_data.get('image_url', '')
+            if main_image_url:
+                image_file = self.download_image(main_image_url)
                 if image_file:
                     product.image = image_file
+                    logger.info(f"  ✓ Downloaded main image")
             
             product.save()
-            
             logger.info(f"Successfully saved product: {title}")
+            
+            # Download and save all additional images
+            all_images = product_data.get('all_images', [])
+            if all_images:
+                logger.info(f"  Downloading {len(all_images)} images...")
+                saved_images_count = 0
+                
+                for idx, img_url in enumerate(all_images):
+                    try:
+                        # Skip if it's the same as main image (already saved)
+                        if img_url == main_image_url:
+                            continue
+                        
+                        # Download image
+                        image_file = self.download_image(img_url)
+                        if image_file:
+                            # Create ProductImage instance
+                            product_image = ProductImage(
+                                product=product,
+                                image=image_file,
+                                is_main=(idx == 0 and not main_image_url),
+                                order=idx
+                            )
+                            product_image.save()
+                            saved_images_count += 1
+                            logger.info(f"  ✓ Saved image {saved_images_count}/{len(all_images)}")
+                        
+                        # Small delay between image downloads
+                        time.sleep(0.5)
+                        
+                    except Exception as img_error:
+                        logger.warning(f"  ✗ Failed to save image {idx + 1}: {img_error}")
+                        continue
+                
+                logger.info(f"  Total images saved: {saved_images_count} additional images")
+            
             self.scraped_count += 1
             return product
             
@@ -400,7 +542,13 @@ class LiftMasterScraper:
                 if fetch_details:
                     detailed_data = self.scrape_product_detail(product_data['url'])
                     if detailed_data:
+                        # Merge all_images lists (avoid duplicates)
+                        existing_images = set(product_data.get('all_images', []))
+                        new_images = set(detailed_data.get('all_images', []))
+                        all_combined_images = list(existing_images | new_images)
+                        
                         product_data.update(detailed_data)
+                        product_data['all_images'] = all_combined_images
                 
                 # Save product
                 self.save_product(product_data)

@@ -3,38 +3,38 @@ from django.core.management.base import BaseCommand
 from django.core.files.base import ContentFile
 from products.models import Product, ProductCategory, DoorSpecifications
 import requests
-from io import BytesIO
 import time
 
 
 class Command(BaseCommand):
-    help = 'Add garage door products from Protech website to database'
-    
+    help = 'Add garage door products from Protech website to database with real images'
+
     def download_image(self, url, product_name):
-        """Download image from URL and return ContentFile"""
+        """Download image from real website URL"""
         try:
+            # Add https:// if missing
+            if url.startswith('//'):
+                url = 'https:' + url
+            
             self.stdout.write(f'    Downloading image from: {url}')
-            response = requests.get(url, timeout=10)
+            response = requests.get(url, timeout=15)
             response.raise_for_status()
             
-            # Get image extension from URL or content type
+            # Determine extension
             content_type = response.headers.get('content-type', '')
-            if 'image/jpeg' in content_type or url.endswith('.jpg') or url.endswith('.jpeg'):
+            if 'jpeg' in content_type or 'jpg' in content_type:
                 ext = 'jpg'
-            elif 'image/png' in content_type or url.endswith('.png'):
+            elif 'png' in content_type:
                 ext = 'png'
-            elif 'image/webp' in content_type or url.endswith('.webp'):
+            elif 'webp' in content_type:
                 ext = 'webp'
             else:
-                ext = 'jpg'  # default
+                ext = 'jpg'
             
-            # Create filename
-            filename = f"{product_name.lower().replace(' ', '_')}.{ext}"
-            
-            # Return ContentFile
+            filename = f"{product_name.lower().replace(' ', '_').replace('-', '_')}.{ext}"
             return ContentFile(response.content, name=filename)
         except Exception as e:
-            self.stdout.write(self.style.WARNING(f'    Failed to download image: {str(e)}'))
+            self.stdout.write(self.style.WARNING(f'    Failed to download: {str(e)}'))
             return None
 
     def handle(self, *args, **kwargs):
@@ -69,13 +69,13 @@ Brown"""
 - Decorative Glass
 - No Windows Option"""
         
-        # Door products data with image URLs
+        # Door products data with real images from Protech website
         door_products = [
             {
                 'name': 'Carriage House Door',
                 'name_en': 'Carriage House Door',
                 'brand': 'Protech',
-                'image_url': 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800',  # Carriage house style door
+                'image_url': '//nebula.wsimg.com/dde39f11d60a3f7b8607a3ff3ac920bd?AccessKeyId=35B518FE166B65962035&disposition=0&alloworigin=1',
                 'short_description': 'Classic carriage house style with premium black iron hardware',
                 'description': '''The Carriage House Door combines timeless elegance with modern functionality. This premium door features authentic carriage house design with optional black iron hardware.
 
@@ -107,7 +107,7 @@ Warranty: Lifetime Limited Warranty''',
                 'name': 'Lexington Panel Door - Long Panel',
                 'name_en': 'Lexington Panel Door - Long Panel',
                 'brand': 'Protech',
-                'image_url': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600',  # Long panel garage door
+                'image_url': '//nebula.wsimg.com/242b3b75f7ddc8b4d05fef4ad4ab8545?AccessKeyId=35B518FE166B65962035&disposition=0&alloworigin=1',
                 'short_description': 'Traditional long panel design with elegant styling',
                 'description': '''The Lexington Long Panel Door offers a traditional aesthetic with modern durability. This classic design features elongated panels that create a sophisticated, timeless look.
 
@@ -140,7 +140,7 @@ Warranty: Limited Lifetime''',
                 'name': 'Lexington Panel Door - Short Panel',
                 'name_en': 'Lexington Panel Door - Short Panel',
                 'brand': 'Protech',
-                'image_url': 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800',  # Short panel garage door
+                'image_url': '//nebula.wsimg.com/df78cdc2e4750e7614484cd651919c4d?AccessKeyId=35B518FE166B65962035&disposition=0&alloworigin=1',
                 'short_description': 'Classic short panel design with versatile styling',
                 'description': '''The Lexington Short Panel Door provides a classic, versatile look that complements any home style. The short panel configuration offers a traditional appearance with contemporary functionality.
 
@@ -173,7 +173,7 @@ Warranty: Limited Lifetime''',
                 'name': 'Flush Door',
                 'name_en': 'Flush Door',
                 'brand': 'Protech',
-                'image_url': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800',  # Modern flush door
+                'image_url': '//nebula.wsimg.com/8de2c69f8260a61bd8a5a2c34cbebc9c?AccessKeyId=35B518FE166B65962035&disposition=0&alloworigin=1',
                 'short_description': 'Clean, modern flush panel design',
                 'description': '''The Flush Door offers a clean, contemporary look with its smooth, uninterrupted surface. This modern design is perfect for homeowners seeking a minimalist aesthetic.
 
@@ -206,7 +206,7 @@ Warranty: Limited Warranty''',
                 'name': 'Wood-Like Door',
                 'name_en': 'Wood-Like Door',
                 'brand': 'Protech',
-                'image_url': 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=700',  # Wood texture door
+                'image_url': '//nebula.wsimg.com/58158fe99caac5dac73b7c81f0790b46?AccessKeyId=35B518FE166B65962035&disposition=0&alloworigin=1',
                 'short_description': 'Authentic wood appearance without the maintenance',
                 'description': '''The Wood-Like Door delivers the beauty of natural wood with the durability of modern materials. Advanced manufacturing creates an authentic wood grain appearance that requires minimal maintenance.
 
@@ -239,7 +239,7 @@ Warranty: Limited Lifetime''',
                 'name': 'Glass Door',
                 'name_en': 'Glass Door',
                 'brand': 'Protech',
-                'image_url': 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800',  # Glass garage door
+                'image_url': '//nebula.wsimg.com/e9769ab0a444e00b07f952c42db70669?AccessKeyId=35B518FE166B65962035&disposition=0&alloworigin=1',
                 'short_description': 'Modern full-view glass garage door',
                 'description': '''The Glass Door makes a stunning architectural statement with its contemporary full-view design. Featuring aluminum frames and glass panels, this door floods your garage with natural light.
 
@@ -273,7 +273,7 @@ Warranty: Limited Warranty''',
                 'name': 'Modern Flush Aluminum Door',
                 'name_en': 'Modern Flush Aluminum Door',
                 'brand': 'Protech',
-                'image_url': 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800',  # Aluminum modern door
+                'image_url': '//nebula.wsimg.com/05f1b30b2e55d2669b04463a0d88475a?AccessKeyId=35B518FE166B65962035&disposition=0&alloworigin=1',
                 'short_description': 'Sleek aluminum door with smooth finish',
                 'description': '''The Modern Flush Aluminum Door exemplifies contemporary design with its clean lines and smooth surface. Lightweight yet durable aluminum construction offers excellent longevity with minimal maintenance.
 
@@ -326,13 +326,13 @@ Warranty: Limited Warranty''',
             if created:
                 self.stdout.write(self.style.SUCCESS(f'Added: {product.name_en}'))
                 
-                # Download and save image
+                # Download image from real Protech website
                 if image_url and not product.image:
                     image_file = self.download_image(image_url, product.name_en)
                     if image_file:
                         product.image.save(image_file.name, image_file, save=True)
-                        self.stdout.write(self.style.SUCCESS(f'  Image saved for {product.name_en}'))
-                    time.sleep(0.5)  # Be nice to the server
+                        self.stdout.write(self.style.SUCCESS(f'  Image downloaded from Protech website'))
+                    time.sleep(1)  # Be nice to the server
                 
                 # Create door specifications
                 door_spec, spec_created = DoorSpecifications.objects.get_or_create(
@@ -358,7 +358,7 @@ Warranty: Limited Warranty''',
                 self.stdout.write(self.style.WARNING(f'Already exists: {product.name_en}'))
         
         # Add Custom Doors category product
-        custom_door_image_url = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800'
+        custom_door_image_url = '//nebula.wsimg.com/9b5bb98f0b1f31e45d7ac36dc4d2f7e1?AccessKeyId=35B518FE166B65962035&disposition=0&alloworigin=1'  # Real custom doors image
         custom_door, created = Product.objects.get_or_create(
             slug='custom-garage-doors',
             defaults={
@@ -405,7 +405,7 @@ Warranty: Manufacturer's Warranty''',
                 image_file = self.download_image(custom_door_image_url, custom_door.name_en)
                 if image_file:
                     custom_door.image.save(image_file.name, image_file, save=True)
-                    self.stdout.write(self.style.SUCCESS(f'  Image saved for {custom_door.name_en}'))
+                    self.stdout.write(self.style.SUCCESS(f'  Image downloaded and saved'))
             
             # Create door specifications for custom door
             DoorSpecifications.objects.get_or_create(
@@ -428,7 +428,7 @@ Warranty: Manufacturer's Warranty''',
             self.stdout.write(self.style.WARNING(f'Already exists: {custom_door.name_en}'))
         
         self.stdout.write(self.style.SUCCESS('\nAll door products added successfully!'))
-        self.stdout.write(self.style.SUCCESS('Total products added: 8 garage doors'))
+        self.stdout.write(self.style.SUCCESS('Total products added: 7 garage doors'))
         self.stdout.write(self.style.SUCCESS('You can view products at: /admin/products/'))
-        self.stdout.write(self.style.WARNING('\nNote: Product images need to be added manually through admin panel'))
+        self.stdout.write(self.style.SUCCESS('\nNote: Images downloaded from Protech website: https://www.protechgaragedoorsrepair.com/doors.html'))
 
