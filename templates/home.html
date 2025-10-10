@@ -747,6 +747,115 @@
         margin-bottom: 2rem;
     }
 
+    /* Brand Logos Section */
+    .brands-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-top: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .brands-grid {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+        overflow-x: auto;
+    }
+
+    .brand-item {
+        text-align: center;
+        transition: transform 0.3s ease;
+        background: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        min-width: 200px;
+        flex: 0 0 auto;
+        max-width: 220px;
+    }
+
+    .brand-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .brand-logo {
+        max-height: 120px;
+        max-width: 180px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        margin-bottom: 15px;
+        filter: grayscale(0.3);
+        transition: filter 0.3s ease;
+    }
+
+    .brand-item:hover .brand-logo {
+        filter: grayscale(0);
+    }
+
+    .brand-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #0d2622;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 992px) {
+        .brands-grid {
+            gap: 25px;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            padding: 0 20px;
+        }
+        
+        .brand-item {
+            min-width: 150px;
+            max-width: 170px;
+            padding: 20px;
+            flex: 0 0 auto;
+        }
+        
+        .brand-logo {
+            max-height: 90px;
+            max-width: 140px;
+        }
+        
+        .brand-name {
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .brands-grid {
+            gap: 20px;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            padding: 0 15px;
+        }
+        
+        .brand-item {
+            min-width: 130px;
+            max-width: 150px;
+            padding: 18px;
+            flex: 0 0 auto;
+        }
+        
+        .brand-logo {
+            max-height: 70px;
+            max-width: 110px;
+        }
+        
+        .brand-name {
+            font-size: 0.75rem;
+        }
+    }
+
     /* Scroll reveal animation */
     section {
         opacity: 0;
@@ -1951,7 +2060,6 @@
             <!-- Indicators -->
             <div class="carousel-indicators products-indicators" id="openersIndicators"></div>
         </div>
-
         <div class="text-center mt-5">
             <a href="{% url 'all_openers' %}" class="btn btn-primary btn-lg">View All Openers</a>
         </div>
@@ -1961,6 +2069,39 @@
             <a href="#contact" class="btn btn-primary mt-3">Contact Us</a>
         </div>
         {% endif %}
+    </div>
+</section>
+
+<!-- Brand Logos Section -->
+<section class="brands-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h3 class="section-title">Trusted Brands</h3>
+            <p class="section-subtitle">We work with industry-leading manufacturers</p>
+        </div>
+        
+        <div class="brands-grid">
+            <div class="brand-item">
+                <img src="/static/css/1.jpeg" alt="CRAFTSMAN" class="brand-logo">
+                <p class="brand-name">CRAFTSMAN™</p>
+            </div>
+            <div class="brand-item">
+                <img src="/static/css/2.jpeg" alt="Marantec" class="brand-logo">
+                <p class="brand-name">Marantec</p>
+            </div>
+            <div class="brand-item">
+                <img src="/static/css/3.jpeg" alt="Genie" class="brand-logo">
+                <p class="brand-name">GENIE®</p>
+            </div>
+            <div class="brand-item">
+                <img src="/static/css/4.jpeg" alt="Wayne Dalton" class="brand-logo">
+                <p class="brand-name">Wayne Dalton®</p>
+            </div>
+            <div class="brand-item">
+                <img src="/static/css/5.jpeg" alt="Sears" class="brand-logo">
+                <p class="brand-name">Sears</p>
+            </div>
+        </div>
     </div>
 </section>
 
