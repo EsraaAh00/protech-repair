@@ -182,87 +182,92 @@ class ProductAdmin(admin.ModelAdmin):
         self.message_user(request, f"{queryset.count()} منتج تم إيقافه")
     mark_as_inactive.short_description = "إيقاف المنتجات المحددة"
     
-    def get_urls(self):
-        """Add custom URLs for scraping"""
-        urls = super().get_urls()
-        custom_urls = [
-            path('scrape-liftmaster/', self.admin_site.admin_view(self.scrape_liftmaster_view), name='products_scrape_liftmaster'),
-        ]
-        return custom_urls + urls
+    # ============================================
+    # Scraping Feature - Disabled (Use management command instead)
+    # Use: python manage.py add_liftmaster_openers
+    # ============================================
+    
+    # def get_urls(self):
+    #     """Add custom URLs for scraping"""
+    #     urls = super().get_urls()
+    #     custom_urls = [
+    #         path('scrape-liftmaster/', self.admin_site.admin_view(self.scrape_liftmaster_view), name='products_scrape_liftmaster'),
+    #     ]
+    #     return custom_urls + urls
     
     
-    def scrape_liftmaster_view(self, request):
-        """View to handle LiftMaster import - scrapes all products from website"""
-        if request.method == 'POST':
-            fetch_details = request.POST.get('fetch_details') == 'on'
-            
-            try:
-                if not SELENIUM_AVAILABLE:
-                    self.message_user(
-                        request,
-                        "❌ Selenium غير مثبت. قم بتثبيته أولاً باستخدام: pip install selenium webdriver-manager",
-                        messages.ERROR
-                    )
-                    return redirect('..')
-                
-                # Use Selenium to scrape all products from website
-                self.message_user(
-                    request,
-                    "⏳ جارٍ جلب جميع المنتجات من الموقع... قد يستغرق بضع دقائق.",
-                    messages.INFO
-                )
-                
-                result = scrape_with_selenium(fetch_details=fetch_details)
-                
-                if result['success']:
-                    if result['scraped'] > 0:
-                        self.message_user(
-                            request,
-                            f"✅ تم جلب المنتجات من الموقع بنجاح! المضاف: {result['scraped']}, المتخطى: {result['skipped']}, الأخطاء: {result['errors']}",
-                            messages.SUCCESS
-                        )
-                        self.message_user(
-                            request,
-                            "💡 يمكنك الآن تعديل المنتجات وإضافة الأسعار من خلال لوحة التحكم.",
-                            messages.INFO
-                        )
-                    elif result['skipped'] > 0:
-                        self.message_user(
-                            request,
-                            f"⏭️ جميع المنتجات موجودة بالفعل. المتخطى: {result['skipped']}",
-                            messages.INFO
-                        )
-                    else:
-                        self.message_user(
-                            request,
-                            "⚠️ لم يتم العثور على منتجات جديدة في الموقع.",
-                            messages.WARNING
-                        )
-                else:
-                    self.message_user(
-                        request,
-                        f"❌ فشل جلب المنتجات: {result['message']}",
-                        messages.ERROR
-                    )
-                    
-            except Exception as e:
-                self.message_user(
-                    request,
-                    f"❌ حدث خطأ أثناء جلب المنتجات: {str(e)}",
-                    messages.ERROR
-                )
-                logger.exception("Error during import")
-            
-            return redirect('..')
-        
-        # GET request - show confirmation page
-        context = {
-            **self.admin_site.each_context(request),
-            'title': 'جلب منتجات من LiftMaster',
-            'opts': self.model._meta,
-            'selenium_available': SELENIUM_AVAILABLE,
-        }
-        return render(request, 'admin/products/scrape_confirm.html', context)
+    # def scrape_liftmaster_view(self, request):
+    #     """View to handle LiftMaster import - scrapes all products from website"""
+    #     if request.method == 'POST':
+    #         fetch_details = request.POST.get('fetch_details') == 'on'
+    #         
+    #         try:
+    #             if not SELENIUM_AVAILABLE:
+    #                 self.message_user(
+    #                     request,
+    #                     "❌ Selenium غير مثبت. قم بتثبيته أولاً باستخدام: pip install selenium webdriver-manager",
+    #                     messages.ERROR
+    #                 )
+    #                 return redirect('..')
+    #             
+    #             # Use Selenium to scrape all products from website
+    #             self.message_user(
+    #                 request,
+    #                 "⏳ جارٍ جلب جميع المنتجات من الموقع... قد يستغرق بضع دقائق.",
+    #                 messages.INFO
+    #             )
+    #             
+    #             result = scrape_with_selenium(fetch_details=fetch_details)
+    #             
+    #             if result['success']:
+    #                 if result['scraped'] > 0:
+    #                     self.message_user(
+    #                         request,
+    #                         f"✅ تم جلب المنتجات من الموقع بنجاح! المضاف: {result['scraped']}, المتخطى: {result['skipped']}, الأخطاء: {result['errors']}",
+    #                         messages.SUCCESS
+    #                     )
+    #                     self.message_user(
+    #                         request,
+    #                         "💡 يمكنك الآن تعديل المنتجات وإضافة الأسعار من خلال لوحة التحكم.",
+    #                         messages.INFO
+    #                     )
+    #                 elif result['skipped'] > 0:
+    #                     self.message_user(
+    #                         request,
+    #                         f"⏭️ جميع المنتجات موجودة بالفعل. المتخطى: {result['skipped']}",
+    #                         messages.INFO
+    #                     )
+    #                 else:
+    #                     self.message_user(
+    #                         request,
+    #                         "⚠️ لم يتم العثور على منتجات جديدة في الموقع.",
+    #                         messages.WARNING
+    #                     )
+    #             else:
+    #                 self.message_user(
+    #                     request,
+    #                     f"❌ فشل جلب المنتجات: {result['message']}",
+    #                     messages.ERROR
+    #                 )
+    #                 
+    #         except Exception as e:
+    #             self.message_user(
+    #                 request,
+    #                 f"❌ حدث خطأ أثناء جلب المنتجات: {str(e)}",
+    #                 messages.ERROR
+    #             )
+    #             logger.exception("Error during import")
+    #         
+    #         return redirect('..')
+    #     
+    #     # GET request - show confirmation page
+    #     context = {
+    #         **self.admin_site.each_context(request),
+    #         'title': 'جلب منتجات من LiftMaster',
+    #         'opts': self.model._meta,
+    #         'selenium_available': SELENIUM_AVAILABLE,
+    #     }
+    #     return render(request, 'admin/products/scrape_confirm.html', context)
 
 
 @admin.register(ProductImage)

@@ -1,0 +1,227 @@
+ vercel
+ professionaldev.sa@gmail.com
+
+ digitalocean
+ professionaldev.sa@gmail.com
+Pdt123@#
+
+ ديجيتال اوشن خش مباشرة بالايميل والباسوورد مو عن طريق قوقل
+ تم اشتريت الدومينات
+ go dady
+ professionaldev.sa@gmail.com
+Professional123@#
+ Pdt.sa
+
+
+
+for jorry host and doman 
+degtal ocian 
+pass : osam0Esmael
+ip : 64.227.82.42
+
+pdt-admin.com
+
+
+
+
+#degtal ocean config
+#DB_USER=doadmin
+#DB_PASSWORD= osam0Esmael
+#DB_HOST= 64.227.82.42
+#DB_PORT=5432
+#DB_NAME=defaultdb
+
+alisthomepros.com
+################################## run my server
+# ssh root@64.227.82.42     username
+# osam0Esmael                password
+ su sammy
+ cd ~/myprojectdir
+ source myprojectenv/bin/activate
+
+
+############# when change domain start with ######################## 
+#sudo nano /etc/nginx/sites-available/myproject  
+# sudo apt install snap
+# sudo snap install --classic certbot
+# sudo ln -s /snap/bin/certbot/usr/bin/certbot
+# sudo certbot --nginx
+
+# لما غيرت الداتا بيز connection
+###################################
+sudo systemctl restart gunicorn
+sudo systemctl daemon-reload 
+sudo systemctl restart gunicorn.socket gunicorn.service
+sudo nginx -t && sudo systemctl restart nginx
+###################################
+sudo nano /etc/nginx/nginx.conf
+pip freeze > requirements.txt
+
+pip install -r requirements.txt
+python test_email.py 
+python network_test.py
+python django_email_test.py
+sudo nano /etc/nginx/nginx.conf
+
+# sudo nano /etc/nginx/sites-available/myproject  #change domain name 
+# sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
+custrus.com
+Osama5555
+python manage.py makemigrations
+python manage.py migrate
+python manage.py migrate users 0003_rename_teacher_to_instructor_tables --fake
+python manage.py runserver 0.0.0.0:8000
+python manage.py collectstatic --no-input
+
+python manage.py createsuperuser
+python manage.py collectstatic
+
+pip install djangorestframework
+pip install djangorestframework-simplejwt
+pip install django-cors-headers
+pip install django-filter
+pip install django-ckeditor-5
+pip install pyyaml ua-parser user-agents
+pip install django-allauth
+pip install requests
+pip install cryptography
+pip install django-ckeditor
+chmod o+x /home/sammy
+chmod o+rx /home/sammy/myprojectdir
+# اجعل مجموعة الملفات www-data وتأكد من ملكية المجلد staticfiles
+sudo chown -R sammy:www-data /home/sammy/myprojectdir/staticfiles
+
+# مجلدات => 755 (rwxr-xr-x), ملفات => 644 (rw-r--r--)
+sudo find /home/sammy/myprojectdir/staticfiles -type d -exec chmod 755 {} +
+sudo find /home/sammy/myprojectdir/staticfiles -type f -exec chmod 644 {} +
+
+# تأكد أن المجلدات الأبوية قابلة للعبور (execute) من قبل nginx
+sudo chmod 755 /home/sammy
+sudo chmod 755 /home/sammy/myprojectdir
+
+
+
+sudo -u www-data test -r /home/sammy/myprojectdir/staticfiles/admin/css/base.css && echo "nginx can read file"
+curl -I http://64.227.82.42/static/admin/css/base.css
+
+http {
+    # ... existing settings ...
+    
+    # زيادة حد رفع الملفات
+    client_max_body_size 500M;  # 500 ميجابايت
+    client_body_timeout 300s;   # 5 دقائق timeout
+    client_header_timeout 300s;
+    
+    # إعدادات إضافية للملفات الكبيرة
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
+    proxy_read_timeout 300s;
+    send_timeout 300s;
+    
+    # ... rest of settings ...
+}
+files
+triplesacademy.com  www.triplesacademy.com
+###############
+
+server {
+    listen 80;
+    server_name 64.227.82.42 ;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    # Static files
+    location /static/ {
+        alias /home/sammy/myprojectdir/staticfiles/;
+        expires 30d;
+        add_header Cache-Control public;
+    }
+
+    # Media files
+    location /media/ {
+        alias /home/sammy/myprojectdir/media/;
+        expires 30d;
+        add_header Cache-Control public;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/gunicorn.sock;
+    }
+}
+
+
+#########
+
+
+# إنشاء مجلدات media
+sudo mkdir -p /home/sammy/myprojectdir/media/courses/images
+sudo mkdir -p /home/sammy/myprojectdir/media/courses/syllabus
+sudo mkdir -p /home/sammy/myprojectdir/media/courses/materials
+sudo mkdir -p /home/sammy/myprojectdir/media/categories
+sudo mkdir -p /home/sammy/myprojectdir/media/uploads/ckeditor5
+
+# تعيين الصلاحيات
+sudo chown -R sammy:www-data /home/sammy/myprojectdir/media/
+sudo chmod -R 755 /home/sammy/myprojectdir/media/
+
+
+cd frontend
+npm run build
+
+git add .
+git commit -m "Fix Vercel SPA routing 404 issue"
+git push
+
+goddady domain for triple sss
+132.148.182.144
+
+
+
+
+
+
+Perfect! Now the problem is crystal clear from the logs 🎯
+الخطأ: Permission denied (13) - nginx لا يستطيع قراءة الملفات
+Error: Permission denied (13) - nginx cannot read the files
+
+# 1. اتصل بالسيرفر كـ root / Connect as root
+ssh root@64.227.82.42
+# Password: osam0Esmael
+
+# 2. إصلاح ملكية المجلد بالكامل / Fix ownership of entire directory
+sudo chown -R sammy:www-data /home/sammy/myprojectdir/staticfiles
+sudo chown -R sammy:www-data /home/sammy/myprojectdir/media
+
+# 3. إصلاح صلاحيات المجلدات (755 = rwxr-xr-x)
+sudo find /home/sammy/myprojectdir/staticfiles -type d -exec chmod 755 {} +
+
+# 4. إصلاح صلاحيات الملفات (644 = rw-r--r--)
+sudo find /home/sammy/myprojectdir/staticfiles -type f -exec chmod 644 {} +
+
+# 5. إصلاح صلاحيات media أيضاً
+sudo find /home/sammy/myprojectdir/media -type d -exec chmod 755 {} +
+sudo find /home/sammy/myprojectdir/media -type f -exec chmod 644 {} +
+
+# 6. إصلاح المجلدات الأبوية (مهم جداً!)
+sudo chmod 755 /home/sammy
+sudo chmod 755 /home/sammy/myprojectdir
+sudo chmod 755 /home/sammy/myprojectdir/staticfiles
+sudo chmod 755 /home/sammy/myprojectdir/staticfiles/css
+
+# 7. اختبار أن nginx يستطيع القراءة / Test nginx can read
+sudo -u www-data test -r /home/sammy/myprojectdir/staticfiles/css/logo.png && echo "✓ nginx can read files" || echo "✗ Still cannot read"
+
+# 8. إعادة تشغيل nginx / Restart nginx
+sudo nginx -t
+sudo systemctl restart nginx
+
+# 9. مسح cache المتصفح أو جرب / Clear browser cache or try
+curl -I http://64.227.82.42/static/css/logo.png
+
+
+لماذا هذه الأوامر؟ / Why These Commands?
+الأمر	الغرض
+chown -R sammy:www-data	nginx يعمل كـ www-data، يحتاج أن يكون في مجموعة الملف
+chmod 755 للمجلدات	السماح لـ www-data بالدخول للمجلدات (execute permission)
+chmod 644 للملفات	السماح لـ www-data بقراءة الملفات
+chmod 755 /home/sammy	nginx يحتاج "execute" على كل المجلدات في المسار
